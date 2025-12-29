@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en" class="h-full">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Homi – Layout Shell</title>
 
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  <script src="./_sdk/element_sdk.js"></script>
+  <script src="./_sdk/data_sdk.js"></script>
+
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,134 +18,256 @@
 
   <link rel="stylesheet" href="styles/home.css" />
 
-  <style>@view-transition { navigation: auto; }</style>
+  <style>
+    @view-transition {
+      navigation: auto;
+    }
+  </style>
 </head>
 
 <body class="h-full w-full">
-    <div class="layout-wrapper"><!-- TopNavbar Component -->
-   <header class="top-navbar">
-    <div class="navbar-left"><!-- Menu Toggle (Mobile) --> <button class="menu-toggle" id="menuToggle">
-      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12" /> <line x1="3" y1="6" x2="21" y2="6" /> <line x1="3" y1="18" x2="21" y2="18" />
-      </svg></button> <!-- Logo --> <a href="#" class="logo">
-      <div class="logo-icon">
-       H
-      </div><span class="logo-text app-name-text">Homi</span> </a> <!-- SearchBar Component -->
-     <div class="search-bar"><span class="search-icon">
-       <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /> <path d="m21 21-4.35-4.35" />
-       </svg></span> <input type="text" class="search-input search-placeholder-text" placeholder="Search..."> <span class="search-shortcut">⌘K</span>
-     </div>
-    </div>
-    <div class="navbar-right"><!-- Notifications --> <button class="notification-btn">
-      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /> <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-      </svg><span class="notification-badge">2</span> </button> <!-- UserProfile Component -->
-     <div class="user-profile"><button class="profile-button" id="profileButton">
-       <div class="profile-avatar">
-        JD
-       </div>
-       <div class="profile-info">
-        <div class="profile-name">
-         John Doe
+  <div class="layout-wrapper">
+    <!-- TopNavbar Component -->
+    <header class="top-navbar">
+      <div class="navbar-left">
+        <!-- Menu Toggle (Mobile) --> <button class="menu-toggle" id="menuToggle">
+          <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg></button> <!-- Logo --> <a href="#" class="logo">
+          <div class="logo-icon">
+            H
+          </div><span class="logo-text app-name-text">Homi</span>
+        </a> <!-- SearchBar Component -->
+        <div class="search-bar"><span class="search-icon">
+            <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg></span> <input type="text" class="search-input search-placeholder-text" placeholder="Search..."> <span
+            class="search-shortcut">⌘K</span>
         </div>
-        <div class="profile-role">
-         Admin
+      </div>
+      <div class="navbar-right">
+        <!-- Notifications --> <button class="notification-btn">
+          <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg><span class="notification-badge">2</span> </button> <!-- UserProfile Component -->
+        <div class="user-profile"><button class="profile-button" id="profileButton">
+            <div class="profile-avatar">
+              JD
+            </div>
+            <div class="profile-info">
+              <div class="profile-name">
+                John Doe
+              </div>
+              <div class="profile-role">
+                Admin
+              </div>
+            </div>
+            <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" style="color: #94a3b8; display: none;">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button> <!-- Profile Dropdown -->
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="dropdown-item">
+              <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg><span class="profile-view-text">View Profile</span>
+            </div>
+            <div class="dropdown-item">
+              <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 1v6m0 6v6" />
+                <path d="m1 12 6 0m6 0 6 0" />
+              </svg><span class="profile-preferences-text">Preferences</span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item danger">
+              <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg><span class="profile-logout-text">Logout</span>
+            </div>
+          </div>
         </div>
-       </div>
-       <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #94a3b8; display: none;"><polyline points="6 9 12 15 18 9" />
-       </svg></button> <!-- Profile Dropdown -->
-      <div class="profile-dropdown" id="profileDropdown">
-       <div class="dropdown-item">
-        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /> <circle cx="12" cy="7" r="4" />
-        </svg><span class="profile-view-text">View Profile</span>
-       </div>
-       <div class="dropdown-item">
-        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /> <path d="M12 1v6m0 6v6" /> <path d="m1 12 6 0m6 0 6 0" />
-        </svg><span class="profile-preferences-text">Preferences</span>
-       </div>
-       <div class="dropdown-divider"></div>
-       <div class="dropdown-item danger">
-        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /> <polyline points="16 17 21 12 16 7" /> <line x1="21" y1="12" x2="9" y2="12" />
-        </svg><span class="profile-logout-text">Logout</span>
-       </div>
       </div>
-     </div>
-    </div>
-   </header><!-- Layout Container -->
-   <div class="layout-container"><!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div><!-- Mobile Menu -->
-    <aside class="mobile-menu" id="mobileMenu">
-     <div class="side-menu-nav"><a href="#dashboard" class="menu-item active" data-page="dashboard">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" /> <rect x="14" y="3" width="7" height="7" /> <rect x="14" y="14" width="7" height="7" /> <rect x="3" y="14" width="7" height="7" />
-       </svg><span class="menu-item-label nav-dashboard-text">Dashboard</span> </a> <a href="#tasks" class="menu-item" data-page="tasks">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4" /> <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-       </svg><span class="menu-item-label nav-tasks-text">Tasks</span> <span class="menu-item-badge">5</span> </a> <a href="#executors" class="menu-item" data-page="executors">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M23 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-       </svg><span class="menu-item-label nav-executors-text">Executors</span> </a> <a href="#messages" class="menu-item" data-page="messages">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-       </svg><span class="menu-item-label nav-messages-text">Messages</span> <span class="menu-item-badge">3</span> </a> <a href="#analytics" class="menu-item" data-page="analytics">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10" /> <line x1="12" y1="20" x2="12" y2="4" /> <line x1="6" y1="20" x2="6" y2="14" />
-       </svg><span class="menu-item-label nav-analytics-text">Analytics</span> </a> <a href="#settings" class="menu-item" data-page="settings">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /> <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
-       </svg><span class="menu-item-label nav-settings-text">Settings</span> </a>
-     </div>
-    </aside><!-- SideMenu Component (Desktop) -->
-    <aside class="side-menu" id="sideMenu">
-     <div class="side-menu-header">
-      <div class="side-menu-title">
-       Navigation
-      </div><button class="collapse-btn" id="collapseBtn">
-       <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" />
-       </svg></button>
-     </div>
-     <nav class="side-menu-nav"><a href="#dashboard" class="menu-item active" data-page="dashboard">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" /> <rect x="14" y="3" width="7" height="7" /> <rect x="14" y="14" width="7" height="7" /> <rect x="3" y="14" width="7" height="7" />
-       </svg><span class="menu-item-label nav-dashboard-text">Dashboard</span> </a> <a href="#tasks" class="menu-item" data-page="tasks">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4" /> <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-       </svg><span class="menu-item-label nav-tasks-text">Tasks</span> <span class="menu-item-badge">5</span> </a> <a href="#executors" class="menu-item" data-page="executors">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M23 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-       </svg><span class="menu-item-label nav-executors-text">Executors</span> </a> <a href="#messages" class="menu-item" data-page="messages">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-       </svg><span class="menu-item-label nav-messages-text">Messages</span> <span class="menu-item-badge">3</span> </a> <a href="#analytics" class="menu-item" data-page="analytics">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10" /> <line x1="12" y1="20" x2="12" y2="4" /> <line x1="6" y1="20" x2="6" y2="14" />
-       </svg><span class="menu-item-label nav-analytics-text">Analytics</span> </a> <a href="#settings" class="menu-item" data-page="settings">
-       <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /> <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
-       </svg><span class="menu-item-label nav-settings-text">Settings</span> </a>
-     </nav>
-    </aside><!-- Main Content -->
-    <main class="main-content">
-     <div class="content-container">
-      <div class="content-card">
-       <h2 class="content-title">Welcome to Homi</h2>
-       <p class="content-description">This is a responsive layout shell with adaptive navigation. On mobile devices (&lt; 768px), you'll see a bottom navigation bar for thumb-friendly access. On tablet and desktop (≥ 768px), the navigation transforms into a collapsible sidebar.</p>
-      </div>
-      <div class="content-card">
-       <h2 class="content-title">Layout Features</h2>
-       <p class="content-description">• <strong>TopNavbar</strong> - Sticky header with logo, search, notifications, and profile<br>
-         • <strong>SideMenu</strong> - Desktop sidebar with collapsible menu (≥ 768px)<br>
-         • <strong>BottomNavigation</strong> - Mobile thumb-zone navigation (&lt; 768px)<br>
-         • <strong>Active States</strong> - Visual feedback for current page<br>
-         • <strong>Notification Badges</strong> - Unread counts on Tasks (5) and Messages (3)<br>
-         • <strong>Responsive Design</strong> - Smooth transitions between layouts</p>
-      </div>
-      <div class="content-card">
-       <h2 class="content-title">Try It Out</h2>
-       <p class="content-description">Click on different navigation items to see the active state change. On desktop, try collapsing the sidebar using the toggle button. On mobile, open the menu using the hamburger icon in the top left. Resize your browser window to see the navigation transform between mobile and desktop layouts!</p>
-      </div>
-     </div>
-    </main>
-   </div><!-- BottomNavigation Component (Mobile) -->
-   <nav class="bottom-navigation"><a href="#dashboard" class="nav-item active" data-page="dashboard">
-     <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" /> <rect x="14" y="3" width="7" height="7" /> <rect x="14" y="14" width="7" height="7" /> <rect x="3" y="14" width="7" height="7" />
-     </svg><span class="nav-item-label nav-dashboard-text">Dashboard</span> </a> <a href="#tasks" class="nav-item" data-page="tasks">
-     <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4" /> <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-     </svg><span class="nav-item-label nav-tasks-text">Tasks</span> <span class="nav-item-badge">5</span> </a> <a href="#executors" class="nav-item" data-page="executors">
-     <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M23 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-     </svg><span class="nav-item-label nav-executors-text">Executors</span> </a> <a href="#messages" class="nav-item" data-page="messages">
-     <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-     </svg><span class="nav-item-label nav-messages-text">Messages</span> <span class="nav-item-badge">3</span> </a> <a href="#settings" class="nav-item" data-page="settings">
-     <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /> <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
-     </svg><span class="nav-item-label nav-settings-text">Settings</span> </a>
-   </nav>
+    </header><!-- Layout Container -->
+    <div class="layout-container">
+      <!-- Mobile Menu Overlay -->
+      <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div><!-- Mobile Menu -->
+      <aside class="mobile-menu" id="mobileMenu">
+        <div class="side-menu-nav"><a href="#dashboard" class="menu-item active" data-page="dashboard">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg><span class="menu-item-label nav-dashboard-text">Dashboard</span> </a> <a href="#tasks"
+            class="menu-item" data-page="tasks">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg><span class="menu-item-label nav-tasks-text">Tasks</span> <span class="menu-item-badge">5</span> </a>
+          <a href="#executors" class="menu-item" data-page="executors">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg><span class="menu-item-label nav-executors-text">Executors</span> </a> <a href="#messages"
+            class="menu-item" data-page="messages">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg><span class="menu-item-label nav-messages-text">Messages</span> <span class="menu-item-badge">3</span>
+          </a> <a href="#analytics" class="menu-item" data-page="analytics">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg><span class="menu-item-label nav-analytics-text">Analytics</span> </a> <a href="#settings"
+            class="menu-item" data-page="settings">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
+            </svg><span class="menu-item-label nav-settings-text">Settings</span> </a>
+        </div>
+      </aside><!-- SideMenu Component (Desktop) -->
+      <aside class="side-menu" id="sideMenu">
+        <div class="side-menu-header">
+          <div class="side-menu-title">
+            Navigation
+          </div><button class="collapse-btn" id="collapseBtn">
+            <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg></button>
+        </div>
+        <nav class="side-menu-nav"><a href="#dashboard" class="menu-item active" data-page="dashboard">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg><span class="menu-item-label nav-dashboard-text">Dashboard</span> </a> <a href="#tasks"
+            class="menu-item" data-page="tasks">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg><span class="menu-item-label nav-tasks-text">Tasks</span> <span class="menu-item-badge">5</span> </a>
+          <a href="#executors" class="menu-item" data-page="executors">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg><span class="menu-item-label nav-executors-text">Executors</span> </a> <a href="#messages"
+            class="menu-item" data-page="messages">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg><span class="menu-item-label nav-messages-text">Messages</span> <span class="menu-item-badge">3</span>
+          </a> <a href="#analytics" class="menu-item" data-page="analytics">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg><span class="menu-item-label nav-analytics-text">Analytics</span> </a> <a href="#settings"
+            class="menu-item" data-page="settings">
+            <svg class="menu-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
+            </svg><span class="menu-item-label nav-settings-text">Settings</span> </a>
+        </nav>
+      </aside><!-- Main Content -->
+      <main class="main-content">
+        <div class="content-container">
+          <div class="content-card">
+            <h2 class="content-title">Welcome to Homi</h2>
+            <p class="content-description">This is a responsive layout shell with adaptive navigation. On mobile devices
+              (&lt; 768px), you'll see a bottom navigation bar for thumb-friendly access. On tablet and desktop (≥
+              768px), the navigation transforms into a collapsible sidebar.</p>
+          </div>
+          <div class="content-card">
+            <h2 class="content-title">Layout Features</h2>
+            <p class="content-description">• <strong>TopNavbar</strong> - Sticky header with logo, search,
+              notifications, and profile<br>
+              • <strong>SideMenu</strong> - Desktop sidebar with collapsible menu (≥ 768px)<br>
+              • <strong>BottomNavigation</strong> - Mobile thumb-zone navigation (&lt; 768px)<br>
+              • <strong>Active States</strong> - Visual feedback for current page<br>
+              • <strong>Notification Badges</strong> - Unread counts on Tasks (5) and Messages (3)<br>
+              • <strong>Responsive Design</strong> - Smooth transitions between layouts</p>
+          </div>
+          <div class="content-card">
+            <h2 class="content-title">Try It Out</h2>
+            <p class="content-description">Click on different navigation items to see the active state change. On
+              desktop, try collapsing the sidebar using the toggle button. On mobile, open the menu using the hamburger
+              icon in the top left. Resize your browser window to see the navigation transform between mobile and
+              desktop layouts!</p>
+          </div>
+        </div>
+      </main>
+    </div><!-- BottomNavigation Component (Mobile) -->
+    <nav class="bottom-navigation"><a href="#dashboard" class="nav-item active" data-page="dashboard">
+        <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg><span class="nav-item-label nav-dashboard-text">Dashboard</span> </a> <a href="#tasks" class="nav-item"
+        data-page="tasks">
+        <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4" />
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+        </svg><span class="nav-item-label nav-tasks-text">Tasks</span> <span class="nav-item-badge">5</span> </a> <a
+        href="#executors" class="nav-item" data-page="executors">
+        <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg><span class="nav-item-label nav-executors-text">Executors</span> </a> <a href="#messages" class="nav-item"
+        data-page="messages">
+        <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg><span class="nav-item-label nav-messages-text">Messages</span> <span class="nav-item-badge">3</span> </a>
+      <a href="#settings" class="nav-item" data-page="settings">
+        <svg class="nav-item-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
+        </svg><span class="nav-item-label nav-settings-text">Settings</span> </a>
+    </nav>
   </div>
   <script type="module" src="main.js"></script>
 </body>
+
 </html>

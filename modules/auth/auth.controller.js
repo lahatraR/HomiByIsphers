@@ -31,7 +31,6 @@ export function initAuth(dom) {
             const result = login(credentials);
 
             if (result.success) {
-                // redirection simple
                 window.location.href = '/home.html';
                 return;
             } else {
