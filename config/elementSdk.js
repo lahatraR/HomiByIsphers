@@ -5,9 +5,28 @@ export function initElementSdk() {
 
   window.elementSdk.init({
     defaultConfig,
-    onConfigChange
+    onConfigChange,
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { get: () => config.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
+        { get: () => config.primary_color, set: (v) => window.elementSdk.setConfig({ primary_color: v }) },
+        { get: () => config.accent_color, set: (v) => window.elementSdk.setConfig({ accent_color: v }) },
+        { get: () => config.surface_color, set: (v) => window.elementSdk.setConfig({ surface_color: v }) },
+        { get: () => config.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
+      ],
+      fontEditable: { get: () => config.font_family, set: (v) => window.elementSdk.setConfig({ font_family: v }) },
+      fontSizeable: { get: () => config.font_size, set: (v) => window.elementSdk.setConfig({ font_size: v }) }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['page_title', config.page_title],
+      ['user_name', config.user_name],
+      ['worked_time_label', config.worked_time_label],
+      ['assigned_tasks_label', config.assigned_tasks_label],
+      ['available_tasks_label', config.available_tasks_label]
+    ])
   });
 }
+
 
 function onConfigChange(config) {
   document.querySelector('.app-name').textContent = config.app_name;
