@@ -30,8 +30,9 @@ export function initAuth(dom) {
         setTimeout(() => {
             const result = login(credentials);
             if (result.success) {
-                const basePath = window.location.pathname.split('/').slice(0, 2).join('/');
-                window.location.href = `${window.location.origin}${basePath}/home.html`;
+                const baseUrl = window.location.origin; // ex: https://lahatrar.github.io
+                const repoPath = '/HomiByIsphers'; // ton repo
+                window.location.href = `${baseUrl}${repoPath}/home.html`;
                 return;
             } else {
                 view.showError(dom.error, mapError(result.error));
