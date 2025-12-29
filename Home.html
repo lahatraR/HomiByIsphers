@@ -1,21 +1,26 @@
 <!doctype html>
 <html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homi - Layout Shell</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Homi – Layout Shell</title>
+
   <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-          <link rel="stylesheet" href="styles/home.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/home.css" />
 
   <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full w-full">
-  <div class="layout-wrapper"><!-- TopNavbar Component -->
+</head>
+
+<body class="h-full w-full">
+    <div class="layout-wrapper"><!-- TopNavbar Component -->
    <header class="top-navbar">
     <div class="navbar-left"><!-- Menu Toggle (Mobile) --> <button class="menu-toggle" id="menuToggle">
       <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12" /> <line x1="3" y1="6" x2="21" y2="6" /> <line x1="3" y1="18" x2="21" y2="18" />
@@ -139,229 +144,6 @@
      </svg><span class="nav-item-label nav-settings-text">Settings</span> </a>
    </nav>
   </div>
-  <script>
-    // Mobile menu toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-
-    menuToggle.addEventListener('click', () => {
-      mobileMenu.classList.toggle('show');
-      mobileMenuOverlay.classList.toggle('show');
-    });
-
-    mobileMenuOverlay.addEventListener('click', () => {
-      mobileMenu.classList.remove('show');
-      mobileMenuOverlay.classList.remove('show');
-    });
-
-    // Sidebar collapse toggle
-    const collapseBtn = document.getElementById('collapseBtn');
-    const sideMenu = document.getElementById('sideMenu');
-
-    collapseBtn.addEventListener('click', () => {
-      sideMenu.classList.toggle('collapsed');
-      const icon = collapseBtn.querySelector('svg polyline');
-      if (sideMenu.classList.contains('collapsed')) {
-        icon.setAttribute('points', '9 18 15 12 9 6');
-      } else {
-        icon.setAttribute('points', '15 18 9 12 15 6');
-      }
-    });
-
-    // Profile dropdown toggle
-    const profileButton = document.getElementById('profileButton');
-    const profileDropdown = document.getElementById('profileDropdown');
-
-    profileButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      profileDropdown.classList.toggle('show');
-    });
-
-    document.addEventListener('click', () => {
-      profileDropdown.classList.remove('show');
-    });
-
-    // Navigation active state
-    const allMenuItems = document.querySelectorAll('.menu-item, .nav-item');
-
-    allMenuItems.forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const page = item.dataset.page;
-
-        // Update all menu items with the same page
-        document.querySelectorAll(`[data-page="${page}"]`).forEach(menuItem => {
-          // Remove active from all items
-          document.querySelectorAll(`[data-page]`).forEach(mi => mi.classList.remove('active'));
-          // Add active to clicked page items
-          document.querySelectorAll(`[data-page="${page}"]`).forEach(mi => mi.classList.add('active'));
-        });
-
-        // Close mobile menu if open
-        mobileMenu.classList.remove('show');
-        mobileMenuOverlay.classList.remove('show');
-
-        // Scroll to top
-        document.querySelector('.main-content').scrollTop = 0;
-      });
-    });
-
-    // Search keyboard shortcut (Cmd/Ctrl + K)
-    document.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        document.querySelector('.search-input')?.focus();
-      }
-    });
-
-    // Config and SDK
-    const defaultConfig = {
-      background_color: '#f8fafc',
-      surface_color: '#ffffff',
-      text_color: '#0f172a',
-      accent_color: '#3b82f6',
-      border_color: '#e2e8f0',
-      app_name: 'Homi',
-      search_placeholder: 'Search...',
-      nav_dashboard: 'Dashboard',
-      nav_tasks: 'Tasks',
-      nav_executors: 'Executors',
-      nav_messages: 'Messages',
-      nav_analytics: 'Analytics',
-      nav_settings: 'Settings',
-      profile_view: 'View Profile',
-      profile_preferences: 'Preferences',
-      profile_logout: 'Logout',
-      font_family: 'Inter',
-      font_size: 16
-    };
-
-    async function onConfigChange(config) {
-      const customFont = config.font_family || defaultConfig.font_family;
-      const baseSize = config.font_size || defaultConfig.font_size;
-      const baseFontStack = 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-      
-      document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
-
-      // Update text content
-      document.querySelectorAll('.app-name-text').forEach(el => {
-        el.textContent = config.app_name || defaultConfig.app_name;
-      });
-      
-      document.querySelector('.search-placeholder-text').placeholder = 
-        config.search_placeholder || defaultConfig.search_placeholder;
-
-      document.querySelectorAll('.nav-dashboard-text').forEach(el => {
-        el.textContent = config.nav_dashboard || defaultConfig.nav_dashboard;
-      });
-
-      document.querySelectorAll('.nav-tasks-text').forEach(el => {
-        el.textContent = config.nav_tasks || defaultConfig.nav_tasks;
-      });
-
-      document.querySelectorAll('.nav-executors-text').forEach(el => {
-        el.textContent = config.nav_executors || defaultConfig.nav_executors;
-      });
-
-      document.querySelectorAll('.nav-messages-text').forEach(el => {
-        el.textContent = config.nav_messages || defaultConfig.nav_messages;
-      });
-
-      document.querySelectorAll('.nav-analytics-text').forEach(el => {
-        el.textContent = config.nav_analytics || defaultConfig.nav_analytics;
-      });
-
-      document.querySelectorAll('.nav-settings-text').forEach(el => {
-        el.textContent = config.nav_settings || defaultConfig.nav_settings;
-      });
-
-      document.querySelector('.profile-view-text').textContent = 
-        config.profile_view || defaultConfig.profile_view;
-      
-      document.querySelector('.profile-preferences-text').textContent = 
-        config.profile_preferences || defaultConfig.profile_preferences;
-      
-      document.querySelector('.profile-logout-text').textContent = 
-        config.profile_logout || defaultConfig.profile_logout;
-    }
-
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange,
-        mapToCapabilities: (config) => ({
-          recolorables: [
-            {
-              get: () => config.background_color || defaultConfig.background_color,
-              set: (value) => {
-                config.background_color = value;
-                window.elementSdk.setConfig({ background_color: value });
-              }
-            },
-            {
-              get: () => config.surface_color || defaultConfig.surface_color,
-              set: (value) => {
-                config.surface_color = value;
-                window.elementSdk.setConfig({ surface_color: value });
-              }
-            },
-            {
-              get: () => config.text_color || defaultConfig.text_color,
-              set: (value) => {
-                config.text_color = value;
-                window.elementSdk.setConfig({ text_color: value });
-              }
-            },
-            {
-              get: () => config.accent_color || defaultConfig.accent_color,
-              set: (value) => {
-                config.accent_color = value;
-                window.elementSdk.setConfig({ accent_color: value });
-              }
-            },
-            {
-              get: () => config.border_color || defaultConfig.border_color,
-              set: (value) => {
-                config.border_color = value;
-                window.elementSdk.setConfig({ border_color: value });
-              }
-            }
-          ],
-          borderables: [],
-          fontEditable: {
-            get: () => config.font_family || defaultConfig.font_family,
-            set: (value) => {
-              config.font_family = value;
-              window.elementSdk.setConfig({ font_family: value });
-            }
-          },
-          fontSizeable: {
-            get: () => config.font_size || defaultConfig.font_size,
-            set: (value) => {
-              config.font_size = value;
-              window.elementSdk.setConfig({ font_size: value });
-            }
-          }
-        }),
-        mapToEditPanelValues: (config) => new Map([
-          ['app_name', config.app_name || defaultConfig.app_name],
-          ['search_placeholder', config.search_placeholder || defaultConfig.search_placeholder],
-          ['nav_dashboard', config.nav_dashboard || defaultConfig.nav_dashboard],
-          ['nav_tasks', config.nav_tasks || defaultConfig.nav_tasks],
-          ['nav_executors', config.nav_executors || defaultConfig.nav_executors],
-          ['nav_messages', config.nav_messages || defaultConfig.nav_messages],
-          ['nav_analytics', config.nav_analytics || defaultConfig.nav_analytics],
-          ['nav_settings', config.nav_settings || defaultConfig.nav_settings],
-          ['profile_view', config.profile_view || defaultConfig.profile_view],
-          ['profile_preferences', config.profile_preferences || defaultConfig.profile_preferences],
-          ['profile_logout', config.profile_logout || defaultConfig.profile_logout]
-        ])
-      });
-    }
-
-    // Initialize
-    onConfigChange(defaultConfig);
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b0643fc45a113f4',t:'MTc2NjE0MDY1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script type="module" src="main.js"></script>
+</body>
 </html>

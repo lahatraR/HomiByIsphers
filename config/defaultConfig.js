@@ -7,5 +7,15 @@ export const defaultConfig = Object.freeze({
   signup_text: "Don't have an account?",
   signup_link_text: 'Sign up',
   font_family: 'Inter',
+  search_placeholder: 'Search...',
+  nav_dashboard: 'Dashboard',
+  nav_tasks: 'Tasks',
+  nav_executors: 'Executors',
+  nav_messages: 'Messages',
+  nav_analytics: 'Analytics',
+  nav_settings: 'Settings',
+  profile_view: 'View Profile',
+  profile_preferences: 'Preferences',
+  profile_logout: 'Logout',
   font_size: 16
 });
