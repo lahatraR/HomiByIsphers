@@ -31,7 +31,7 @@ export function initAuth(dom) {
             const result = login(credentials);
             if (result.success) {
                 const repoPath = 'HomiByIsphers'; 
-                window.location.href = `${window.location.origin}/${repoPath}/home.html`;
+                window.location.href = `${window.location.origin}/${repoPath}/Home.html`;
                 return;
             } else {
                 view.showError(dom.error, mapError(result.error));
