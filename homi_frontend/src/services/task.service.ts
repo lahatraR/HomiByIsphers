@@ -1,108 +1,106 @@
 import { api } from './api';
-import type { Task, CreateTaskForm, UpdateTaskForm, TaskStats } from '../types';
 
-interface PaginatedTasksResponse {
-  tasks: Task[];
-  page: number;
-  limit: number;
+export interface Domicile {
+    id: number;
+    name: string;
+    address: string;
+    city?: string;
+    postalCode?: string;
+    description?: string;
+}
+
+export interface User {
+    id: number;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+}
+
+export interface Task {
+    id: number;
+    title: string;
+    description: string;
+    status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED';
+    domicile: Domicile;
+    assignedTo: User;
+    createdBy: User;
+    startTime?: string;
+    endTime?: string;
+    actualStartTime?: string;
+    actualEndTime?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface TaskStats {
+    totalTasks: number;
+    completedTasks: number;
+    inProgressTasks: number;
+    pendingTasks: number;
 }
 
 export const taskService = {
-  /**
-   * Get all tasks
-   */
-  getTasks: async (): Promise<Task[]> => {
-    const response = await api.get<PaginatedTasksResponse>('/tasks');
-    return response.data.tasks;
-  },
+    /**
+     * Récupérer toutes les tâches
+     */
+    getAllTasks: async (): Promise<Task[]> => {
+        const response = await api.get<Task[]>('/tasks');
+        return response.data;
+    },
 
-  /**
-   * Get task by ID
-   */
-  getTaskById: async (id: string): Promise<Task> => {
-    const response = await api.get<Task>(`/tasks/${id}`);
-    return response.data;
-  },
+    /**
+     * Récupérer une tâche par ID
+     */
+    getTaskById: async (id: number): Promise<Task> => {
+        const response = await api.get<Task>(`/tasks/${id}`);
+        return response.data;
+    },
 
-  /**
-   * Create new task
-   */
-  createTask: async (taskData: CreateTaskForm): Promise<Task> => {
-    // If there are attachments, use FormData
-    if (taskData.attachments && taskData.attachments.length > 0) {
-      const formData = new FormData();
-      formData.append('title', taskData.title);
-      formData.append('description', taskData.description);
-      formData.append('priority', taskData.priority);
-      formData.append('dueDate', taskData.dueDate);
+    /**
+     * Créer une nouvelle tâche
+     */
+    createTask: async (data: any): Promise<Task> => {
+        const response = await api.post<Task>('/tasks', data);
+        return response.data;
+    },
 
-      if (taskData.dueTime) {
-        formData.append('dueTime', taskData.dueTime);
-      }
+    /**
+     * Mettre à jour une tâche
+     */
+    updateTask: async (id: number, data: any): Promise<Task> => {
+        const response = await api.put<Task>(`/tasks/${id}`, data);
+        return response.data;
+    },
 
-      formData.append('recurring', String(taskData.recurring));
+    /**
+     * Démarrer une tâche (actualStartTime)
+     */
+    startTask: async (id: number): Promise<Task> => {
+        const response = await api.patch<Task>(`/tasks/${id}/start`, {});
+        return response.data;
+    },
 
-      if (taskData.executorId) {
-        formData.append('executorId', taskData.executorId);
-      }
+    /**
+     * Terminer une tâche (actualEndTime)
+     */
+    completeTask: async (id: number): Promise<Task> => {
+        const response = await api.patch<Task>(`/tasks/${id}/complete`, {});
+        return response.data;
+    },
 
-      taskData.attachments.forEach((file) => {
-        formData.append('attachments[]', file);
-      });
+    /**
+     * Obtenir les statistiques
+     */
+    getStats: async (): Promise<TaskStats> => {
+        const response = await api.get<TaskStats>('/tasks/stats');
+        return response.data;
+    },
 
-      const response = await api.upload<Task>('/tasks', formData);
-      return response.data;
-    }
-
-    // Otherwise, send JSON
-    const response = await api.post<Task>('/tasks', taskData);
-    return response.data;
-  },
-
-  /**
-   * Update task
-   */
-  updateTask: async (id: string, taskData: UpdateTaskForm): Promise<Task> => {
-    const response = await api.patch<Task>(`/tasks/${id}`, taskData);
-    return response.data;
-  },
-
-  /**
-   * Delete task
-   */
-  deleteTask: async (id: string): Promise<void> => {
-    await api.delete(`/tasks/${id}`);
-  },
-
-  /**
-   * Get task statistics
-   */
-  getTaskStats: async (): Promise<TaskStats> => {
-    const response = await api.get<TaskStats>('/tasks/stats');
-    return response.data;
-  },
-
-  /**
-   * Start task timer
-   */
-  startTaskTimer: async (id: string): Promise<Task> => {
-    const response = await api.post<Task>(`/tasks/${id}/start`);
-    return response.data;
-  },
-
-  /**
-   * Stop task timer
-   */
-  stopTaskTimer: async (id: string): Promise<Task> => {
-    const response = await api.post<Task>(`/tasks/${id}/stop`);
-    return response.data;
-  },
-
-  /**
-   * Get my tasks (as executor)
-   */
-  getMyTasks: async (): Promise<Task[]> => {
-    const response = await api.get<Task[]>('/tasks/my-tasks');
-    return response.data;
-  },
+    /**
+     * Supprimer une tâche
+     */
+    deleteTask: async (id: number): Promise<void> => {
+        await api.delete(`/tasks/${id}`);
+    },
 };

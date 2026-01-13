@@ -1,20 +1,26 @@
 import { api } from './api';
-import type { LoginCredentials, AuthResponse, User } from '../types';
+import type { LoginCredentials, AuthResponse, User, UserRole } from '../types';
+
+const mapAuthToUser = (auth: AuthResponse): User => ({
+  id: auth.userId,
+  email: auth.email,
+  role: auth.role,
+});
 
 export const authService = {
   /**
    * Login user
    */
-  login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
+  login: async (credentials: LoginCredentials): Promise<{ auth: AuthResponse; user: User }> => {
     const response = await api.post<AuthResponse>('/auth/login', credentials);
-    
-    // Store token and user in localStorage
+    const user = mapAuthToUser(response.data);
+
     if (response.data.token) {
       localStorage.setItem('authToken', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem('user', JSON.stringify(user));
     }
-    
-    return response.data;
+
+    return { auth: response.data, user };
   },
 
   /**
@@ -48,34 +54,17 @@ export const authService = {
   },
 
   /**
-   * Refresh authentication token
+   * Register user (also authenticates)
    */
-  refreshToken: async (): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/refresh');
-    
-    if (response.data.token) {
-      localStorage.setItem('authToken', response.data.token);
-    }
-    
-    return response.data;
-  },
-
-  /**
-   * Register new user
-   */
-  register: async (userData: {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-  }): Promise<AuthResponse> => {
+  register: async (userData: { email: string; password: string; role: UserRole ; firstName: string; lastName: string }): Promise<{ auth: AuthResponse; user: User }> => {
     const response = await api.post<AuthResponse>('/auth/register', userData);
-    
+    const user = mapAuthToUser(response.data);
+
     if (response.data.token) {
       localStorage.setItem('authToken', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem('user', JSON.stringify(user));
     }
-    
-    return response.data;
+
+    return { auth: response.data, user };
   },
 };

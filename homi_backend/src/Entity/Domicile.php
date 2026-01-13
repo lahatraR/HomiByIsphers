@@ -6,43 +6,77 @@ use App\Repository\DomicileRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: DomicileRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Domicile
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['domicile:read', 'task:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom du domicile est requis')]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Groups(['domicile:read', 'domicile:write', 'task:read'])]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'owned')]
-    private ?User $owner = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updated_at = null;
-
-    /**
-     * @var Collection<int, DomicileExecutor>
-     */
-    #[ORM\OneToMany(targetEntity: DomicileExecutor::class, mappedBy: 'domicile', orphanRemoval: true)]
-    private Collection $domicileExecutors;
-
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 500, nullable: true)]
+    #[Groups(['domicile:read', 'domicile:write'])]
     private ?string $address = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $description = null;
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['domicile:read', 'domicile:write'])]
+    private ?string $phone = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['domicile:read', 'domicile:write'])]
+    private ?string $notes = null;
+
+    #[ORM\ManyToOne(inversedBy: 'domiciles')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['domicile:read'])]
+    private ?User $createdBy = null;
+
+    #[ORM\OneToMany(mappedBy: 'domicile', targetEntity: Task::class)]
+    private Collection $tasks;
+
+    #[ORM\Column(type: 'datetime')]
+    #[Groups(['domicile:read'])]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: 'datetime')]
+    #[Groups(['domicile:read'])]
+    private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
-        $this->domicileExecutors = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTime();
+    }
+
+    // Getters and Setters
 
     public function getId(): ?int
     {
@@ -60,74 +94,6 @@ class Domicile
         return $this;
     }
 
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): static
-    {
-        $this->owner = $owner;
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
-    {
-        $this->created_at = $created_at;
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
-    {
-        $this->updated_at = $updated_at;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, DomicileExecutor>
-     */
-    public function getDomicileExecutors(): Collection
-    {
-        return $this->domicileExecutors;
-    }
-
-    public function addDomicileExecutor(DomicileExecutor $domicileExecutor): static
-    {
-        if (!$this->domicileExecutors->contains($domicileExecutor)) {
-            $this->domicileExecutors->add($domicileExecutor);
-            $domicileExecutor->setDomicile($this);
-        }
-        return $this;
-    }
-
-    public function removeDomicileExecutor(DomicileExecutor $domicileExecutor): static
-    {
-        if ($this->domicileExecutors->removeElement($domicileExecutor)) {
-            if ($domicileExecutor->getDomicile() === $this) {
-                $domicileExecutor->setDomicile(null);
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getExecutors(): Collection
-    {
-        return $this->domicileExecutors->map(fn(DomicileExecutor $de) => $de->getExecutor());
-    }
-
     public function getAddress(): ?string
     {
         return $this->address;
@@ -139,14 +105,108 @@ class Domicile
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getPhone(): ?string
     {
-        return $this->description;
+        return $this->phone;
     }
 
-    public function setDescription(?string $description): static
+    public function setPhone(?string $phone): static
     {
-        $this->description = $description;
+        $this->phone = $phone;
         return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): static
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->setDomicile($this);
+        }
+        return $this;
+    }
+
+    public function removeTask(Task $task): static
+    {
+        if ($this->tasks->removeElement($task)) {
+            if ($task->getDomicile() === $this) {
+                $task->setDomicile(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    /**
+     * Conversion en tableau pour l'API
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'address' => $this->address,
+            'phone' => $this->phone,
+            'notes' => $this->notes,
+            'createdBy' => $this->createdBy ? [
+                'id' => $this->createdBy->getId(),
+                'email' => $this->createdBy->getEmail(),
+                'firstName' => $this->createdBy->getFirstName(),
+                'lastName' => $this->createdBy->getLastName(),
+            ] : null,
+            'tasksCount' => $this->tasks->count(),
+            'createdAt' => $this->createdAt?->format('c'),
+            'updatedAt' => $this->updatedAt?->format('c'),
+        ];
     }
 }

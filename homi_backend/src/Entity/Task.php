@@ -3,56 +3,91 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+
 class Task
 {
+    // Constantes de statut cohérentes avec le frontend
+    public const STATUS_TODO = 'TODO';
+    public const STATUS_IN_PROGRESS = 'IN_PROGRESS';
+    public const STATUS_COMPLETED = 'COMPLETED';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['task:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le titre est requis')]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le titre ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Groups(['task:read', 'task:write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'La description est requise')]
+    #[Groups(['task:read', 'task:write'])]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?bool $status = null;
+    #[ORM\Column(length: 50)]
+    #[Assert\Choice(
+        choices: [self::STATUS_TODO, self::STATUS_IN_PROGRESS, self::STATUS_COMPLETED],
+        message: 'Le statut doit être TODO, IN_PROGRESS ou COMPLETED'
+    )]
+    #[Groups(['task:read', 'task:write'])]
+    private string $status = self::STATUS_TODO;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $start_time = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['task:read', 'task:write'])]
+    private ?\DateTimeInterface $startTime = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $end_time = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['task:read', 'task:write'])]
+    private ?\DateTimeInterface $endTime = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['task:read'])]
     private ?User $assignedTo = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['task:read'])]
     private ?Domicile $domicile = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['task:read'])]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updated_at = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['task:read'])]
+    private ?\DateTimeInterface $updatedAt = null;
 
-    /**
-     * @var Collection<int, TaskHistory>
-     */
-    #[ORM\OneToMany(targetEntity: TaskHistory::class, mappedBy: 'task')]
-    private Collection $taskHistories;
-
-    public function __construct()
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
     {
-        $this->taskHistories = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTime();
+    }
+
+    // Getters and Setters
 
     public function getId(): ?int
     {
@@ -67,7 +102,6 @@ class Task
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -79,43 +113,42 @@ class Task
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
-    public function isStatus(): ?bool
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(bool $status): static
+    public function setStatus(string $status): static
     {
+        if (!in_array($status, [self::STATUS_TODO, self::STATUS_IN_PROGRESS, self::STATUS_COMPLETED])) {
+            throw new \InvalidArgumentException('Invalid status');
+        }
         $this->status = $status;
-
         return $this;
     }
 
-    public function getStartTime(): ?\DateTimeImmutable
+    public function getStartTime(): ?\DateTimeInterface
     {
-        return $this->start_time;
+        return $this->startTime;
     }
 
-    public function setStartTime(\DateTimeImmutable $start_time): static
+    public function setStartTime(?\DateTimeInterface $startTime): static
     {
-        $this->start_time = $start_time;
-
+        $this->startTime = $startTime;
         return $this;
     }
 
-    public function getEndTime(): ?\DateTimeImmutable
+    public function getEndTime(): ?\DateTimeInterface
     {
-        return $this->end_time;
+        return $this->endTime;
     }
 
-    public function setEndTime(\DateTimeImmutable $end_time): static
+    public function setEndTime(?\DateTimeInterface $endTime): static
     {
-        $this->end_time = $end_time;
-
+        $this->endTime = $endTime;
         return $this;
     }
 
@@ -127,7 +160,6 @@ class Task
     public function setAssignedTo(?User $assignedTo): static
     {
         $this->assignedTo = $assignedTo;
-
         return $this;
     }
 
@@ -139,68 +171,52 @@ class Task
     public function setDomicile(?Domicile $domicile): static
     {
         $this->domicile = $domicile;
-
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
-        $this->created_at = $created_at;
-
+        $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
     {
-        $this->updated_at = $updated_at;
-
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 
     /**
-     * @return Collection<int, TaskHistory>
+     * Vérifie si la tâche est terminée
      */
-    public function getTaskHistories(): Collection
+    public function isCompleted(): bool
     {
-        return $this->taskHistories;
+        return $this->status === self::STATUS_COMPLETED;
     }
 
-    public function addTaskHistory(TaskHistory $taskHistory): static
+    /**
+     * Vérifie si la tâche est en cours
+     */
+    public function isInProgress(): bool
     {
-        if (!$this->taskHistories->contains($taskHistory)) {
-            $this->taskHistories->add($taskHistory);
-            $taskHistory->setTask($this);
-        }
-
-        return $this;
+        return $this->status === self::STATUS_IN_PROGRESS;
     }
 
-    public function removeTaskHistory(TaskHistory $taskHistory): static
+    /**
+     * Vérifie si la tâche est en attente
+     */
+    public function isTodo(): bool
     {
-        if ($this->taskHistories->removeElement($taskHistory)) {
-            // set the owning side to null (unless already changed)
-            if ($taskHistory->getTask() === $this) {
-                $taskHistory->setTask(null);
-            }
-        }
-
-        return $this;
+        return $this->status === self::STATUS_TODO;
     }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-
 }

@@ -5,337 +5,418 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Entity\Domicile;
-use App\Service\TaskService;
-use App\Service\TaskHistoryService;
+use App\Entity\DomicileExecutor;
+use App\Repository\TaskRepository;
+use App\Repository\UserRepository;
+use App\Repository\DomicileRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Doctrine\Persistence\ManagerRegistry;
 
 #[Route('/api/tasks')]
 class TaskController extends AbstractController
 {
     public function __construct(
-        private TaskService $taskService,
-        private TaskHistoryService $historyService,
-        private ManagerRegistry $doctrine,
+        private EntityManagerInterface $entityManager,
+        private TaskRepository $taskRepository,
+        private UserRepository $userRepository,
+        private DomicileRepository $domicileRepository,
+        private ValidatorInterface $validator
     ) {
     }
 
     /**
-     * Créer une tâche
+     * Get all tasks
      */
-    #[Route('', name: 'create_task', methods: ['POST'])]
+    #[Route('', name: 'api_tasks_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    public function index(): JsonResponse
+    {
+        $user = $this->getUser();
+
+        // Admin voit toutes les tâches
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $tasks = $this->taskRepository->findAll();
+        }
+        // Executor voit ses tâches assignées
+        elseif ($this->isGranted('ROLE_EXECUTOR')) {
+            $tasks = $this->taskRepository->findBy(['assignedTo' => $user]);
+        }
+        // User voit toutes les tâches (peut être modifié selon les besoins)
+        else {
+            $tasks = $this->taskRepository->findAll();
+        }
+
+        return $this->json($tasks, Response::HTTP_OK, [], [
+            'groups' => ['task:read']
+        ]);
+    }
+
+    /**
+     * Get a specific task
+     */
+    #[Route('/{id}', name: 'api_tasks_show', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function show(int $id): JsonResponse
+    {
+        $task = $this->taskRepository->find($id);
+
+        if (!$task) {
+            return $this->json([
+                'error' => 'Task not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérification des permissions
+        $user = $this->getUser();
+        if (
+            !$this->isGranted('ROLE_ADMIN') &&
+            $this->isGranted('ROLE_EXECUTOR') &&
+            $task->getAssignedTo() !== $user
+        ) {
+            return $this->json([
+                'error' => 'Access denied'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        return $this->json($task, Response::HTTP_OK, [], [
+            'groups' => ['task:read']
+        ]);
+    }
+
+    /**
+     * Create a new task
+     */
+    #[Route('', name: 'api_tasks_create', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): JsonResponse
     {
-        try {
-            $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true);
 
-            if ($data === null) {
-                return $this->json(['error' => 'JSON invalide'], Response::HTTP_BAD_REQUEST);
-            }
-
-            $domicile = $this->doctrine->getRepository(Domicile::class)->find($data['domicile_id']);
-            $executor = $this->doctrine->getRepository(User::class)->find($data['executor_id']);
-
-            if (!$domicile || !$executor) {
-                return $this->json(['error' => 'Domicile ou exécutant non trouvé'], Response::HTTP_NOT_FOUND);
-            }
-
-            // Vérification permission
-            $user = $this->getUser();
-            if (!$user instanceof User || ($domicile->getOwner()->getId() !== $user->getId() && !\in_array('ROLE_ADMIN', $user->getRoles()))) {
-                return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
-            }
-
-            try {
-                $startTime = new \DateTimeImmutable();
-                $endTime = isset($data['end_time']) ? new \DateTimeImmutable($data['end_time']) : null;
-                
-                if ($endTime && $endTime <= $startTime) {
-                    return $this->json(['error' => 'La date de fin ne doit pas être antérieure ou égale à la date de début'], Response::HTTP_BAD_REQUEST);
-                }
-            } catch (\Exception) {
-                return $this->json(['error' => 'Format de date invalide'], Response::HTTP_BAD_REQUEST);
-            }
-
-            $task = $this->taskService->createTask(
-                $data['title'],
-                $data['description'],
-                $domicile,
-                $executor,
-                $startTime,
-                $endTime
-            );
-
-            $this->historyService->log($task, $executor, 1);
-
+        if (!$data) {
             return $this->json([
-                'id' => $task->getId(),
-                'title' => $task->getTitle(),
-                'description' => $task->getDescription(),
-                'domicile' => [
-                    'id' => $task->getDomicile()->getId(),
-                    'name' => $task->getDomicile()->getName(),
-                ],
-                'assignedTo' => [
-                    'id' => $task->getAssignedTo()->getId(),
-                    'email' => $task->getAssignedTo()->getEmail(),
-                ],
-                'startTime' => $task->getStartTime()?->format('c'),
-                'status' => $task->getStatus(),
-            ], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
-            return $this->json([
-                'error' => 'Une erreur est survenue',
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'error' => 'Invalid JSON data'
+            ], Response::HTTP_BAD_REQUEST);
         }
-    }
 
-    /**
-     * Récupérer une tâche
-     */
-    #[Route('/{id}', name: 'get_task', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
-    public function getTask(int $id): JsonResponse
-    {
-        try {
-            $task = $this->taskService->getTask($id);
-
-            if (!$task) {
-                return $this->json(['error' => 'Tâche non trouvée'], Response::HTTP_NOT_FOUND);
+        // Validation des champs requis
+        $requiredFields = ['title', 'description'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                return $this->json([
+                    'error' => "Field '{$field}' is required"
+                ], Response::HTTP_BAD_REQUEST);
             }
-
-            return $this->json([
-                'id' => $task->getId(),
-                'title' => $task->getTitle(),
-                'description' => $task->getDescription(),
-                'domicile' => [
-                    'id' => $task->getDomicile()->getId(),
-                    'name' => $task->getDomicile()->getName(),
-                ],
-                'assignedTo' => [
-                    'id' => $task->getAssignedTo()->getId(),
-                    'email' => $task->getAssignedTo()->getEmail(),
-                ],
-                'startTime' => $task->getStartTime()?->format('c'),
-                'status' => $task->getStatus(),
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return $this->json(['error' => 'Une erreur est survenue'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
 
-    /**
-     * Terminer une tâche
-     */
-    #[Route('/{id}/finish', name: 'finish_task', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function finish(int $id): JsonResponse
-    {
-        try {
-            $task = $this->taskService->getTask($id);
+        $task = new Task();
+        $task->setTitle($data['title']);
+        $task->setDescription($data['description']);
+        $task->setStatus($data['status'] ?? Task::STATUS_TODO);
 
-            if (!$task) {
-                return $this->json(['error' => 'Tâche non trouvée'], Response::HTTP_NOT_FOUND);
-            }
-
-            // Vérification permission
-            $user = $this->getUser();
-            if (!$user instanceof User) {
-                return $this->json(['error' => 'Non authentifié'], Response::HTTP_UNAUTHORIZED);
-            }
-
-            if ($task->getAssignedTo()->getId() !== $user->getId() && !in_array('ROLE_ADMIN', $user->getRoles())) {
-                return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
-            }
-
-            $task = $this->taskService->finishTask($task);
-            $this->historyService->log($task, $task->getAssignedTo(), 2);
-
-            return $this->json($task, Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return $this->json(['error' => 'Une erreur est survenue'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        // Dates optionnelles
+        if (!empty($data['startTime'])) {
+            $task->setStartTime(new \DateTime($data['startTime']));
         }
-    }
-
-    /**
-     * Reporter une tâche
-     */
-    #[Route('/{id}/postpone', name: 'postpone_task', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function postpone(int $id, Request $request): JsonResponse
-    {
-        try {
-            $task = $this->taskService->getTask($id);
-
-            if (!$task) {
-                return $this->json(['error' => 'Tâche non trouvée'], Response::HTTP_NOT_FOUND);
-            }
-
-            $data = json_decode($request->getContent(), true);
-
-            if (!isset($data['new_start_time'])) {
-                return $this->json(['error' => 'new_start_time est requis'], Response::HTTP_BAD_REQUEST);
-            }
-
-            try {
-                $newStartTime = new \DateTimeImmutable($data['new_start_time']);
-            } catch (\Exception) {
-                return $this->json(['error' => 'Format de date invalide'], Response::HTTP_BAD_REQUEST);
-            }
-
-            // Vérification permission
-            $user = $this->getUser();
-            if (!$user instanceof User) {
-                return $this->json(['error' => 'Non authentifié'], Response::HTTP_UNAUTHORIZED);
-            }
-
-            if ($task->getAssignedTo()->getId() !== $user->getId() && !in_array('ROLE_ADMIN', $user->getRoles())) {
-                return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
-            }
-
-            $task = $this->taskService->postponeTask($task, $newStartTime);
-            $this->historyService->log($task, $task->getAssignedTo(), 3);
-
-            return $this->json($task, Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return $this->json(['error' => 'Une erreur est survenue'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        if (!empty($data['endTime'])) {
+            $task->setEndTime(new \DateTime($data['endTime']));
         }
-    }
 
-    /**
-     * Réassigner une tâche
-     */
-    #[Route('/{id}/reassign', name: 'reassign_task', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function reassign(int $id, Request $request): JsonResponse
-    {
-        try {
-            $task = $this->taskService->getTask($id);
+        // Récupérer l'executor et le domicile pour les associer
+        $executor = null;
+        $domicile = null;
 
-            if (!$task) {
-                return $this->json(['error' => 'Tâche non trouvée'], Response::HTTP_NOT_FOUND);
-            }
-
-            $data = json_decode($request->getContent(), true);
-
-            if (!isset($data['new_executor_id'])) {
-                return $this->json(['error' => 'new_executor_id est requis'], Response::HTTP_BAD_REQUEST);
-            }
-
-            $executor = $this->doctrine->getRepository(User::class)->find($data['new_executor_id']);
-
+        // Assignation de l'executor
+        if (!empty($data['executorId'])) {
+            $executor = $this->userRepository->find($data['executorId']);
             if (!$executor) {
-                return $this->json(['error' => 'Exécutant non trouvé'], Response::HTTP_NOT_FOUND);
+                return $this->json([
+                    'error' => 'Executor not found'
+                ], Response::HTTP_NOT_FOUND);
             }
-
-            // Vérification permission
-            $user = $this->getUser();
-            if (!$user instanceof User) {
-                return $this->json(['error' => 'Non authentifié'], Response::HTTP_UNAUTHORIZED);
+            if (!in_array('ROLE_USER', $executor->getRoles())) {
+                return $this->json([
+                    'error' => 'User is not an executor'
+                ], Response::HTTP_BAD_REQUEST);
             }
-
-            $domicile = $task->getDomicile();
-            if ($domicile->getOwner()->getId() !== $user->getId() && !in_array('ROLE_ADMIN', $user->getRoles())) {
-                return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
-            }
-
-            $task = $this->taskService->reassignTask($task, $executor);
-            $this->historyService->log($task, $executor, 5);
-
-            return $this->json($task, Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return $this->json(['error' => 'Une erreur est survenue'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $task->setAssignedTo($executor);
         }
+
+        // Assignation du domicile
+        if (!empty($data['domicileId'])) {
+            $domicile = $this->domicileRepository->find($data['domicileId']);
+            if (!$domicile) {
+                return $this->json([
+                    'error' => 'Domicile not found'
+                ], Response::HTTP_NOT_FOUND);
+            }
+            $task->setDomicile($domicile);
+        }
+
+        // AUTO-ASSIGNER l'exécuteur au domicile s'ils sont tous les deux définis
+        if ($executor && $domicile) {
+            // Vérifier si l'association existe déjà
+            $existingAssociation = $this->entityManager
+                ->getRepository(DomicileExecutor::class)
+                ->findOneBy([
+                    'domicile' => $domicile,
+                    'executor' => $executor,
+                ]);
+
+            // Si l'association n'existe pas, la créer
+            if (!$existingAssociation) {
+                $domicileExecutor = new DomicileExecutor();
+                $domicileExecutor->setDomicile($domicile);
+                $domicileExecutor->setExecutor($executor);
+                $domicileExecutor->setCreatedAt(new \DateTimeImmutable()); // Date de création de l'association
+                $this->entityManager->persist($domicileExecutor);
+            }
+        }
+
+        // Validation
+        $errors = $this->validator->validate($task);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
+            }
+            return $this->json([
+                'error' => 'Validation failed',
+                'errors' => $errorMessages
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+
+        return $this->json($task, Response::HTTP_CREATED, [], [
+            'groups' => ['task:read']
+        ]);
     }
 
     /**
-     * Supprimer une tâche
+     * Update a task
      */
-    #[Route('/{id}', name: 'delete_task', methods: ['DELETE'])]
-    #[IsGranted('ROLE_USER')]
+    #[Route('/{id}', name: 'api_tasks_update', methods: ['PUT'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $task = $this->taskRepository->find($id);
+
+        if (!$task) {
+            return $this->json([
+                'error' => 'Task not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!$data) {
+            return $this->json([
+                'error' => 'Invalid JSON data'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Mise à jour des champs
+        if (isset($data['title'])) {
+            $task->setTitle($data['title']);
+        }
+        if (isset($data['description'])) {
+            $task->setDescription($data['description']);
+        }
+        if (isset($data['status'])) {
+            try {
+                $task->setStatus($data['status']);
+            } catch (\InvalidArgumentException $e) {
+                return $this->json([
+                    'error' => $e->getMessage()
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        }
+        if (isset($data['startTime'])) {
+            $task->setStartTime($data['startTime'] ? new \DateTime($data['startTime']) : null);
+        }
+        if (isset($data['endTime'])) {
+            $task->setEndTime($data['endTime'] ? new \DateTime($data['endTime']) : null);
+        }
+
+        // Mise à jour de l'executor
+        if (isset($data['executorId'])) {
+            if ($data['executorId']) {
+                $executor = $this->userRepository->find($data['executorId']);
+                if (!$executor) {
+                    return $this->json([
+                        'error' => 'Executor not found'
+                    ], Response::HTTP_NOT_FOUND);
+                }
+                $task->setAssignedTo($executor);
+            } else {
+                $task->setAssignedTo(null);
+            }
+        }
+
+        // Mise à jour du domicile
+        if (isset($data['domicileId'])) {
+            if ($data['domicileId']) {
+                $domicile = $this->domicileRepository->find($data['domicileId']);
+                if (!$domicile) {
+                    return $this->json([
+                        'error' => 'Domicile not found'
+                    ], Response::HTTP_NOT_FOUND);
+                }
+                $task->setDomicile($domicile);
+            } else {
+                $task->setDomicile(null);
+            }
+        }
+
+        // Validation
+        $errors = $this->validator->validate($task);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
+            }
+            return $this->json([
+                'error' => 'Validation failed',
+                'errors' => $errorMessages
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->flush();
+
+        return $this->json($task, Response::HTTP_OK, [], [
+            'groups' => ['task:read']
+        ]);
+    }
+
+    /**
+     * Delete a task
+     */
+    #[Route('/{id}', name: 'api_tasks_delete', methods: ['DELETE'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(int $id): JsonResponse
     {
-        try {
-            $task = $this->taskService->getTask($id);
+        $task = $this->taskRepository->find($id);
 
-            if (!$task) {
-                return $this->json(['error' => 'Tâche non trouvée'], Response::HTTP_NOT_FOUND);
-            }
-
-            // Vérification permission
-            $user = $this->getUser();
-            if (!$user instanceof User) {
-                return $this->json(['error' => 'Non authentifié'], Response::HTTP_UNAUTHORIZED);
-            }
-
-            $domicile = $task->getDomicile();
-            if ($domicile->getOwner()->getId() !== $user->getId() && !in_array('ROLE_ADMIN', $user->getRoles())) {
-                return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
-            }
-
-            $this->taskService->deleteTask($task);
-
-            return $this->json(['message' => 'Tâche supprimée avec succès'], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return $this->json(['error' => 'Une erreur est survenue'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        if (!$task) {
+            return $this->json([
+                'error' => 'Task not found'
+            ], Response::HTTP_NOT_FOUND);
         }
+
+        $this->entityManager->remove($task);
+        $this->entityManager->flush();
+
+        return $this->json([
+            'message' => 'Task deleted successfully'
+        ], Response::HTTP_OK);
     }
 
     /**
-     * Récupérer toutes les tâches
+     * Finish a task (mark as completed)
      */
-    #[Route('', name: 'list_tasks', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
-    public function listTasks(Request $request): JsonResponse
+    #[Route('/{id}/finish', name: 'api_tasks_finish', methods: ['POST'])]
+    #[IsGranted('ROLE_EXECUTOR')]
+    public function finish(int $id): JsonResponse
     {
+        $task = $this->taskRepository->find($id);
+
+        if (!$task) {
+            return $this->json([
+                'error' => 'Task not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $user = $this->getUser();
+
+        // Vérifier que l'executor est bien assigné à cette tâche
+        if (!$this->isGranted('ROLE_ADMIN') && $task->getAssignedTo() !== $user) {
+            return $this->json([
+                'error' => 'You are not assigned to this task'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        // Vérifier que la tâche n'est pas déjà terminée
+        if ($task->isCompleted()) {
+            return $this->json([
+                'error' => 'Task is already completed'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Marquer la tâche comme terminée
+        $task->setStatus(Task::STATUS_COMPLETED);
+        $task->setEndTime(new \DateTime());
+
+        $this->entityManager->flush();
+
+        return $this->json($task, Response::HTTP_OK, [], [
+            'groups' => ['task:read']
+        ]);
+    }
+
+    /**
+     * Postpone a task (change start time)
+     */
+    #[Route('/{id}/postpone', name: 'api_tasks_postpone', methods: ['POST'])]
+    #[IsGranted('ROLE_EXECUTOR')]
+    public function postpone(int $id, Request $request): JsonResponse
+    {
+        $task = $this->taskRepository->find($id);
+
+        if (!$task) {
+            return $this->json([
+                'error' => 'Task not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $user = $this->getUser();
+
+        // Vérifier que l'executor est bien assigné à cette tâche
+        if (!$this->isGranted('ROLE_ADMIN') && $task->getAssignedTo() !== $user) {
+            return $this->json([
+                'error' => 'You are not assigned to this task'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        // Vérifier que la tâche n'est pas déjà terminée
+        if ($task->isCompleted()) {
+            return $this->json([
+                'error' => 'Cannot postpone a completed task'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['newStartTime'])) {
+            return $this->json([
+                'error' => 'newStartTime is required'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         try {
-            $user = $this->getUser();
-            if (!$user instanceof User) {
-                return $this->json(['error' => 'Non authentifié'], Response::HTTP_UNAUTHORIZED);
+            $newStartTime = new \DateTime($data['newStartTime']);
+            $task->setStartTime($newStartTime);
+
+            // Optionnel: mettre à jour le statut en TODO si la tâche était en cours
+            if ($task->isInProgress()) {
+                $task->setStatus(Task::STATUS_TODO);
             }
 
-            // Récupérer les paramètres de pagination et filtrage
-            $page = $request->query->getInt('page', 1);
-            $limit = $request->query->getInt('limit', 10);
-            $domicileId = $request->query->get('domicile_id') ? $request->query->getInt('domicile_id') : null;
-            $status = $request->query->get('status', null);
+            $this->entityManager->flush();
 
-            // Récupérer les tâches selon les permissions
-            $tasks = $this->taskService->listTasks($user, $page, $limit, $domicileId, $status);
-
-            return $this->json([
-                'tasks' => array_map(function(Task $task) {
-                    return [
-                        'id' => $task->getId(),
-                        'title' => $task->getTitle(),
-                        'description' => $task->getDescription(),
-                        'domicile' => [
-                            'id' => $task->getDomicile()->getId(),
-                            'name' => $task->getDomicile()->getName(),
-                        ],
-                        'assignedTo' => [
-                            'id' => $task->getAssignedTo()->getId(),
-                            'email' => $task->getAssignedTo()->getEmail(),
-                        ],
-                        'startTime' => $task->getStartTime()?->format('c'),
-                        'status' => $task->getStatus(),
-                    ];
-                }, $tasks),
-                'page' => $page,
-                'limit' => $limit,
-            ], Response::HTTP_OK);
+            return $this->json($task, Response::HTTP_OK, [], [
+                'groups' => ['task:read']
+            ]);
         } catch (\Exception $e) {
             return $this->json([
-                'error' => 'Une erreur est survenue',
-                'message' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'error' => 'Invalid date format'
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

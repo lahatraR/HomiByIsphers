@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { UserRoles } from '../types';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -9,6 +10,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const isAdmin = useMemo(() => user?.role === UserRoles.ADMIN, [user]);
 
   const handleLogout = () => {
     logout();
@@ -17,7 +19,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const getInitials = () => {
     if (!user) return '?';
-    return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+    if (user.firstName && user.lastName) {
+      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+    }
+    return (user.email?.substring(0, 2) || '??').toUpperCase();
   };
 
   return (
@@ -69,12 +74,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 My Tasks
               </Link>
-              <Link 
-                to="/create-task" 
-                className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
-              >
-                Create Task
-              </Link>
+              {isAdmin && (
+                <Link 
+                  to="/create-task" 
+                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                >
+                  Create Task
+                </Link>
+              )}
             </nav>
 
             {/* User Section */}
@@ -105,7 +112,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
                 <div className="hidden md:block">
                   <div className="text-sm font-medium text-gray-900">
-                    {user?.firstName} {user?.lastName}
+                    {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.email}
                   </div>
                   <button 
                     onClick={handleLogout}

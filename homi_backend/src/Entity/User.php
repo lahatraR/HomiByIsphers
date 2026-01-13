@@ -8,67 +8,73 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['task:read', 'user:read', 'domicile:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique: true)]
-    #[Assert\Email(message: 'L\'email doit être valide')]
+    #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['task:read', 'user:read', 'domicile:read'])]
     #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    #[ORM\Column(length: 50)]
+    private string $role = 'ROLE_USER';
+
+    #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\Choice(choices: ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_EXECUTOR'])]
-    private ?string $role = 'ROLE_USER';
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['task:read', 'user:read', 'domicile:read'])]
+    private ?string $firstName = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['task:read', 'user:read', 'domicile:read'])]
+    private ?string $lastName = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updated_at = null;
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
 
-    /**
-     * @var Collection<int, Domicile>
-     */
-    #[ORM\OneToMany(targetEntity: Domicile::class, mappedBy: 'owner')]
-    private Collection $owned;
+    public function setFirstName(?string $firstName): static
+    {
+        $this->firstName = $firstName;
 
-    /**
-     * @var Collection<int, DomicileExecutor>
-     */
-    #[ORM\OneToMany(targetEntity: DomicileExecutor::class, mappedBy: 'executor')]
-    private Collection $domicileExecutors;
+        return $this;
+    }
 
-    /**
-     * @var Collection<int, Task>
-     */
-    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'assignedTo')]
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): static
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    #[ORM\OneToMany(mappedBy: 'assignedTo', targetEntity: Task::class)]
     private Collection $tasks;
 
-    /**
-     * @var Collection<int, TaskHistory>
-     */
-    #[ORM\OneToMany(targetEntity: TaskHistory::class, mappedBy: 'executor')]
-    private Collection $taskHistories;
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Domicile::class)]
+    private Collection $domiciles;
 
     public function __construct()
     {
-        $this->owned = new ArrayCollection();
-        $this->domicileExecutors = new ArrayCollection();
         $this->tasks = new ArrayCollection();
-        $this->taskHistories = new ArrayCollection();
+        $this->domiciles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,99 +103,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Domicile>
      */
-    public function getOwned(): Collection
+    public function getDomiciles(): Collection
     {
-        return $this->owned;
+        return $this->domiciles;
     }
 
-    public function addOwned(Domicile $owned): static
+    public function addDomicile(Domicile $domicile): static
     {
-        if (!$this->owned->contains($owned)) {
-            $this->owned->add($owned);
-            $owned->setOwner($this);
+        if (!$this->domiciles->contains($domicile)) {
+            $this->domiciles->add($domicile);
+            $domicile->setCreatedBy($this);
         }
-
         return $this;
     }
 
-    public function removeOwned(Domicile $owned): static
+    public function removeDomicile(Domicile $domicile): static
     {
-        if ($this->owned->removeElement($owned)) {
-            // set the owning side to null (unless already changed)
-            if ($owned->getOwner() === $this) {
-                $owned->setOwner(null);
+        if ($this->domiciles->removeElement($domicile)) {
+            if ($domicile->getCreatedBy() === $this) {
+                $domicile->setCreatedBy(null);
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, DomicileExecutor>
-     */
-    public function getDomicileExecutors(): Collection
-    {
-        return $this->domicileExecutors;
-    }
-
-    public function addDomicileExecutor(DomicileExecutor $domicileExecutor): static
-    {
-        if (!$this->domicileExecutors->contains($domicileExecutor)) {
-            $this->domicileExecutors->add($domicileExecutor);
-            $domicileExecutor->setExecutor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDomicileExecutor(DomicileExecutor $domicileExecutor): static
-    {
-        if ($this->domicileExecutors->removeElement($domicileExecutor)) {
-            // set the owning side to null (unless already changed)
-            if ($domicileExecutor->getExecutor() === $this) {
-                $domicileExecutor->setExecutor(null);
-            }
-        }
-
         return $this;
     }
 
@@ -224,41 +162,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, TaskHistory>
-     */
-    public function getTaskHistories(): Collection
-    {
-        return $this->taskHistories;
-    }
-
-    public function addTaskHistory(TaskHistory $taskHistory): static
-    {
-        if (!$this->taskHistories->contains($taskHistory)) {
-            $this->taskHistories->add($taskHistory);
-            $taskHistory->setExecutor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTaskHistory(TaskHistory $taskHistory): static
-    {
-        if ($this->taskHistories->removeElement($taskHistory)) {
-            // set the owning side to null (unless already changed)
-            if ($taskHistory->getExecutor() === $this) {
-                $taskHistory->setExecutor(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * Implémentation UserInterface
      */
     public function getRoles(): array
     {
         return [$this->role ?? 'ROLE_USER'];
+    }
+
+    public function getRole(): string
+    {
+        return $this->role ?? 'ROLE_USER';
+    }
+
+    public function setRole(string $role): static
+    {
+        $this->role = $role ?: 'ROLE_USER';
+        return $this;
     }
 
     public function eraseCredentials(): void
