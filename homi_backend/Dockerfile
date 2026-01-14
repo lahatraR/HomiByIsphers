@@ -1,5 +1,11 @@
 FROM php:8.4-fpm
 
+# Set build-time environment to prod to avoid loading dev bundles during auto-scripts
+ARG APP_ENV=prod
+ENV APP_ENV=${APP_ENV}
+ENV APP_DEBUG=0
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
