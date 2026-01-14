@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button, LoadingSpinner } from '../components/common';
 import { useTaskStore } from '../stores/taskStore';
@@ -8,7 +8,6 @@ import { useAuthStore } from '../stores/authStore';
 export const TaskTimerPage: React.FC = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
   const { tasks, isLoading, fetchTasks, startTask, completeTask } = useTaskStore();
   const { user } = useAuthStore();
 
