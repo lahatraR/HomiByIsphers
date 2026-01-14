@@ -6,6 +6,10 @@ services:
     region: frankfurt
     rootDir: homi_backend
     dockerfilePath: ./Dockerfile
+    serviceId: homi_backend
+    depends_on:
+      - name: homi-postgres
+        service: homi_backend
     envVars:
       - key: APP_ENV
         value: prod
