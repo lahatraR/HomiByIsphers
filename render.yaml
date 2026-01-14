@@ -3,7 +3,7 @@ services:
     name: homi-backend
     runtime: docker
     plan: free
-    region: frankfurt
+    region: oregon
     rootDir: homi_backend
     dockerfilePath: ./Dockerfile
     envVars:
@@ -29,5 +29,6 @@ services:
 databases:
   - name: homi-postgres
     plan: free
+    region: oregon
     databaseName: homi_db
     user: homi_user
