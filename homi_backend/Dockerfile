@@ -56,6 +56,15 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Create startup script
 RUN echo '#!/bin/bash\n\
 set +e\n\
+echo "Waiting for database to be ready..."\n\
+for i in {1..30}; do\n\
+  if php bin/console doctrine:query:sql "SELECT 1" 2>/dev/null; then\n\
+    echo "Database is ready!"\n\
+    break\n\
+  fi\n\
+  echo "Attempt $i/30 - Database not ready, waiting..."\n\
+  sleep 2\n\
+done\n\
 echo "Running database migrations..."\n\
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 | tee /tmp/migrations.log\n\
 echo "Clearing cache..."\n\
