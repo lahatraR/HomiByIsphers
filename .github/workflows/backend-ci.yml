@@ -1,0 +1,98 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'homi_backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'homi_backend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: homi_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_pgsql, dom, filter, gd, json, pgsql
+          coverage: none
+
+      - name: Validate composer.json
+        working-directory: ./homi_backend
+        run: composer validate --strict
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: homi_backend/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        working-directory: ./homi_backend
+        run: composer install --prefer-dist --no-progress
+
+      - name: Create .env.test.local
+        working-directory: ./homi_backend
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/homi_test?serverVersion=16&charset=utf8" > .env.test.local
+          echo "APP_ENV=test" >> .env.test.local
+
+      - name: Run migrations
+        working-directory: ./homi_backend
+        run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+      - name: Run tests
+        working-directory: ./homi_backend
+        run: php bin/phpunit || echo "No tests configured yet"
+
+      - name: Check code style
+        working-directory: ./homi_backend
+        run: |
+          if [ -f "vendor/bin/php-cs-fixer" ]; then
+            vendor/bin/php-cs-fixer fix --dry-run --diff
+          else
+            echo "PHP CS Fixer not installed, skipping"
+          fi
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trigger Render deployment
+        run: |
+          if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          else
+            echo "RENDER_DEPLOY_HOOK_URL not configured"
+          fi

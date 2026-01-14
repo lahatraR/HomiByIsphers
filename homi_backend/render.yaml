@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: homi-backend
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: homi-postgres
+          property: connectionString
+      - key: JWT_EXPIRATION
+        value: 3600
+      - key: CORS_ALLOW_ORIGIN
+        value: https://your-frontend-url.vercel.app
+    healthCheckPath: /api
+    autoDeploy: true
+
+databases:
+  - name: homi-postgres
+    plan: free
+    databaseName: homi_db
+    user: homi_user

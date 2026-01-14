@@ -10,7 +10,7 @@ interface DomicileStore {
     deleteDomicile: (id: number) => Promise<void>;
 }
 
-export const useDomicileStore = create<DomicileStore>((set, get) => ({
+export const useDomicileStore = create<DomicileStore>((set) => ({
     domiciles: [],
     isLoading: false,
     error: null,
