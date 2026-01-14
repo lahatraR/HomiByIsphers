@@ -70,21 +70,31 @@ class Task
     #[Groups(['task:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['task:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?\DateTimeImmutable $actualStartTime = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['task:read'])]
+    private ?\DateTimeImmutable $actualEndTime = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['task:read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     // Getters and Setters
@@ -185,12 +195,34 @@ class Task
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getActualStartTime(): ?\DateTimeImmutable
+    {
+        return $this->actualStartTime;
+    }
+
+    public function setActualStartTime(?\DateTimeImmutable $actualStartTime): static
+    {
+        $this->actualStartTime = $actualStartTime;
+        return $this;
+    }
+
+    public function getActualEndTime(): ?\DateTimeImmutable
+    {
+        return $this->actualEndTime;
+    }
+
+    public function setActualEndTime(?\DateTimeImmutable $actualEndTime): static
+    {
+        $this->actualEndTime = $actualEndTime;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;

@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\Entity\User;
 use App\Entity\Domicile;
 use App\Entity\DomicileExecutor;
+use App\Enum\TaskStatus;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use App\Repository\DomicileRepository;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 #[Route('/api/tasks')]
 class TaskController extends AbstractController
@@ -417,6 +419,66 @@ class TaskController extends AbstractController
             return $this->json([
                 'error' => 'Invalid date format'
             ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Démarrer une tâche (actualStartTime)
+     */
+    #[Route('/{id}/start', name: 'task_start', methods: ['PATCH'])]
+    #[IsGranted('ROLE_USER')]
+    public function startTask(int $id): JsonResponse
+    {
+        try {
+            $task = $this->taskRepository->find($id);
+            
+            if (!$task) {
+                return $this->json(['error' => 'Task not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            if ($task->getStatus() !== Task::STATUS_TODO) {
+                return $this->json(['error' => 'Task must be in TODO status'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $task->setStatus(Task::STATUS_IN_PROGRESS);
+            $task->setActualStartTime(new \DateTimeImmutable());
+            $task->setUpdatedAt(new \DateTimeImmutable());
+
+            $this->entityManager->flush();
+
+            return $this->json($task, Response::HTTP_OK, [], ['groups' => ['task:read']]);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'Failed to start task', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Terminer une tâche (actualEndTime)
+     */
+    #[Route('/{id}/complete', name: 'task_complete', methods: ['PATCH'])]
+    #[IsGranted('ROLE_USER')]
+    public function completeTask(int $id): JsonResponse
+    {
+        try {
+            $task = $this->taskRepository->find($id);
+            
+            if (!$task) {
+                return $this->json(['error' => 'Task not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            if ($task->getStatus() !== Task::STATUS_IN_PROGRESS) {
+                return $this->json(['error' => 'Task must be in progress'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $task->setStatus(Task::STATUS_COMPLETED);
+            $task->setActualEndTime(new \DateTimeImmutable());
+            $task->setUpdatedAt(new \DateTimeImmutable());
+
+            $this->entityManager->flush();
+
+            return $this->json($task, Response::HTTP_OK, [], ['groups' => ['task:read']]);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'Failed to complete task', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
