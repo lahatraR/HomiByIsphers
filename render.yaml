@@ -23,7 +23,6 @@ services:
         value: /app/var/share
       - key: DEFAULT_URI
         value: https://homi-backend-ybjp.onrender.com
-    preDeployCommand: cd homi_backend && php bin/console doctrine:migrations:migrate --no-interaction || true
     healthCheckPath: /api/health
     autoDeploy: true
 
