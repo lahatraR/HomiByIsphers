@@ -46,7 +46,8 @@
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0",
         "lcobucci/jwt": "^5.6",
-        "symfony/uid": "8.0.*"
+        "symfony/uid": "8.0.*",
+        "nelmio/cors-bundle": "^2.6"
     },
     "config": {
         "allow-plugins": {
@@ -97,7 +98,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "8.0.*"
         }
     },
