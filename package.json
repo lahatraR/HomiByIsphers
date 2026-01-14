@@ -1,0 +1,17 @@
+{
+  "name": "homi-project",
+  "version": "1.0.0",
+  "description": "Homi - Application de gestion de tâches et domiciles",
+  "private": true,
+  "scripts": {
+    "frontend": "cd homi_frontend && npm run dev",
+    "backend": "cd homi_backend && php bin/console server:start",
+    "install:frontend": "cd homi_frontend && npm install",
+    "install:backend": "cd homi_backend && composer install",
+    "install:all": "npm run install:frontend && npm run install:backend",
+    "build:frontend": "cd homi_frontend && npm run build"
+  },
+  "keywords": ["homi", "tasks", "home-management"],
+  "author": "Homi Team",
+  "license": "UNLICENSED"
+}
