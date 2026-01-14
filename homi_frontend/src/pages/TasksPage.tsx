@@ -124,19 +124,47 @@ export const TasksPage: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-gray-600 mb-3">{task.description}</p>
-                  <div className="flex items-center space-x-4 text-sm text-gray-500">
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      {task.startTime ? new Date(task.startTime).toLocaleString() : 'No start date'}
-                    </div>
-                    {task.endTime && (
+                  <div className="space-y-2">
+                    {/* Dates prévues */}
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center">
                         <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        {new Date(task.endTime).toLocaleString()}
+                        <span className="font-medium mr-1">Planned:</span>
+                        {task.startTime ? new Date(task.startTime).toLocaleString() : 'No start date'}
+                      </div>
+                      {task.endTime && (
+                        <div className="flex items-center">
+                          <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {new Date(task.endTime).toLocaleString()}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Dates réelles pour les tâches complétées */}
+                    {task.status === 'COMPLETED' && (task.actualStartTime || task.actualEndTime) && (
+                      <div className="flex items-center space-x-4 text-sm text-success-700">
+                        {task.actualStartTime && (
+                          <div className="flex items-center">
+                            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span className="font-medium mr-1">Started:</span>
+                            {new Date(task.actualStartTime).toLocaleString()}
+                          </div>
+                        )}
+                        {task.actualEndTime && (
+                          <div className="flex items-center">
+                            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="font-medium mr-1">Completed:</span>
+                            {new Date(task.actualEndTime).toLocaleString()}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
