@@ -66,6 +66,9 @@ echo "Running database migrations..."\n\
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 || echo "Migrations failed - continuing anyway"\n\
 echo "Clearing cache..."\n\
 php bin/console cache:clear --no-warmup 2>&1 || echo "Cache clear failed - continuing anyway"\n\
+echo "Fixing cache permissions..."\n\
+chown -R www-data:www-data /app/var || echo "Chown failed"\n\
+chmod -R 775 /app/var || echo "Chmod failed"\n\
 echo "Starting services..."\n\
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
 ' > /app/docker-entrypoint.sh && chmod +x /app/docker-entrypoint.sh
