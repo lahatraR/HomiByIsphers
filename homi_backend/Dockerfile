@@ -37,17 +37,36 @@ COPY . .
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Create necessary directories
+RUN mkdir -p /app/var/cache /app/var/log /app/var/share && \
+    chown -R www-data:www-data /app/var && \
+    chmod -R 777 /app/var
+
+# Configure PHP-FPM to log errors
+RUN echo "php_admin_value[error_log] = /proc/self/fd/2" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "catch_workers_output = yes" >> /usr/local/etc/php-fpm.d/www.conf
+
 # Copy nginx configuration
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 # Copy supervisor configuration
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Set permissions
-RUN chown -R www-data:www-data /app/var
+# Create startup script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Running database migrations..."\n\
+php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration || echo "Migration failed or no migrations to run"\n\
+echo "Clearing cache..."\n\
+php bin/console cache:clear --no-warmup || echo "Cache clear failed"\n\
+php bin/console cache:warmup || echo "Cache warmup failed"\n\
+echo "Starting services..."\n\
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
+' > /app/docker-entrypoint.sh && chmod +x /app/docker-entrypoint.sh
 
 # Expose port
 EXPOSE 8080
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start with entrypoint script
+CMD ["/app/docker-entrypoint.sh"]
