@@ -55,12 +55,14 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Create startup script
 RUN echo '#!/bin/bash\n\
-set -e\n\
+set +e\n\
 echo "Running database migrations..."\n\
-php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration || echo "Migration failed or no migrations to run"\n\
+php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 | tee /tmp/migrations.log\n\
 echo "Clearing cache..."\n\
-php bin/console cache:clear --no-warmup || echo "Cache clear failed"\n\
-php bin/console cache:warmup || echo "Cache warmup failed"\n\
+php bin/console cache:clear --no-warmup 2>&1 | tee /tmp/cache_clear.log\n\
+echo "Warming up cache..."\n\
+php bin/console cache:warmup 2>&1 | tee /tmp/cache_warmup.log\n\
+set -e\n\
 echo "Starting services..."\n\
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
 ' > /app/docker-entrypoint.sh && chmod +x /app/docker-entrypoint.sh
