@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage, DashboardPage, CreateTaskPage, TasksPage, CreateDomicilePage, DomicilesPage, TaskTimerPage } from './pages';
+import { LoginPage, DashboardPage, CreateTaskPage, TasksPage, CreateDomicilePage, DomicilesPage, TaskTimerPage, RegisterPage } from './pages';
 import { PrivateRoute, PublicRoute } from './components/ProtectedRoute';
 
 function App() {
@@ -9,6 +9,7 @@ function App() {
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Route>
 
         {/* Private Routes */}
