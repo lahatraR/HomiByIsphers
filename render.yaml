@@ -20,7 +20,7 @@ services:
       - key: CORS_ALLOW_ORIGIN
         value: https://homi-by-isphers.vercel.app/
     preDeployCommand: cd homi_backend && php bin/console doctrine:migrations:migrate --no-interaction || true
-    healthCheckPath: /api/tasks
+    healthCheckPath: /api/health
     autoDeploy: true
 
 databases:
