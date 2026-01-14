@@ -14,7 +14,7 @@ interface TaskState {
     deleteTask: (id: number) => Promise<void>;
 }
 
-export const useTaskStore = create<TaskState>((set, get) => ({
+export const useTaskStore = create<TaskState>((set) => ({
     tasks: [],
     stats: null,
     isLoading: false,
