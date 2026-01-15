@@ -2,7 +2,13 @@ import axios, { type AxiosInstance, type AxiosError } from 'axios';
 import type { ApiError, ApiResponse } from '../types';
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+// Prefer VITE_API_BASE_URL; in production fall back to HTTPS backend to avoid mixed content
+const apiBaseFromEnv = (import.meta.env.VITE_API_BASE_URL as string | undefined);
+const API_BASE_URL = apiBaseFromEnv
+  ? apiBaseFromEnv
+  : (import.meta.env.PROD
+      ? 'https://homi-backend-ybjp.onrender.com/api'
+      : 'http://localhost:8000/api');
 
 // Create axios instance with default config
 const apiClient: AxiosInstance = axios.create({
