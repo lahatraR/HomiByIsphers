@@ -67,7 +67,7 @@ exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
 ' > /app/docker-entrypoint.sh && chmod +x /app/docker-entrypoint.sh
 
 # Expose port
-EXPOSE 8080
+EXPOSE 8000
 
 # Start with entrypoint script
 CMD ["/app/docker-entrypoint.sh"]
