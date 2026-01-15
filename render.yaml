@@ -20,7 +20,7 @@ services:
       - key: JWT_EXPIRATION
         value: 3600
       - key: CORS_ALLOW_ORIGIN
-        value: https://homi-by-isphers.vercel.app/
+        value: https://homi-by-isphers.vercel.app
       - key: APP_SHARE_DIR
         value: /app/var/share
       - key: DEFAULT_URI
