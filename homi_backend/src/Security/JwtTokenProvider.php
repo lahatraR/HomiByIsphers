@@ -8,7 +8,7 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
-use Lcobucci\JWT\Validation\Constraint\ValidAt;
+use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\Clock\SystemClock;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -30,7 +30,7 @@ class JwtTokenProvider
         // Configurer les contraintes de validation
         $this->config->setValidationConstraints(
             new SignedWith($this->config->signer(), $this->config->signingKey()),
-            new ValidAt(SystemClock::fromSystemTimezone())
+            new LooseValidAt(SystemClock::fromSystemTimezone())
         );
     }
 
