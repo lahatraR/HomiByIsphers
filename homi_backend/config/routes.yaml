@@ -7,11 +7,5 @@
 # To list all registered routes, run the following command:
 #   bin/console debug:router
 
-# CORS preflight requests handler
-cors_preflight:
-    resource: .
-    type: nelmio_cors
-    prefix: /
-
 controllers:
     resource: routing.controllers
