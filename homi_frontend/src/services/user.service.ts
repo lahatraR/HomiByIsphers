@@ -12,7 +12,7 @@ const normalizeUser = (raw: any): User => ({
 
 export const userService = {
   getAll: async (): Promise<User[]> => {
-    const response = await api.get<User[]>('/users');
+    const response = await api.get<User[]>("/users/");
     const payload = Array.isArray((response as any).data)
       ? (response as any).data
       : (response as any).data?.users ?? [];
