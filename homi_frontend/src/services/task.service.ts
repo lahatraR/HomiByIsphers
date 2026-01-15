@@ -104,6 +104,6 @@ export const taskService = {
      * Supprimer une tâche
      */
     deleteTask: async (id: number): Promise<void> => {
-        await api.delete(`/tasks/${id}`);
+        await api.delete(`/tasks/${id}/`);
     },
 };
