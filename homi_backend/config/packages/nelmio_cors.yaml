@@ -3,7 +3,7 @@ nelmio_cors:
     allow_origin: ['https://homi-by-isphers.vercel.app', 'http://localhost:5173', 'http://localhost:3000']
     allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
     allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
-    expose_headers: ['Link', 'X-Total-Count', 'X-Per-Page', 'X-Page', 'X-Total']
+    expose_headers: ['Link']
     max_age: 3600
     allow_credentials: true
   paths:
@@ -11,6 +11,5 @@ nelmio_cors:
       allow_origin: ['https://homi-by-isphers.vercel.app', 'http://localhost:5173', 'http://localhost:3000']
       allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
       allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
-      expose_headers: ['Link', 'X-Total-Count', 'X-Per-Page', 'X-Page', 'X-Total']
       max_age: 3600
       allow_credentials: true
