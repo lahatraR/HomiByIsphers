@@ -69,7 +69,7 @@ export const TasksPage: React.FC = () => {
             to="/create-task"
             className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
           >
-            + New Task
+            + Create New Task
           </Link>
         )}
       </div>
@@ -102,7 +102,7 @@ export const TasksPage: React.FC = () => {
                 to="/create-task"
                 className="inline-block px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
               >
-                Create Task
+                Create task
               </Link>
             )}
           </div>
