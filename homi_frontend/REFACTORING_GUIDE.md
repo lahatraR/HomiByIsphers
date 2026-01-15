@@ -1,10 +1,8 @@
 # 🏠 Homi - Guide de Refactoring Frontend
 
-## ✅ Ce qui a été fait
-
 ### 1. **Architecture Moderne et Scalable**
 
-Le frontend a été complètement refactoré avec une architecture professionnelle:
+Le frontend utilise une architecture professionnelle:
 
 - ✅ **React 18 + TypeScript** - Pour un code typé et maintenable
 - ✅ **Vite** - Build tool ultra-rapide
@@ -269,17 +267,7 @@ cd homi_frontend
 npm run dev
 ```
 
-1. ✅ Tester la page de login
-2. ✅ Vérifier le dashboard avec les cartes de stats calculées en temps réel
-3. ✅ Vérifier le calcul automatique des statistiques côté frontend
-4. ✅ Tester les indicateurs de statut colorés
-5. Tester la création de tâche et voir les stats se mettre à jour
-6. Vérifier la liste des tâches
-7. Modifier le statut d'une tâche et voir les stats changer instantanément
-
 ### Phase 2: Intégration Backend
-
-Une fois que vous validez le frontend, nous pourrons:
 
 1. **Adapter les endpoints** de l'API backend si nécessaire
 2. **Vérifier les valeurs de TaskStatus** - S'assurer que le backend renvoie:
@@ -293,17 +281,6 @@ Une fois que vous validez le frontend, nous pourrons:
 7. **Déployer** l'application complète
 
 ### Fonctionnalités Supplémentaires (Optionnel)
-
-Après la fusion, on pourrait ajouter:
-- ⭐ Tests unitaires (Jest + React Testing Library)
-- ⭐ Tests E2E (Cypress ou Playwright)
-- ⭐ Notifications en temps réel (WebSockets)
-- ⭐ Mode sombre (Dark mode)
-- ⭐ Internationalisation (i18n)
-- ⭐ PWA (Progressive Web App)
-- ⭐ Graphiques interactifs pour les statistiques (Chart.js ou Recharts)
-- ⭐ Filtres et tri pour la liste des tâches
-- ⭐ Export des tâches (CSV, PDF)
 
 ## 📝 Commandes Utiles
 
