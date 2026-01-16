@@ -29,7 +29,7 @@ services:
         value: 0.0.0.0/0
       - key: TRUSTED_HEADERS
         value: X_FORWARDED_FOR,X_FORWARDED_PROTO,X_FORWARDED_HOST,X_FORWARDED_PORT
-    healthCheckPath: /api/health
+    healthCheckPath: /
     autoDeploy: true
 
 databases:
