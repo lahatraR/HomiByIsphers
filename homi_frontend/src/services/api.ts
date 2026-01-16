@@ -2,13 +2,30 @@ import axios, { type AxiosInstance, type AxiosError } from 'axios';
 import type { ApiError, ApiResponse } from '../types';
 
 // API Configuration
-// Prefer VITE_API_BASE_URL; in production fall back to HTTPS backend to avoid mixed content
-const apiBaseFromEnv = (import.meta.env.VITE_API_BASE_URL as string | undefined);
-const API_BASE_URL = apiBaseFromEnv
-  ? apiBaseFromEnv
-  : (import.meta.env.PROD
-      ? 'https://homi-backend-ybjp.onrender.com/api'
-      : 'https://localhost:8000/api');
+// Normalize the API URL to HTTPS and strip any dev port to avoid mixed-content issues on GitHub Pages
+const rawBase = (import.meta.env.VITE_API_BASE_URL as string | undefined);
+const sanitizeApiBaseUrl = (url: string): string => {
+  try {
+    const parsed = new URL(url);
+    // Force HTTPS in production to avoid mixed content
+    parsed.protocol = 'https:';
+    // Drop common dev port if leaked from env (e.g., :8000)
+    if (parsed.port === '8000') parsed.port = '';
+    // Ensure trailing /api path remains
+    const normalized = parsed.toString().replace(/\/$/, '');
+    return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
+  } catch {
+    return 'https://homi-backend-ybjp.onrender.com/api';
+  }
+};
+
+const API_BASE_URL = sanitizeApiBaseUrl(
+  rawBase
+    ? rawBase
+    : (import.meta.env.PROD
+        ? 'https://homi-backend-ybjp.onrender.com/api'
+        : 'https://localhost:8000/api')
+);
 
 // Debug log to verify the API URL being used
 console.log('🔧 API Configuration:', {
