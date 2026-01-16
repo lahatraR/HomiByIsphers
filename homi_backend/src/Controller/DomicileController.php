@@ -35,8 +35,14 @@ class DomicileController extends AbstractController
     {
         $user = $this->getUser();
         
-        // L'admin voit uniquement ses domiciles
-        $domiciles = $this->domicileRepository->findBy(['createdBy' => $user]);
+        // L'admin voit uniquement ses domiciles (optimized query with task count)
+        $domiciles = $this->domicileRepository->createQueryBuilder('d')
+            ->leftJoin('d.tasks', 't')
+            ->addSelect('t')
+            ->where('d.createdBy = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
 
         return $this->json(array_map(fn($domicile) => $domicile->toArray(), $domiciles));
     }
