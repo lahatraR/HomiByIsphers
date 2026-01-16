@@ -4,7 +4,7 @@ import { PrivateRoute, PublicRoute } from './components/ProtectedRoute';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/HomiByIsphers">
       <Routes>
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
