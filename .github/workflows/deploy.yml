@@ -35,7 +35,7 @@ jobs:
       - name: Build
         working-directory: homi_frontend
         env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_API_BASE_URL: https://homi-backend-ybjp.onrender.com/api
         run: npm run build
 
       - name: Upload artifact

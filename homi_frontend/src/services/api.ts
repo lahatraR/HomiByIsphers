@@ -8,7 +8,7 @@ const API_BASE_URL = apiBaseFromEnv
   ? apiBaseFromEnv
   : (import.meta.env.PROD
       ? 'https://homi-backend-ybjp.onrender.com/api'
-      : 'http://localhost:8000/api');
+      : 'https://localhost:8000/api');
 
 // Create axios instance with default config
 const apiClient: AxiosInstance = axios.create({
