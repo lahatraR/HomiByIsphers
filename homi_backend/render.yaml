@@ -17,7 +17,7 @@ services:
       - key: JWT_EXPIRATION
         value: 3600
       - key: CORS_ALLOW_ORIGIN
-        value: https://homi-by-isphers.vercel.app/
+        value: https://lahatrar.github.io/HomiByIsphers/
     healthCheckPath: /api
     autoDeploy: true
 
