@@ -10,6 +10,13 @@ const API_BASE_URL = apiBaseFromEnv
       ? 'https://homi-backend-ybjp.onrender.com/api'
       : 'https://localhost:8000/api');
 
+// Debug log to verify the API URL being used
+console.log('🔧 API Configuration:', {
+  envVar: import.meta.env.VITE_API_BASE_URL,
+  isProd: import.meta.env.PROD,
+  finalURL: API_BASE_URL
+});
+
 // Create axios instance with default config
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
