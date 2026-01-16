@@ -17,7 +17,7 @@ class TaskHistoryController extends AbstractController
         $this->doctrine = $doctrine;
     }
     // Récupérer l'historique d'une tâche
-    #[Route('/{task_id}', name: 'task_history', methods: ['GET'])]
+    #[Route('/{task_id}/', name: 'task_history', methods: ['GET'])]
     public function getHistory(int $task_id): JsonResponse
     {
         $task = $this->doctrine->getRepository(Task::class)->find($task_id);

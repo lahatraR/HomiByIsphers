@@ -24,7 +24,7 @@ class UserController extends AbstractController
     /**
      * Lister tous les utilisateurs (admin only)
      */
-    #[Route('', name: 'list_users', methods: ['GET'])]
+    #[Route('/', name: 'list_users', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function listUsers(): JsonResponse
     {
@@ -44,7 +44,7 @@ class UserController extends AbstractController
     /**
      * Récupérer un utilisateur par ID
      */
-    #[Route('/{id}', name: 'get_user', methods: ['GET'])]
+    #[Route('/{id}/', name: 'get_user', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function getUserById(int $id): JsonResponse
     {

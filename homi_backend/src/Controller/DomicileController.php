@@ -29,7 +29,7 @@ class DomicileController extends AbstractController
     /**
      * Get all domiciles of the connected admin
      */
-    #[Route('', name: 'api_domiciles_index', methods: ['GET'])]
+    #[Route('/', name: 'api_domiciles_index', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function index(): JsonResponse
     {
@@ -50,7 +50,7 @@ class DomicileController extends AbstractController
     /**
      * Get a specific domicile
      */
-    #[Route('/{id}', name: 'api_domiciles_show', methods: ['GET'])]
+    #[Route('/{id}/', name: 'api_domiciles_show', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function show(int $id): JsonResponse
     {
@@ -231,7 +231,7 @@ class DomicileController extends AbstractController
     /**
      * Get domiciles for the current admin (for task creation dropdown)
      */
-    #[Route('/my/list', name: 'api_domiciles_my_list', methods: ['GET'])]
+    #[Route('/my/list/', name: 'api_domiciles_my_list', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function myDomiciles(): JsonResponse
     {
@@ -321,7 +321,7 @@ class DomicileController extends AbstractController
     /**
      * Obtenir les exécuteurs d'un domicile
      */
-    #[Route('/{id}/executors', name: 'domicile_get_executors', methods: ['GET'])]
+    #[Route('/{id}/executors/', name: 'domicile_get_executors', methods: ['GET'])]
     public function getExecutors(int $id): JsonResponse
     {
         try {
