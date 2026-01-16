@@ -18,7 +18,7 @@ services:
         value: 3600
       - key: CORS_ALLOW_ORIGIN
         value: https://lahatrar.github.io/HomiByIsphers/
-    healthCheckPath: /api
+    healthCheckPath: /api/health
     autoDeploy: true
 
 databases:
