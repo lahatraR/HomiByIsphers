@@ -37,6 +37,10 @@ COPY . .
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Clear Symfony cache to ensure routes are properly loaded
+RUN php bin/console cache:clear --env=prod --no-warmup && \
+    php bin/console cache:warmup --env=prod
+
 # Create necessary directories
 RUN mkdir -p /app/var/cache /app/var/log /app/var/share && \
     chown -R www-data:www-data /app/var && \
