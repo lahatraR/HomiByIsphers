@@ -1,23 +1,55 @@
-name: Déploiement GitHub Pages
+name: Deploy Frontend to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Branche qui déclenche le déploiement
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Donne la permission de push au GITHUB_TOKEN
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Déployer sur GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./  # Racine contenant index.html
-          destination_branch: gh-pages  # Branche de déploiement
+          node-version: 20
+          cache: npm
+          cache-dependency-path: homi_frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: homi_frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: homi_frontend
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: homi_frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
