@@ -19,8 +19,17 @@ class HealthController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('/api/health', name: 'api_health', methods: ['GET'])]
+    #[Route('/api/health', name: 'api_health', methods: ['GET', 'HEAD'])]
     public function health(): JsonResponse
+    {
+        return $this->json([
+            'status' => 'ok',
+            'timestamp' => date('c')
+        ], Response::HTTP_OK);
+    }
+
+    #[Route('/index.php', name: 'index_php_health', methods: ['GET', 'HEAD'])]
+    public function indexPhp(): JsonResponse
     {
         return $this->json([
             'status' => 'ok',
