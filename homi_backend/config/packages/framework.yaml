@@ -4,8 +4,8 @@ framework:
 
     # Trust the Render proxy to provide real scheme/host
     # Required for proper HTTPS URL generation behind reverse proxy
-    trusted_proxies: '%env(default::TRUSTED_PROXIES)%'
-    trusted_headers: '%env(default::TRUSTED_HEADERS)%'
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: '%env(TRUSTED_HEADERS)%'
 
     # Note that the session will be started ONLY if you read or write from it.
     session: true
