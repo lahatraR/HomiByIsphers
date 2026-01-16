@@ -16,7 +16,7 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       await login(formData.email, formData.password);
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       // Error is handled by the store
       console.error('Login failed:', error);

@@ -34,7 +34,7 @@ export const RegisterPage: React.FC = () => {
         formData.firstName,
         formData.lastName
       );
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       console.error('Registration failed', err);
     }

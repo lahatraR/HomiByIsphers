@@ -48,9 +48,10 @@ apiClient.interceptors.response.use(
 
     // Handle 401 Unauthorized - redirect to login
     if (error.response?.status === 401) {
+      // Clear auth and redirect to login
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      window.location.href = '/HomiByIsphers/login';
     }
 
     return Promise.reject(apiError);
