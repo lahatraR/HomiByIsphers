@@ -51,10 +51,9 @@ RUN echo "php_admin_value[error_log] = /proc/self/fd/2" >> /usr/local/etc/php-fp
     echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "catch_workers_output = yes" >> /usr/local/etc/php-fpm.d/www.conf
 
-# Configure nginx
-RUN rm -f /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-RUN echo 'user www-data;\nworker_processes auto;\npid /run/nginx.pid;\nerror_log /var/log/nginx/error.log;\nevents { worker_connections 1024; }\nhttp { include /etc/nginx/mime.types; default_type application/octet-stream; access_log /var/log/nginx/access.log; sendfile on; keepalive_timeout 65; include /etc/nginx/conf.d/*.conf; }' > /etc/nginx/nginx.conf
+# Copy nginx configuration
+COPY docker/nginx.conf.full /etc/nginx/nginx.conf
+RUN chmod 644 /etc/nginx/nginx.conf
 
 # Copy supervisor configuration
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
