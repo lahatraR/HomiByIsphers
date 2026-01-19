@@ -52,7 +52,8 @@ RUN echo "php_admin_value[error_log] = /proc/self/fd/2" >> /usr/local/etc/php-fp
     echo "catch_workers_output = yes" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Copy nginx configuration
-COPY docker/nginx.conf /etc/nginx/sites-available/default
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+RUN rm -f /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default
 
 # Copy supervisor configuration
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
