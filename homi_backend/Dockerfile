@@ -41,19 +41,24 @@ RUN composer install --no-dev --optimize-autoloader
 RUN php bin/console cache:clear --env=prod --no-warmup && \
     php bin/console cache:warmup --env=prod
 
-# Create necessary directories
-RUN mkdir -p /app/var/cache /app/var/log /app/var/share && \
-    chown -R www-data:www-data /app/var && \
-    chmod -R 777 /app/var
+# Fix permissions for www-data
+RUN chown -R www-data:www-data /app && \
+    chmod -R 755 /app && \
+    chmod -R 777 /app/var && \
+    chmod -R 777 /app/public
 
-# Configure PHP-FPM to log errors
+# Configure PHP-FPM
 RUN echo "php_admin_value[error_log] = /proc/self/fd/2" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
-    echo "catch_workers_output = yes" >> /usr/local/etc/php-fpm.d/www.conf
+    echo "catch_workers_output = yes" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "clear_env = no" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Copy nginx configuration
 COPY docker/nginx.conf.full /etc/nginx/nginx.conf
-RUN chmod 644 /etc/nginx/nginx.conf
+RUN chmod 644 /etc/nginx/nginx.conf && \
+    mkdir -p /var/log/nginx && \
+    chmod 777 /var/log/nginx
 
 # Copy supervisor configuration
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

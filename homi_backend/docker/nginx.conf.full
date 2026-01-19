@@ -1,7 +1,7 @@
 user www-data;
 worker_processes auto;
 pid /run/nginx.pid;
-error_log /var/log/nginx/error.log;
+error_log /dev/stdout info;
 
 events {
     worker_connections 1024;
@@ -11,19 +11,19 @@ http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
 
-    access_log /var/log/nginx/access.log;
+    access_log /dev/stdout;
     sendfile on;
     keepalive_timeout 65;
     gzip on;
-    gzip_vary on;
-    gzip_min_length 1000;
-    gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml+rss application/javascript;
 
     server {
-        listen 8000;
+        listen 8000 default_server;
         server_name _;
         root /app/public;
         index index.php;
+
+        error_log /dev/stdout info;
+        access_log /dev/stdout;
 
         # CORS
         add_header 'Access-Control-Allow-Origin' '*' always;
@@ -31,33 +31,28 @@ http {
         add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization, Accept, X-Requested-With' always;
         add_header 'Access-Control-Expose-Headers' 'Content-Type, Authorization' always;
 
+        # OPTIONS requests
         if ($request_method = OPTIONS) {
             return 204;
         }
 
-        # Toutes les requêtes passent par Symfony
+        # Symfony routing
         location / {
             try_files $uri /index.php$is_args$args;
         }
 
-        # Front controller Symfony
+        # PHP front controller
         location ~ ^/index\.php(/|$) {
             fastcgi_pass 127.0.0.1:9000;
             fastcgi_split_path_info ^(.+\.php)(/.*)$;
             include fastcgi_params;
             fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
             fastcgi_param DOCUMENT_ROOT $realpath_root;
-            fastcgi_buffer_size 128k;
-            fastcgi_buffers 4 256k;
-            fastcgi_busy_buffers_size 256k;
         }
 
-        # Bloque tout autre .php
+        # Deny access to other PHP files
         location ~ \.php$ {
             return 404;
         }
-
-        error_log /var/log/nginx/error.log;
-        access_log /var/log/nginx/access.log;
     }
 }
