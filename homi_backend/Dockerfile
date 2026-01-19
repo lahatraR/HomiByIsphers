@@ -72,15 +72,20 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN echo '#!/bin/bash\n\
 set +e\n\
 echo "=== Starting Homi Backend ==="\n\
+echo "Environment: APP_ENV=$APP_ENV APP_DEBUG=$APP_DEBUG"\n\
+echo "PHP Version:"\n\
+php -v\n\
 echo "Running database migrations..."\n\
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 || echo "Migrations skipped"\n\
 echo "Fixing ALL cache and var permissions..."\n\
-find /app/var -type d -exec chmod 777 {} \;\n\
-find /app/var -type f -exec chmod 666 {} \;\n\
+find /app/var -type d -exec chmod 777 {} \\; 2>&1 || echo "Find dirs failed"\n\
+find /app/var -type f -exec chmod 666 {} \\; 2>&1 || echo "Find files failed"\n\
 chmod 755 /app/bin/console\n\
 chown -R www-data:www-data /app 2>&1 || echo "Chown skipped"\n\
-echo "Testing PHP-FPM..."\n\
-php -v\n\
+echo "Listing routes:"\n\
+php bin/console debug:router | head -20 || echo "Route debug failed"\n\
+echo "Testing index.php access:"\n\
+ls -la /app/public/index.php\n\
 echo "Starting services..."\n\
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
 ' > /app/docker-entrypoint.sh && chmod +x /app/docker-entrypoint.sh
