@@ -48,11 +48,11 @@ class Task
     #[Groups(['task:read', 'task:write'])]
     private string $status = self::STATUS_TODO;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['task:read', 'task:write'])]
     private ?\DateTimeInterface $startTime = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['task:read', 'task:write'])]
     private ?\DateTimeInterface $endTime = null;
 
@@ -66,7 +66,7 @@ class Task
     #[Groups(['task:read'])]
     private ?Domicile $domicile = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['task:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
