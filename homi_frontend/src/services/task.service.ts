@@ -63,7 +63,7 @@ export const taskService = {
      * Créer une nouvelle tâche
      */
     createTask: async (data: any): Promise<Task> => {
-        const response = await api.post<Task>('/tasks/', data);
+        const response = await api.post<Task>('/tasks', data);
         return response.data;
     },
 
@@ -71,7 +71,7 @@ export const taskService = {
      * Mettre à jour une tâche
      */
     updateTask: async (id: number, data: any): Promise<Task> => {
-        const response = await api.put<Task>(`/tasks/${id}/`, data);
+        const response = await api.put<Task>(`/tasks/${id}`, data);
         return response.data;
     },
 
@@ -87,7 +87,7 @@ export const taskService = {
      * Terminer une tâche (actualEndTime)
      */
     completeTask: async (id: number): Promise<Task> => {
-        const response = await api.patch<Task>(`/tasks/${id}/complete/`, {});
+        const response = await api.patch<Task>(`/tasks/${id}/complete`, {});
         return response.data;
     },
 
@@ -104,6 +104,6 @@ export const taskService = {
      * Supprimer une tâche
      */
     deleteTask: async (id: number): Promise<void> => {
-        await api.delete(`/tasks/${id}/`);
+        await api.delete(`/tasks/${id}`);
     },
 };
