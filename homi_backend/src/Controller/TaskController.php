@@ -123,10 +123,10 @@ class TaskController extends AbstractController
 
         // Dates optionnelles
         if (!empty($data['startTime'])) {
-            $task->setStartTime(new \DateTime($data['startTime']));
+            $task->setStartTime(new \DateTimeImmutable($data['startTime']));
         }
         if (!empty($data['endTime'])) {
-            $task->setEndTime(new \DateTime($data['endTime']));
+            $task->setEndTime(new \DateTimeImmutable($data['endTime']));
         }
 
         // Récupérer l'executor et le domicile pour les associer
@@ -241,10 +241,10 @@ class TaskController extends AbstractController
             }
         }
         if (isset($data['startTime'])) {
-            $task->setStartTime($data['startTime'] ? new \DateTime($data['startTime']) : null);
+            $task->setStartTime($data['startTime'] ? new \DateTimeImmutable($data['startTime']) : null);
         }
         if (isset($data['endTime'])) {
-            $task->setEndTime($data['endTime'] ? new \DateTime($data['endTime']) : null);
+            $task->setEndTime($data['endTime'] ? new \DateTimeImmutable($data['endTime']) : null);
         }
 
         // Mise à jour de l'executor
@@ -353,7 +353,7 @@ class TaskController extends AbstractController
 
         // Marquer la tâche comme terminée
         $task->setStatus(Task::STATUS_COMPLETED);
-        $task->setEndTime(new \DateTime());
+        $task->setEndTime(new \DateTimeImmutable());
 
         $this->entityManager->flush();
 
@@ -402,7 +402,7 @@ class TaskController extends AbstractController
         }
 
         try {
-            $newStartTime = new \DateTime($data['newStartTime']);
+            $newStartTime = new \DateTimeImmutable($data['newStartTime']);
             $task->setStartTime($newStartTime);
 
             // Optionnel: mettre à jour le statut en TODO si la tâche était en cours
