@@ -41,17 +41,22 @@ RUN composer install --no-dev --optimize-autoloader
 RUN php bin/console cache:clear --env=prod --no-warmup && \
     php bin/console cache:warmup --env=prod
 
-# Fix permissions for www-data
-RUN chown -R www-data:www-data /app && \
-    chmod -R 755 /app && \
+# Fix ALL permissions - this is critical
+RUN mkdir -p /app/var/cache /app/var/log /app/var/share && \
+    chown -R www-data:www-data /app && \
+    find /app -type d -exec chmod 755 {} \; && \
+    find /app -type f -exec chmod 644 {} \; && \
     chmod -R 777 /app/var && \
-    chmod -R 777 /app/public
+    chmod 755 /app/public && \
+    chmod 755 /app/bin/console
 
 # Configure PHP-FPM
 RUN echo "php_admin_value[error_log] = /proc/self/fd/2" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "catch_workers_output = yes" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "clear_env = no" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "user = www-data" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "group = www-data" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Copy nginx configuration
@@ -69,9 +74,13 @@ set +e\n\
 echo "=== Starting Homi Backend ==="\n\
 echo "Running database migrations..."\n\
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 || echo "Migrations skipped"\n\
-echo "Fixing cache permissions..."\n\
-chown -R www-data:www-data /app/var 2>&1 || echo "Chown skipped"\n\
-chmod -R 775 /app/var 2>&1 || echo "Chmod skipped"\n\
+echo "Fixing ALL cache and var permissions..."\n\
+find /app/var -type d -exec chmod 777 {} \;\n\
+find /app/var -type f -exec chmod 666 {} \;\n\
+chmod 755 /app/bin/console\n\
+chown -R www-data:www-data /app 2>&1 || echo "Chown skipped"\n\
+echo "Testing PHP-FPM..."\n\
+php -v\n\
 echo "Starting services..."\n\
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
 ' > /app/docker-entrypoint.sh && chmod +x /app/docker-entrypoint.sh
