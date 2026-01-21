@@ -100,7 +100,11 @@ class AuthController extends AbstractController
             } catch (UniqueConstraintViolationException) {
                 return $this->json(['error' => 'Cet email est déjà utilisé.'], Response::HTTP_CONFLICT);
             } catch (\Throwable $e) {
-                return $this->json(['error' => 'Erreur serveur'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                // Log l'erreur pour le debugging
+                error_log('Registration error: ' . $e->getMessage());
+                return $this->json([
+                    'error' => 'Erreur serveur: ' . $e->getMessage()
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             return $this->json([
@@ -108,8 +112,10 @@ class AuthController extends AbstractController
                 'email' => $user->getEmail()
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
+            // Log l'erreur pour le debugging
+            error_log('Registration exception: ' . $e->getMessage());
             return $this->json(
-                ['error' => 'Une erreur est survenue lors de l\'inscription'],
+                ['error' => 'Une erreur est survenue: ' . $e->getMessage()],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

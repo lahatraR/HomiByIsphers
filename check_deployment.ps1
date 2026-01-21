@@ -1,4 +1,4 @@
-# Script de Vérification Pré-Déploiement
+on# Script de Vérification Pré-Déploiement
 # Exécuter: .\check_deployment.ps1
 
 Write-Host "`n=== Vérification de Configuration de Déploiement ===" -ForegroundColor Cyan
