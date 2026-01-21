@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Input } from '../components/common';
+import { Button, Input, PasswordInput } from '../components/common';
 import { useAuthStore } from '../stores/authStore';
 import { UserRoles } from '../types';
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const { register, isLoading, error } = useAuthStore();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState<number>(5);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -24,21 +26,34 @@ export const RegisterPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('Form data being sent:', formData); // Pour déboguer
-    
     try {
-      await register(
+      const response = await register(
         formData.email,
         formData.password,
         formData.role,
         formData.firstName,
         formData.lastName
-      );
-      navigate('/dashboard', { replace: true });
+      ) as unknown as { message: string; email: string };
+      
+      // Afficher le message de succès
+      setSuccessMessage(response?.message || 'Inscription réussie ! Vérifiez votre email.');
     } catch (err) {
       console.error('Registration failed', err);
     }
   };
+
+  // Gérer le countdown séparément
+  useEffect(() => {
+    if (successMessage && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    } else if (successMessage && countdown === 0) {
+      navigate('/login', { replace: true });
+    }
+  }, [successMessage, countdown, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 p-4">
@@ -52,6 +67,20 @@ export const RegisterPage: React.FC = () => {
           {error && (
             <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
               {error}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mb-4 p-4 rounded-lg bg-success-50 border border-success-200">
+              <div className="flex items-start">
+                <svg className="w-5 h-5 text-success-600 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <p className="text-success-800 font-medium text-sm">{successMessage}</p>
+                  <p className="text-success-700 text-sm mt-1">Redirection vers la connexion dans 5 secondes...</p>
+                </div>
+              </div>
             </div>
           )}
 
@@ -91,9 +120,8 @@ export const RegisterPage: React.FC = () => {
               autoComplete="email"
             />
 
-            <Input
+            <PasswordInput
               label="Password"
-              type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
@@ -124,8 +152,9 @@ export const RegisterPage: React.FC = () => {
               size="lg" 
               fullWidth 
               isLoading={isLoading}
+              disabled={isLoading || !!successMessage}
             >
-              Sign up
+              {successMessage ? 'Inscription réussie ✓' : 'Sign up'}
             </Button>
           </form>
 

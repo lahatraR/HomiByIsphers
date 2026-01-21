@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { useTaskStore } from '../stores/taskStore';
 import { useDomicileStore } from '../stores/domicileStore';
@@ -13,13 +13,22 @@ export const DashboardPage: React.FC = () => {
     const { stats, isLoading: tasksLoading, fetchTasks, tasks } = useTaskStore();
     const { domiciles, isLoading: domicilesLoading, fetchDomiciles } = useDomicileStore();
     const navigate = useNavigate();
+    const [error, setError] = useState<string | null>(null);
     const isAdmin = user?.role === UserRoles.ADMIN;
     
     useEffect(() => {
-        fetchTasks();
-        if (isAdmin) {
-            fetchDomiciles();
-        }
+        const loadData = async () => {
+            try {
+                setError(null);
+                await fetchTasks();
+                if (isAdmin) {
+                    await fetchDomiciles();
+                }
+            } catch (err: any) {
+                setError(err?.message || 'Erreur de chargement des données');
+            }
+        };
+        loadData();
     }, [fetchTasks, fetchDomiciles, isAdmin]);
 
     if (tasksLoading) {
@@ -76,6 +85,12 @@ export const DashboardPage: React.FC = () => {
                     )}
                 </div>
             </section>
+
+            {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                    {error}
+                </div>
+            )}
 
             {/* Stats Grid - Only visible to non-admins */}
             {!isAdmin && (

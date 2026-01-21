@@ -1,6 +1,23 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage, DashboardPage, CreateTaskPage, TasksPage, CreateDomicilePage, DomicilesPage, TaskTimerPage, RegisterPage } from './pages';
-import { PrivateRoute, PublicRoute } from './components/ProtectedRoute';
+import { 
+  LoginPage, 
+  DashboardPage, 
+  CreateTaskPage, 
+  TasksPage, 
+  CreateDomicilePage, 
+  DomicilesPage, 
+  TaskTimerPage, 
+  RegisterPage,
+  VerifyEmailPage,
+  ResendVerificationPage,
+  AdminTimeLogsPage,
+  MyTimeLogsPage,
+  AdminInvoicesPage,
+  MyInvoicesPage,
+  CreateInvoicePage,
+  ManualTimeLogPage
+} from './pages';
+import { PrivateRoute, PublicRoute, AdminRoute } from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -10,6 +27,8 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+          <Route path="/resend-verification" element={<ResendVerificationPage />} />
         </Route>
 
         {/* Private Routes */}
@@ -20,6 +39,14 @@ function App() {
           <Route path="/create-domicile" element={<CreateDomicilePage />} />
           <Route path="/domiciles" element={<DomicilesPage />} />
           <Route path="/tasks/:taskId/timer" element={ <TaskTimerPage /> } />
+          <Route path="/my-time-logs" element={<MyTimeLogsPage />} />
+          <Route path="/my-time-logs/manual" element={<ManualTimeLogPage />} />
+          <Route path="/my-invoices" element={<MyInvoicesPage />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/admin/time-logs" element={<AdminTimeLogsPage />} />
+            <Route path="/admin/invoices" element={<AdminInvoicesPage />} />
+            <Route path="/admin/invoices/create" element={<CreateInvoicePage />} />
+          </Route>
         </Route>
 
         {/* Default Route */}

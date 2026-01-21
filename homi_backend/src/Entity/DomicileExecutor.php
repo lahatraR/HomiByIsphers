@@ -24,6 +24,9 @@ class DomicileExecutor
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $hourlyRate = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,17 @@ class DomicileExecutor
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getHourlyRate(): ?float
+    {
+        return $this->hourlyRate;
+    }
+
+    public function setHourlyRate(?float $hourlyRate): static
+    {
+        $this->hourlyRate = $hourlyRate;
         return $this;
     }
 }

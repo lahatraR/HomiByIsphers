@@ -18,9 +18,19 @@ services:
           name: homi-postgres
           property: connectionString
       - key: JWT_EXPIRATION
-        value: 3600
-      - key: CORS_ALLOW_ORIGIN
+        value: "3600"
+      - key: EMAIL_VERIFICATION_TOKEN_EXPIRATION
+        value: "86400"
+      - key: FRONTEND_URL
         value: https://lahatrar.github.io
+      - key: MAILER_DSN
+        value: smtp://lahatrariantsoaa%40gmail.com:wgtcglzraxomskfr@smtp.gmail.com:587?encryption=tls
+      - key: MAILER_FROM
+        value: lahatrariantsoaa@gmail.com
+      - key: MESSENGER_TRANSPORT_DSN
+        value: doctrine://default?auto_setup=0
+      - key: CORS_ALLOW_ORIGIN
+        value: ^https://lahatrar\.github\.io$
       - key: APP_SHARE_DIR
         value: /app/var/share
       - key: DEFAULT_URI
@@ -29,7 +39,7 @@ services:
         value: 0.0.0.0/0
       - key: TRUSTED_HEADERS
         value: X_FORWARDED_FOR,X_FORWARDED_PROTO,X_FORWARDED_HOST,X_FORWARDED_PORT
-    healthCheckPath: /
+    healthCheckPath: /api/health
     autoDeploy: true
 
 databases:

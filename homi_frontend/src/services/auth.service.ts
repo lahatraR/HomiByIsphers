@@ -54,17 +54,12 @@ export const authService = {
   },
 
   /**
-   * Register user (also authenticates)
+   * Register user (returns message, NO auto-login anymore)
    */
-  register: async (userData: { email: string; password: string; role: UserRole ; firstName: string; lastName: string }): Promise<{ auth: AuthResponse; user: User }> => {
-    const response = await api.post<AuthResponse>('/auth/register', userData);
-    const user = mapAuthToUser(response.data);
-
-    if (response.data.token) {
-      localStorage.setItem('authToken', response.data.token);
-      localStorage.setItem('user', JSON.stringify(user));
-    }
-
-    return { auth: response.data, user };
+  register: async (userData: { email: string; password: string; role: UserRole ; firstName: string; lastName: string }): Promise<{ message: string; email: string }> => {
+    const response = await api.post<{ message: string; email: string }>('/auth/register', userData);
+    
+    // Ne PAS stocker de token - l'utilisateur doit vérifier son email d'abord
+    return response.data;
   },
 };

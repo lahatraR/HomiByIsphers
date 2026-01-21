@@ -26,6 +26,7 @@ export const CreateTaskPage: React.FC = () => {
 
   const [executors, setExecutors] = useState<User[]>([]);
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const isAdmin = useMemo(() => user?.role === UserRoles.ADMIN, [user]);
 
   useEffect(() => {
@@ -35,8 +36,8 @@ export const CreateTaskPage: React.FC = () => {
       try {
         const users = await userService.getNonAdminUsers();
         setExecutors(users);
-      } catch (err) {
-        console.error('Unable to load executors', err);
+      } catch (err: any) {
+        setError(err?.message || 'Impossible de charger les exécutants');
       } finally {
         setIsFetchingUsers(false);
       }
@@ -53,6 +54,7 @@ export const CreateTaskPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     try {
       await createTask({
         title: formData.title,
@@ -63,8 +65,8 @@ export const CreateTaskPage: React.FC = () => {
         endTime: formData.endTime ? new Date(formData.endTime).toISOString() : undefined,
       });
       navigate('/tasks');
-    } catch (error) {
-      console.error('Failed to create task:', error);
+    } catch (error: any) {
+      setError(error?.message || 'Échec de la création de la tâche');
     }
   };
 
@@ -96,6 +98,12 @@ export const CreateTaskPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Create New Task</h1>
           <p className="text-gray-600">Provide the minimal information required by the API.</p>
         </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <Card className="p-6 mb-6">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
-import { Button, Input } from '../components/common';
+import { Button, Input, PasswordInput } from '../components/common';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -17,9 +17,14 @@ export const LoginPage: React.FC = () => {
     try {
       await login(formData.email, formData.password);
       navigate('/dashboard', { replace: true });
-    } catch (error) {
+    } catch (error: any) {
       // Error is handled by the store
       console.error('Login failed:', error);
+      
+      // Afficher un message spécifique si email non vérifié
+      if (error?.response?.status === 403 || error?.message?.includes('vérifier')) {
+        // Le message d'erreur sera affiché par le store
+      }
     }
   };
 
@@ -79,8 +84,16 @@ export const LoginPage: React.FC = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
-              {error}
+            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+              <p className="text-red-700 text-sm">{error}</p>
+              {error.includes('vérifier') && (
+                <p className="text-red-600 text-sm mt-2">
+                  Pas reçu l'email?{' '}
+                  <Link to="/resend-verification" className="font-medium underline">
+                    Renvoyer le lien
+                  </Link>
+                </p>
+              )}
             </div>
           )}
 
@@ -97,9 +110,8 @@ export const LoginPage: React.FC = () => {
               autoComplete="email"
             />
 
-            <Input
+            <PasswordInput
               label="Password"
-              type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}

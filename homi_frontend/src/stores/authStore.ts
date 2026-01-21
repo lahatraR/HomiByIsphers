@@ -12,7 +12,7 @@ interface AuthState {
   // Actions
   setUser: (user: User | null) => void;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, role: User['role'], firstName: string,lastName: string) => Promise<void>;
+  register: (email: string, password: string, role: User['role'], firstName: string,lastName: string) => Promise<{ message: string; email: string }>;
   logout: () => void;
   clearError: () => void;
 }
@@ -38,8 +38,9 @@ export const useAuthStore = create<AuthState>()(
             error: null,
           });
         } catch (error: any) {
+          const errorMessage = error?.response?.data?.error || error.message || 'Login failed';
           set({
-            error: error.message || 'Login failed',
+            error: errorMessage,
             isLoading: false,
             isAuthenticated: false,
             user: null,
@@ -51,13 +52,16 @@ export const useAuthStore = create<AuthState>()(
       register: async (email, password, role ,firstName,lastName) => {
         set({ isLoading: true, error: null });
         try {
-          const { user } = await authService.register({ email, password, role,firstName,lastName });
+          const response = await authService.register({ email, password, role,firstName,lastName });
+          // NE PAS connecter automatiquement - l'utilisateur doit vérifier son email
           set({
-            user,
-            isAuthenticated: true,
+            user: null,
+            isAuthenticated: false,
             isLoading: false,
             error: null,
           });
+          // Retourner le message pour affichage
+          return response;
         } catch (error: any) {
           set({
             error: error.message || 'Registration failed',

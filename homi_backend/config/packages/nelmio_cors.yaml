@@ -1,17 +1,18 @@
-# Disabled - using custom CorsListener instead
-# nelmio_cors:
-#   defaults:
-#     allow_origin: ['*']
-#     allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD']
-#     allow_headers: ['*']
-#     expose_headers: ['*']
-#     max_age: 3600
-#     allow_credentials: false
-#   paths:
-#     '^/api/':
-#       allow_origin: ['*']
-#       allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']
-#       allow_headers: ['*']
-#       expose_headers: ['*']
-#       max_age: 3600
-#       allow_credentials: false
+# CORS Configuration - Enable for local development and production
+nelmio_cors:
+  defaults:
+    allow_origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://homi-frontend.vercel.app']
+    allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD']
+    allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+    expose_headers: ['Content-Type', 'Authorization']
+    max_age: 86400
+    allow_credentials: true
+    forced_allow_origin_value: ~
+  paths:
+    '^/api/':
+      allow_origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://homi-frontend.vercel.app']
+      allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']
+      allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+      expose_headers: ['Content-Type', 'Authorization']
+      max_age: 86400
+      allow_credentials: true

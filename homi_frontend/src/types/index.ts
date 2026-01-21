@@ -1,5 +1,5 @@
 // User types
-export type UserRole = 'ROLE_USER' | 'ROLE_ADMIN' | 'ROLE_EXECUTOR';
+export type UserRole = 'ROLE_USER' | 'ROLE_ADMIN';
 
 export interface User {
   id: number;
@@ -14,7 +14,6 @@ export interface User {
 export const UserRoles = {
   USER: 'ROLE_USER' as const,
   ADMIN: 'ROLE_ADMIN' as const,
-  EXECUTOR: 'ROLE_EXECUTOR' as const,
 };
 
 // Task types

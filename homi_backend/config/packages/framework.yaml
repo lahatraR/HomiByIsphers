@@ -9,6 +9,12 @@ framework:
 
     # Note that the session will be started ONLY if you read or write from it.
     session: true
+    
+    # CORS Configuration for better compatibility
+    http_client:
+        default_options:
+            verify_peer: false
+            verify_host: false
 
     #esi: true
     #fragments: true

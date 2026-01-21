@@ -74,13 +74,55 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               >
                 My Tasks
               </Link>
+              {!isAdmin && (
+                <>
+                  <Link 
+                    to="/my-time-logs" 
+                    className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  >
+                    My Hours
+                  </Link>
+                  <Link 
+                    to="/my-time-logs/manual" 
+                    className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  >
+                    Add Hours
+                  </Link>
+                  <Link 
+                    to="/my-invoices" 
+                    className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  >
+                    My Invoices
+                  </Link>
+                </>
+              )}
               {isAdmin && (
-                <Link 
-                  to="/create-task" 
-                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
-                >
-                  Create Task
-                </Link>
+                <>
+                  <Link 
+                    to="/create-task" 
+                    className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  >
+                    Create Task
+                  </Link>
+                  <Link 
+                    to="/admin/time-logs" 
+                    className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  >
+                    Time Logs
+                  </Link>
+                  <Link 
+                    to="/admin/invoices" 
+                    className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  >
+                    Invoices
+                  </Link>
+                  <Link 
+                    to="/admin/invoices/create" 
+                    className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  >
+                    Créer facture
+                  </Link>
+                </>
               )}
             </nav>
 

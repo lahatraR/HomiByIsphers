@@ -41,6 +41,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['task:read', 'user:read', 'domicile:read'])]
     private ?string $lastName = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isEmailVerified = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $emailVerificationToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $emailVerifiedAt = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $emailVerificationTokenExpiresAt = null;
+
     public function getFirstName(): ?string
     {
         return $this->firstName;
@@ -193,6 +205,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    public function isEmailVerified(): bool
+    {
+        return $this->isEmailVerified;
+    }
+
+    public function setIsEmailVerified(bool $isEmailVerified): static
+    {
+        $this->isEmailVerified = $isEmailVerified;
+        return $this;
+    }
+
+    public function getEmailVerificationToken(): ?string
+    {
+        return $this->emailVerificationToken;
+    }
+
+    public function setEmailVerificationToken(?string $token): static
+    {
+        $this->emailVerificationToken = $token;
+        return $this;
+    }
+
+    public function getEmailVerifiedAt(): ?\DateTimeInterface
+    {
+        return $this->emailVerifiedAt;
+    }
+
+    public function setEmailVerifiedAt(?\DateTimeInterface $emailVerifiedAt): static
+    {
+        $this->emailVerifiedAt = $emailVerifiedAt;
+        return $this;
+    }
+
+    public function getEmailVerificationTokenExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->emailVerificationTokenExpiresAt;
+    }
+
+    public function setEmailVerificationTokenExpiresAt(?\DateTimeInterface $expiresAt): static
+    {
+        $this->emailVerificationTokenExpiresAt = $expiresAt;
+        return $this;
     }
 }
 

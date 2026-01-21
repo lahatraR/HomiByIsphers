@@ -4,6 +4,7 @@ import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button, LoadingSpinner } from '../components/common';
 import { useTaskStore } from '../stores/taskStore';
 import { useAuthStore } from '../stores/authStore';
+import { submitTimeLog } from '../services/timeTracking.service';
 
 export const TaskTimerPage: React.FC = () => {
   const { taskId } = useParams<{ taskId: string }>();
@@ -14,6 +15,8 @@ export const TaskTimerPage: React.FC = () => {
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [taskStarted, setTaskStarted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const task = tasks.find(t => t.id === Number(taskId));
 
@@ -56,8 +59,8 @@ export const TaskTimerPage: React.FC = () => {
         try {
           await startTask(task.id);
           setTaskStarted(true);
-        } catch (error) {
-          console.error('Failed to start task', error);
+        } catch (error: any) {
+          setSubmitError(error?.message || 'Impossible de démarrer la tâche');
         }
       }
     };
@@ -75,14 +78,30 @@ export const TaskTimerPage: React.FC = () => {
   const handleCompleteTask = async () => {
     if (window.confirm('Mark this task as completed?')) {
       try {
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        // Créer les timestamps pour le log de temps
+        const taskStartDate = new Date();
+        const taskEndDate = new Date(taskStartDate.getTime() + (timerSeconds * 1000));
+
+        // Soumettre le log de temps
+        await submitTimeLog(task!.id, taskStartDate, taskEndDate);
+
+        // Marquer la tâche comme complétée
         await completeTask(task!.id);
         setIsTimerRunning(false);
-        // Redirection après 2 secondes
+
+        // Afficher un message de succès et rediriger
         setTimeout(() => {
           navigate('/tasks');
         }, 2000);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to submit time log';
+        setSubmitError(errorMessage);
         console.error('Failed to complete task', error);
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -132,6 +151,13 @@ export const TaskTimerPage: React.FC = () => {
           <p className="text-gray-600">{task.description}</p>
         </Card>
 
+        {/* Error Message */}
+        {submitError && (
+          <Card className="p-4 mb-6 bg-red-50 border border-red-200">
+            <p className="text-red-800">{submitError}</p>
+          </Card>
+        )}
+
         {/* Timer Section */}
         <Card className="p-12 mb-6 text-center">
           <p className="text-gray-600 text-lg mb-4">Time Elapsed</p>
@@ -167,10 +193,10 @@ export const TaskTimerPage: React.FC = () => {
 
             <Button
               onClick={handleCompleteTask}
-              disabled={!isTimerRunning && timerSeconds === 0}
+              disabled={!isTimerRunning && timerSeconds === 0 || isSubmitting}
               className="bg-success-600 hover:bg-success-700 text-white"
             >
-              ✅ Complete Task
+              {isSubmitting ? '⏳ Submitting...' : '✅ Complete Task'}
             </Button>
 
             <Button
@@ -220,6 +246,15 @@ export const TaskTimerPage: React.FC = () => {
           <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-800">
               ⚠️ You cannot leave this page until you complete or cancel the task.
+            </p>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {submitError && (
+          <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-800">
+              ❌ Error: {submitError}
             </p>
           </div>
         )}

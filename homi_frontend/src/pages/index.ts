@@ -1,8 +1,16 @@
 export { LoginPage } from './LoginPage';
 export { RegisterPage } from './RegisterPage';
+export { VerifyEmailPage } from './VerifyEmailPage';
+export { ResendVerificationPage } from './ResendVerificationPage';
 export { DashboardPage } from './DashboardPage';
 export { CreateTaskPage } from './CreateTaskPage';
 export { CreateDomicilePage } from './CreateDomicilePage';
 export { DomicilesPage } from './DomicilesPage';
 export { TasksPage } from './TasksPage';
 export { TaskTimerPage } from './TaskTimerPage';
+export { AdminTimeLogsPage } from './AdminTimeLogsPage';
+export { MyTimeLogsPage } from './MyTimeLogsPage';
+export { AdminInvoicesPage } from './AdminInvoicesPage';
+export { MyInvoicesPage } from './MyInvoicesPage';
+export { CreateInvoicePage } from './CreateInvoicePage';
+export { ManualTimeLogPage } from './ManualTimeLogPage';

@@ -45,8 +45,8 @@ class TaskController extends AbstractController
         if ($this->isGranted('ROLE_ADMIN')) {
             $tasks = $this->taskRepository->findAll();
         }
-        // Executor voit ses tâches assignées
-        elseif ($this->isGranted('ROLE_EXECUTOR')) {
+        // User voit ses tâches assignées
+        elseif ($this->isGranted('ROLE_USER')) {
             $tasks = $this->taskRepository->findBy(['assignedTo' => $user]);
         }
         // User voit toutes les tâches (peut être modifié selon les besoins)
@@ -78,7 +78,7 @@ class TaskController extends AbstractController
         $user = $this->getUser();
         if (
             !$this->isGranted('ROLE_ADMIN') &&
-            $this->isGranted('ROLE_EXECUTOR') &&
+            $this->isGranted('ROLE_USER') &&
             $task->getAssignedTo() !== $user
         ) {
             return $this->json([
@@ -324,7 +324,7 @@ class TaskController extends AbstractController
      * Finish a task (mark as completed)
      */
     #[Route('/{id}/finish', name: 'api_tasks_finish', methods: ['POST'])]
-    #[IsGranted('ROLE_EXECUTOR')]
+    #[IsGranted('ROLE_USER')]
     public function finish(int $id): JsonResponse
     {
         $task = $this->taskRepository->find($id);
@@ -366,7 +366,7 @@ class TaskController extends AbstractController
      * Postpone a task (change start time)
      */
     #[Route('/{id}/postpone', name: 'api_tasks_postpone', methods: ['POST'])]
-    #[IsGranted('ROLE_EXECUTOR')]
+    #[IsGranted('ROLE_USER')]
     public function postpone(int $id, Request $request): JsonResponse
     {
         $task = $this->taskRepository->find($id);
