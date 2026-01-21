@@ -34,8 +34,8 @@ WORKDIR /app
 # Copy application files
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies (ignore platform reqs since we're in php:8.4-fpm container)
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Clear Symfony cache to ensure routes are properly loaded
 RUN php bin/console cache:clear --env=prod --no-warmup && \
