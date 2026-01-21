@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Psr\Log\LoggerInterface;
 
 #[Route('/api/auth')]
 class AuthController extends AbstractController
@@ -31,6 +32,7 @@ class AuthController extends AbstractController
         private JwtTokenProvider $jwtTokenProvider,
         private ValidatorInterface $validator,
         private MailerInterface $mailer,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -53,6 +55,15 @@ class AuthController extends AbstractController
             $registerRequest->firstName = $data['firstName'] ?? '';
             $registerRequest->lastName = $data['lastName'] ?? '';
             $registerRequest->role = $data['role'] ?? 'ROLE_USER';
+
+            // Trace l'entrée sans exposer le mot de passe
+            $this->logger->info('Registration request received', [
+                'email' => $registerRequest->email,
+                'role' => $registerRequest->role,
+                'firstName' => $registerRequest->firstName,
+                'lastName' => $registerRequest->lastName,
+                'frontendUrl' => $_ENV['FRONTEND_URL'] ?? null,
+            ]);
 
             // Valider les données
             $errors = $this->validator->validate($registerRequest);
@@ -98,9 +109,17 @@ class AuthController extends AbstractController
                 // Envoyer l'email de vérification
                 $this->sendVerificationEmail($user, $verificationToken);
             } catch (UniqueConstraintViolationException) {
+                $this->logger->warning('Registration conflict: email already exists', [
+                    'email' => $registerRequest->email,
+                ]);
                 return $this->json(['error' => 'Cet email est déjà utilisé.'], Response::HTTP_CONFLICT);
             } catch (\Throwable $e) {
-                // Log l'erreur pour le debugging
+                // Log détaillé pour diagnostiquer en production
+                $this->logger->error('Registration error', [
+                    'email' => $registerRequest->email,
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
                 error_log('Registration error: ' . $e->getMessage());
                 return $this->json([
                     'error' => 'Erreur serveur: ' . $e->getMessage()
@@ -113,6 +132,10 @@ class AuthController extends AbstractController
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             // Log l'erreur pour le debugging
+            $this->logger->error('Registration exception', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             error_log('Registration exception: ' . $e->getMessage());
             return $this->json(
                 ['error' => 'Une erreur est survenue: ' . $e->getMessage()],
@@ -362,25 +385,39 @@ class AuthController extends AbstractController
             $token
         );
 
-        $email = (new Email())
-            ->from($_ENV['MAILER_FROM'] ?? 'noreply@homi.com')
-            ->to($user->getEmail())
-            ->subject('Vérification de votre compte Homi')
-            ->html(sprintf(
-                '<html><body>' .
-                '<h1>Bienvenue sur Homi !</h1>' .
-                '<p>Bonjour %s,</p>' .
-                '<p>Merci de vous être inscrit(e) sur Homi. Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>' .
-                '<p><a href="%s" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Vérifier mon email</a></p>' .
-                '<p>Ou copiez ce lien dans votre navigateur : %s</p>' .
-                '<p>Si vous n\'avez pas créé de compte, vous pouvez ignorer cet email.</p>' .
-                '<p>Cordialement,<br>L\'équipe Homi</p>' .
-                '</body></html>',
-                $user->getFirstName() ?? $user->getEmail(),
-                $verificationUrl,
-                $verificationUrl
-            ));
+        try {
+            $email = (new Email())
+                ->from($_ENV['MAILER_FROM'] ?? 'noreply@homi.com')
+                ->to($user->getEmail())
+                ->subject('Vérification de votre compte Homi')
+                ->html(sprintf(
+                    '<html><body>' .
+                    '<h1>Bienvenue sur Homi !</h1>' .
+                    '<p>Bonjour %s,</p>' .
+                    '<p>Merci de vous être inscrit(e) sur Homi. Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>' .
+                    '<p><a href="%s" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Vérifier mon email</a></p>' .
+                    '<p>Ou copiez ce lien dans votre navigateur : %s</p>' .
+                    '<p>Si vous n\'avez pas créé de compte, vous pouvez ignorer cet email.</p>' .
+                    '<p>Cordialement,<br>L\'équipe Homi</p>' .
+                    '</body></html>',
+                    $user->getFirstName() ?? $user->getEmail(),
+                    $verificationUrl,
+                    $verificationUrl
+                ));
 
-        $this->mailer->send($email);
+            $this->mailer->send($email);
+            $this->logger->info('Verification email sent', [
+                'to' => $user->getEmail(),
+                'verificationUrl' => $verificationUrl,
+            ]);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to send verification email', [
+                'to' => $user->getEmail(),
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            error_log('Verification email error: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }
