@@ -1,7 +1,7 @@
 # CORS Configuration - Enable for local development and production
 nelmio_cors:
   defaults:
-    allow_origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://homi-frontend.vercel.app', 'https://lahatrar.github.io']
+    allow_origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://lahatrar.github.io']
     allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD']
     allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
     expose_headers: ['Content-Type', 'Authorization']
@@ -10,7 +10,7 @@ nelmio_cors:
     forced_allow_origin_value: ~
   paths:
     '^/api/':
-      allow_origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://homi-frontend.vercel.app', 'https://lahatrar.github.io']
+      allow_origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'http://127.0.0.1:3000', 'https://lahatrar.github.io']
       allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']
       allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
       expose_headers: ['Content-Type', 'Authorization']
