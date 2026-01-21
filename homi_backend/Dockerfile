@@ -37,9 +37,9 @@ COPY . .
 # Install dependencies (ignore platform reqs since we're in php:8.4-fpm container)
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
-# Clear Symfony cache to ensure routes are properly loaded
-RUN php bin/console cache:clear --env=prod --no-warmup && \
-    php bin/console cache:warmup --env=prod
+# Clear and warm-up Symfony cache to ensure routes are properly loaded
+RUN php bin/console cache:clear --env=prod --no-warmup || true && \
+    php bin/console cache:warmup --env=prod || true
 
 # Fix ALL permissions - this is critical
 RUN mkdir -p /app/var/cache /app/var/log /app/var/share && \
@@ -75,6 +75,8 @@ echo "=== Starting Homi Backend ==="\n\
 echo "Environment: APP_ENV=$APP_ENV APP_DEBUG=$APP_DEBUG"\n\
 echo "PHP Version:"\n\
 php -v\n\
+echo "Clearing cache before migrations..."\n\
+php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"\n\
 echo "Running database migrations..."\n\
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 || echo "Migrations skipped"\n\
 echo "Fixing ALL cache and var permissions..."\n\
@@ -84,6 +86,8 @@ chmod 755 /app/bin/console\n\
 chown -R www-data:www-data /app 2>&1 || echo "Chown skipped"\n\
 echo "Listing routes:"\n\
 php bin/console debug:router | head -20 || echo "Route debug failed"\n\
+echo "Testing health endpoint directly:"\n\
+php bin/console debug:router | grep health || echo "Health route not found"\n\
 echo "Testing index.php access:"\n\
 ls -la /app/public/index.php\n\
 echo "Starting services..."\n\
