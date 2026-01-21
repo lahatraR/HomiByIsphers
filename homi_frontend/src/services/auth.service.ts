@@ -57,9 +57,25 @@ export const authService = {
    * Register user (returns message, NO auto-login anymore)
    */
   register: async (userData: { email: string; password: string; role: UserRole ; firstName: string; lastName: string }): Promise<{ message: string; email: string }> => {
-    const response = await api.post<{ message: string; email: string }>('/auth/register', userData);
+    console.log('🔌 Calling /auth/register with:', {
+      ...userData,
+      password: '***hidden***'
+    });
     
-    // Ne PAS stocker de token - l'utilisateur doit vérifier son email d'abord
-    return response.data;
+    try {
+      const response = await api.post<{ message: string; email: string }>('/auth/register', userData);
+      console.log('✅ Register API response:', response.data);
+      
+      // Ne PAS stocker de token - l'utilisateur doit vérifier son email d'abord
+      return response.data;
+    } catch (error: any) {
+      console.error('❌ Register API error:', {
+        status: error.status,
+        message: error.message,
+        data: error.response?.data,
+        fullError: error
+      });
+      throw error;
+    }
   },
 };

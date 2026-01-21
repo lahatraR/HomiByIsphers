@@ -78,6 +78,15 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
+    console.error('🔴 API Error intercepted:', {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      message: error.message,
+    });
+
     const apiError: ApiError = {
       message: 'An error occurred',
       status: error.response?.status || 500,

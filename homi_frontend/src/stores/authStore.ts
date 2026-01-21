@@ -52,7 +52,9 @@ export const useAuthStore = create<AuthState>()(
       register: async (email, password, role ,firstName,lastName) => {
         set({ isLoading: true, error: null });
         try {
+          console.log('📝 Registration attempt:', { email, role, firstName, lastName });
           const response = await authService.register({ email, password, role,firstName,lastName });
+          console.log('✅ Registration successful:', response);
           // NE PAS connecter automatiquement - l'utilisateur doit vérifier son email
           set({
             user: null,
@@ -63,6 +65,12 @@ export const useAuthStore = create<AuthState>()(
           // Retourner le message pour affichage
           return response;
         } catch (error: any) {
+          console.error('❌ Registration failed:', {
+            message: error.message,
+            status: error.status,
+            response: error.response,
+            fullError: error
+          });
           set({
             error: error.message || 'Registration failed',
             isLoading: false,

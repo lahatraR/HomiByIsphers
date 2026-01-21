@@ -26,6 +26,11 @@ export const RegisterPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('🚀 Submit registration form:', {
+      ...formData,
+      password: '***hidden***'
+    });
+
     try {
       const response = await register(
         formData.email,
@@ -35,10 +40,11 @@ export const RegisterPage: React.FC = () => {
         formData.lastName
       ) as unknown as { message: string; email: string };
       
+      console.log('✅ Registration response received:', response);
       // Afficher le message de succès
       setSuccessMessage(response?.message || 'Inscription réussie ! Vérifiez votre email.');
     } catch (err) {
-      console.error('Registration failed', err);
+      console.error('❌ Registration failed in component:', err);
     }
   };
 
