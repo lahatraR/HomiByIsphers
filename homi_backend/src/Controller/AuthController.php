@@ -104,8 +104,18 @@ class AuthController extends AbstractController
             try {
                 $this->em->persist($user);
                 $this->em->flush();
+                
+                $this->logger->info('✅ [Register] User created', [
+                    'userId' => $user->getId(),
+                    'email' => $user->getEmail(),
+                ]);
 
                 // Enqueuer l'email pour envoi APRÈS la réponse HTTP
+                $this->logger->info('📧 [Register] Enqueueing verification email', [
+                    'userId' => $user->getId(),
+                    'email' => $user->getEmail(),
+                ]);
+                
                 $this->emailQueue->enqueue(
                     new SendVerificationEmailMessage(
                         userId: $user->getId(),
@@ -114,6 +124,10 @@ class AuthController extends AbstractController
                         firstName: $user->getFirstName() ?? ''
                     )
                 );
+                
+                $this->logger->info('✅ [Register] Email enqueued successfully', [
+                    'userId' => $user->getId(),
+                ]);
             } catch (UniqueConstraintViolationException) {
                 $this->logger->warning('Registration conflict: email already exists', [
                     'email' => $registerRequest->email,
@@ -363,6 +377,11 @@ class AuthController extends AbstractController
             $user->setEmailVerificationTokenExpiresAt($expiresAt);
             
             $this->em->flush();
+            
+            $this->logger->info('📧 [Resend] Enqueueing verification email', [
+                'userId' => $user->getId(),
+                'email' => $user->getEmail(),
+            ]);
 
             // Enqueuer l'email pour envoi APRÈS la réponse HTTP
             $this->emailQueue->enqueue(
@@ -373,6 +392,10 @@ class AuthController extends AbstractController
                     firstName: $user->getFirstName() ?? ''
                 )
             );
+            
+            $this->logger->info('✅ [Resend] Email enqueued successfully', [
+                'userId' => $user->getId(),
+            ]);
 
             return $this->json(
                 ['message' => 'Un nouvel email de vérification a été envoyé.'],

@@ -7,8 +7,8 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Psr\Log\LoggerInterface;
 
 /**
- * DEPRECATED - Emails are now sent via console command in background
- * This handler is kept for backwards compatibility but should not be used
+ * DEPRECATED - Emails are now sent directly in TerminateListener
+ * This handler is kept only for backwards compatibility
  */
 #[AsMessageHandler]
 class SendVerificationEmailHandler
@@ -20,11 +20,9 @@ class SendVerificationEmailHandler
 
     public function __invoke(SendVerificationEmailMessage $message): void
     {
-        // Les emails ne sont plus envoyés par ce handler
-        // Ils sont lancés en background via le command: app:send-verification-email
-        // Ce handler n'est ici que pour compatibilité backwards
-        
-        $this->logger->warning('SendVerificationEmailHandler should not be called directly', [
+        // Les emails sont maintenant envoyés directement par TerminateListener.sendVerificationEmail()
+        // Ce handler n'existe que pour compatibilité
+        $this->logger->info('SendVerificationEmailHandler deprecated - emails sent by TerminateListener', [
             'email' => $message->getEmail(),
         ]);
     }
