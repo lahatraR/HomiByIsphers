@@ -11,6 +11,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const isAdmin = useMemo(() => user?.role === UserRoles.ADMIN, [user]);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const handleLogout = () => {
     logout();
@@ -128,8 +129,39 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
             {/* User Section */}
             <div className="flex items-center space-x-4">
+              {/* Mobile Menu Button */}
+              <button
+                className="md:hidden p-2 text-gray-600 hover:text-primary-600 transition-colors"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <svg 
+                  width="24" 
+                  height="24" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  {mobileMenuOpen ? (
+                    <>
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </>
+                  ) : (
+                    <>
+                      <line x1="3" y1="12" x2="21" y2="12" />
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <line x1="3" y1="18" x2="21" y2="18" />
+                    </>
+                  )}
+                </svg>
+              </button>
+
               <button 
-                className="p-2 text-gray-600 hover:text-primary-600 transition-colors relative"
+                className="hidden md:block p-2 text-gray-600 hover:text-primary-600 transition-colors relative"
                 aria-label="Notifications"
               >
                 <svg 
@@ -148,11 +180,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
               </button>
 
-              <div className="flex items-center space-x-3">
+              <div className="hidden md:flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-success-500 flex items-center justify-center text-white font-semibold">
                   {getInitials()}
                 </div>
-                <div className="hidden md:block">
+                <div>
                   <div className="text-sm font-medium text-gray-900">
                     {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.email}
                   </div>
@@ -164,9 +196,110 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </button>
                 </div>
               </div>
+
+              {/* Mobile User Avatar */}
+              <div className="md:hidden w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-success-500 flex items-center justify-center text-white font-semibold">
+                {getInitials()}
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="px-4 py-3 space-y-1">
+              <div className="pb-3 mb-3 border-b border-gray-200">
+                <div className="text-sm font-medium text-gray-900">
+                  {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.email}
+                </div>
+                <div className="text-xs text-gray-500">{user?.email}</div>
+              </div>
+
+              <Link 
+                to="/dashboard" 
+                className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <Link 
+                to="/tasks" 
+                className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                My Tasks
+              </Link>
+              {!isAdmin && (
+                <>
+                  <Link 
+                    to="/my-time-logs" 
+                    className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    My Hours
+                  </Link>
+                  <Link 
+                    to="/my-time-logs/manual" 
+                    className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Add Hours
+                  </Link>
+                  <Link 
+                    to="/my-invoices" 
+                    className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    My Invoices
+                  </Link>
+                </>
+              )}
+              {isAdmin && (
+                <>
+                  <Link 
+                    to="/create-task" 
+                    className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Create Task
+                  </Link>
+                  <Link 
+                    to="/admin/time-logs" 
+                    className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Time Logs
+                  </Link>
+                  <Link 
+                    to="/admin/invoices" 
+                    className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Invoices
+                  </Link>
+                  <Link 
+                    to="/admin/invoices/create" 
+                    className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Créer facture
+                  </Link>
+                </>
+              )}
+              
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 rounded-md font-medium transition-colors mt-2"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
