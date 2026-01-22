@@ -1,3 +1,7 @@
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+        # Utiliser la spool pour les emails lazy
+        # Les emails sont stockés en mémoire et envoyés après la réponse
+        envelope:
+            sender: '%env(MAILER_FROM)%'
