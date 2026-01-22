@@ -6,28 +6,27 @@ use App\Service\EmailQueue;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * Envoie les emails APRÈS avoir retourné la réponse HTTP au client
- * Cela évite les timeouts et permet une expérience utilisateur rapide
+ * Lance l'envoi des emails en background après la réponse HTTP
+ * Utilise exec() pour lancer les commandes de manière asynchrone
  * 
- * Les emails sont envoyés de manière synchrone mais n'impactent pas le temps de réponse
+ * Cela évite les timeouts: la réponse est envoyée immédiatement,
+ * les emails sont traités en arrière-plan
  */
 #[AsEventListener(event: KernelEvents::TERMINATE)]
 class TerminateListener
 {
     public function __construct(
         private EmailQueue $emailQueue,
-        private MessageBusInterface $messageBus,
         private LoggerInterface $logger,
     ) {
     }
 
     /**
-     * Envoyer tous les emails en attente après la réponse HTTP
-     * Cette méthode est appelée automatiquement par Symfony via l'événement kernel.terminate
+     * Lancer l'envoi des emails en background après la réponse HTTP
+     * Cette méthode est appelée automatiquement par Symfony après avoir envoyé la réponse
      */
     public function __invoke(TerminateEvent $event): void
     {
@@ -37,25 +36,35 @@ class TerminateListener
             return;
         }
 
-        // Continuer même si des erreurs se produisent
         try {
             foreach ($pendingEmails as $message) {
                 try {
-                    $this->messageBus->dispatch($message);
-                    $this->logger->info('Email dispatched after response', [
+                    // Lancer la commande en background avec exec()
+                    // > /dev/null 2>&1 & redirige la sortie et lance en background
+                    $command = sprintf(
+                        'php /app/bin/console app:send-verification-email %d %s %s %s > /dev/null 2>&1 &',
+                        $message->getUserId(),
+                        escapeshellarg($message->getEmail()),
+                        escapeshellarg($message->getToken()),
+                        escapeshellarg($message->getFirstName())
+                    );
+
+                    exec($command);
+
+                    $this->logger->info('Email command launched in background', [
                         'userId' => $message->getUserId(),
                         'email' => $message->getEmail(),
                     ]);
                 } catch (\Throwable $e) {
                     // Enregistrer l'erreur mais continuer
-                    $this->logger->error('Failed to dispatch email', [
+                    $this->logger->error('Failed to launch email command', [
                         'email' => $message->getEmail(),
                         'error' => $e->getMessage(),
                     ]);
                 }
             }
         } finally {
-            // Réinitialiser la queue pour la prochaine requête
+            // Réinitialiser la queue
             $this->emailQueue->flush();
         }
     }
