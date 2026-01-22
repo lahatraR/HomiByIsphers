@@ -48,8 +48,14 @@ class TerminateListener
 
         try {
             foreach ($pendingEmails as $message) {
-                $this->logger->info('📧 Starting to send email', ['to' => $message->getEmail()]);
-                $this->sendVerificationEmail($message);
+                $this->logger->info('📧 Email would be sent', [
+                    'to' => $message->getEmail(),
+                    'userId' => $message->getUserId(),
+                ]);
+                
+                // ⚠️ TEMPORARILY DISABLED: Email sending was causing 408 timeout
+                // Just log for now to isolate the problem
+                // $this->sendVerificationEmail($message);
             }
         } finally {
             $this->logger->info('🗑️ Clearing email queue');
