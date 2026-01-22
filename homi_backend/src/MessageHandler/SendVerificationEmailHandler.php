@@ -62,20 +62,22 @@ class SendVerificationEmailHandler
                     $verificationUrl
                 ));
 
-            $this->mailer->send($email);
+            // sendLazy() est non-bloquant! Il envoie sans attendre la réponse
+            // Parfait pour les emails qui ne doivent pas impacter le temps de réponse
+            $this->mailer->sendLazy($email);
             
-            $this->logger->info('Verification email sent', [
+            $this->logger->info('Verification email queued for sending (lazy)', [
                 'to' => $message->getEmail(),
                 'verificationUrl' => $verificationUrl,
             ]);
         } catch (\Throwable $e) {
-            $this->logger->error('Failed to send verification email', [
+            $this->logger->error('Failed to queue verification email', [
                 'to' => $message->getEmail(),
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            // Re-throw pour que Messenger retry
-            throw $e;
+            // Ne pas re-throw pour éviter les retries - l'email n'est que complémentaire
+            // Si sendLazy échoue, c'est généralement parce que le transport est mal configuré
         }
     }
 }
