@@ -6,17 +6,16 @@ use App\Dto\LoginRequest;
 use App\Dto\RegisterRequest;
 use App\Dto\AuthResponse;
 use App\Entity\User;
-use App\EventListener\TerminateListener;
 use App\Message\SendVerificationEmailMessage;
 use App\Repository\UserRepository;
 use App\Security\JwtTokenProvider;
+use App\Service\EmailQueue;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -31,8 +30,7 @@ class AuthController extends AbstractController
         private UserPasswordHasherInterface $passwordHasher,
         private JwtTokenProvider $jwtTokenProvider,
         private ValidatorInterface $validator,
-        private MessageBusInterface $messageBus,
-        private TerminateListener $terminateListener,
+        private EmailQueue $emailQueue,
         private LoggerInterface $logger,
     ) {
     }
@@ -108,7 +106,7 @@ class AuthController extends AbstractController
                 $this->em->flush();
 
                 // Enqueuer l'email pour envoi APRÈS la réponse HTTP
-                $this->terminateListener->enqueueEmail(
+                $this->emailQueue->enqueue(
                     new SendVerificationEmailMessage(
                         userId: $user->getId(),
                         email: $user->getEmail(),
@@ -367,7 +365,7 @@ class AuthController extends AbstractController
             $this->em->flush();
 
             // Enqueuer l'email pour envoi APRÈS la réponse HTTP
-            $this->terminateListener->enqueueEmail(
+            $this->emailQueue->enqueue(
                 new SendVerificationEmailMessage(
                     userId: $user->getId(),
                     email: $user->getEmail(),
@@ -388,12 +386,5 @@ class AuthController extends AbstractController
         }
     }
 
-    /**
-     * Méthode privée pour envoyer l'email de vérification (DÉPRÉCIÉE - utiliser SendVerificationEmailMessage via Messenger)
-     */
-    private function sendVerificationEmail(User $user, string $token): void
-    {
-        // Cette méthode n'est plus utilisée
-        // Les emails sont maintenant envoyés de manière asynchrone via Messenger
-    }
+
 }

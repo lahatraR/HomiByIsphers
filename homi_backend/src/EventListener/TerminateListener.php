@@ -2,7 +2,7 @@
 
 namespace App\EventListener;
 
-use App\Message\SendVerificationEmailMessage;
+use App\Service\EmailQueue;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -18,55 +18,45 @@ use Psr\Log\LoggerInterface;
 #[AsEventListener(event: KernelEvents::TERMINATE)]
 class TerminateListener
 {
-    private array $pendingEmails = [];
-
     public function __construct(
+        private EmailQueue $emailQueue,
         private MessageBusInterface $messageBus,
         private LoggerInterface $logger,
     ) {
     }
 
     /**
-     * Enqueuer un email à envoyer après la réponse
-     */
-    public function enqueueEmail(SendVerificationEmailMessage $message): void
-    {
-        $this->pendingEmails[] = $message;
-        $this->logger->debug('Email enqueued for post-response sending', [
-            'userId' => $message->userId ?? null,
-            'email' => $message->email ?? null,
-        ]);
-    }
-
-    /**
      * Envoyer tous les emails en attente après la réponse HTTP
+     * Cette méthode est appelée automatiquement par Symfony via l'événement kernel.terminate
      */
-    public function onKernelTerminate(TerminateEvent $event): void
+    public function __invoke(TerminateEvent $event): void
     {
-        if (empty($this->pendingEmails)) {
+        $pendingEmails = $this->emailQueue->getPending();
+        
+        if (empty($pendingEmails)) {
             return;
         }
 
         // Continuer même si des erreurs se produisent
         try {
-            foreach ($this->pendingEmails as $message) {
+            foreach ($pendingEmails as $message) {
                 try {
                     $this->messageBus->dispatch($message);
                     $this->logger->info('Email dispatched after response', [
-                        'userId' => $message->userId ?? null,
-                        'email' => $message->email ?? null,
+                        'userId' => $message->getUserId(),
+                        'email' => $message->getEmail(),
                     ]);
                 } catch (\Throwable $e) {
                     // Enregistrer l'erreur mais continuer
                     $this->logger->error('Failed to dispatch email', [
-                        'email' => $message->email ?? null,
+                        'email' => $message->getEmail(),
                         'error' => $e->getMessage(),
                     ]);
                 }
             }
         } finally {
-            // Réinitialiser pour la prochaine requête
-            $this->pendingEmails = [];
+            // Réinitialiser la queue pour la prochaine requête
+            $this->emailQueue->flush();
         }
     }
 }
