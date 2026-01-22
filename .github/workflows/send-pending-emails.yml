@@ -18,9 +18,9 @@ jobs:
             echo "Missing EMAIL_CRON_URL or EMAIL_CRON_TOKEN secrets"
             exit 1
           fi
-          echo "Triggering: $EMAIL_CRON_URL"
-          # Pass token as querystring; you can also use header X-Email-Cron-Token
-          STATUS=$(curl -sS -o response.json -w "%{http_code}" -X POST "$EMAIL_CRON_URL""?token=$EMAIL_CRON_TOKEN")
+          echo "Triggering: $EMAIL_CRON_URL (using header token)"
+          # Pass token via header for better security
+          STATUS=$(curl -sS -o response.json -w "%{http_code}" -X POST "$EMAIL_CRON_URL" -H "X-Email-Cron-Token: $EMAIL_CRON_TOKEN")
           echo "HTTP $STATUS"
           cat response.json || true
           # Consider 2xx as success
