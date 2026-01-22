@@ -1,17 +1,19 @@
-# Fix API Timeout Issues - Render Deployment
+# Fix API Timeout & CORS Issues - Render Deployment
 
 ## Problem Description
 
-The frontend was experiencing timeout errors when trying to connect to the backend on Render:
-- Error: "timeout of 10000ms exceeded"
-- 404 errors on login endpoint
-- Backend cold starts taking 30+ seconds on Render free tier
+The frontend was experiencing multiple connection errors when trying to connect to the backend on Render:
+1. **Timeout errors**: "timeout of 10000ms exceeded" 
+2. **404 errors**: on login endpoint
+3. **CORS errors**: "The 'Access-Control-Allow-Origin' header contains multiple values"
+4. Backend cold starts taking 30+ seconds on Render free tier
 
 ## Root Causes
 
 1. **Timeout too short**: Frontend timeout was set to 10 seconds, but Render free tier can take 30-60 seconds for cold starts
 2. **Missing root health endpoint**: Root path (/) returned 404, making it harder to verify backend status
 3. **Poor error messaging**: Timeout errors weren't clearly communicated to users
+4. **CORS double configuration**: Both NGINX and Nelmio CORS were adding headers, causing conflicts
 
 ## Solutions Applied
 
@@ -49,6 +51,10 @@ public function rootHealth(): JsonResponse
 **Updated security configuration** (`homi_backend/config/packages/security.yaml`):
 - Added root firewall exception
 - Added public access for root path
+
+**Fixed CORS double configuration**:
+- **Removed CORS headers from NGINX** (`homi_backend/docker/nginx.conf`): Deleted all `add_header 'Access-Control-*'` directives
+- **Updated Nelmio CORS config** (`homi_backend/config/packages/nelmio_cors.yaml`): Changed path from `^/api/` to `^/` to cover all routes including root
 
 ## Testing the Fix
 
@@ -144,9 +150,22 @@ Invoke-WebRequest -Uri "https://homi-backend-ybjp.onrender.com/api/auth/login" `
 2. **Verify CORS settings:**
    - Check `config/packages/nelmio_cors.yaml`
    - Ensure frontend URL is whitelisted
+   - **IMPORTANT**: Make sure NGINX doesn't add CORS headers (conflict with Nelmio)
 
-3. **Check nginx configuration:**
-   - Verify `docker/nginx.conf` has correct rewrite rules
+3. **Test CORS manually:**
+   ```powershell
+   $headers = @{
+     'Origin' = 'https://lahatrar.github.io'
+     'Access-Control-Request-Method' = 'POST'
+     'Access-Control-Request-Headers' = 'Content-Type, Authorization'
+   }
+   Invoke-WebRequest -Uri "https://homi-backend-ybjp.onrender.com/api/auth/login" `
+     -Method OPTIONS -Headers $headers -UseBasicParsing
+   ```
+   Should return 204 with proper CORS headers.
+
+4. **Check nginx configuration:**
+   - Verify `docker/nginx.conf` has NO `add_header 'Access-Control-*'` directives
    - Ensure all requests are routed to `index.php`
 
 ## Performance Optimization
@@ -174,11 +193,14 @@ Invoke-WebRequest -Uri "https://homi-backend-ybjp.onrender.com/api/auth/login" `
 
 ## Related Files
 - [homi_frontend/src/services/api.ts](homi_frontend/src/services/api.ts)
+- [homi_frontend/src/pages/LoginPage.tsx](homi_frontend/src/pages/LoginPage.tsx)
 - [homi_backend/src/Controller/HealthController.php](homi_backend/src/Controller/HealthController.php)
 - [homi_backend/config/packages/security.yaml](homi_backend/config/packages/security.yaml)
+- [homi_backend/config/packages/nelmio_cors.yaml](homi_backend/config/packages/nelmio_cors.yaml) ⚠️ **CORS FIX**
+- [homi_backend/docker/nginx.conf](homi_backend/docker/nginx.conf) ⚠️ **CORS FIX**
 - [render.yaml](homi_backend/render.yaml)
 
 ## Status
-✅ **Fixed** - Changes applied and ready for deployment
+✅ **Fixed** - Timeout and CORS issues resolved, ready for deployment
 
 Last Updated: January 22, 2026
