@@ -27,18 +27,24 @@ if ($confirm -eq 'y' -or $confirm -eq 'Y') {
     git add homi_frontend/src/pages/LoginPage.tsx
     git add homi_backend/src/Controller/HealthController.php
     git add homi_backend/config/packages/security.yaml
+    git add homi_backend/config/packages/nelmio_cors.yaml
+    git add homi_backend/docker/nginx.conf
     git add API_TIMEOUT_FIX.md
     git add deploy_timeout_fix.ps1
     
-    git commit -m "fix: resolve API timeout issues for Render deployment
+    git commit -m "fix: resolve API timeout and CORS issues for Render deployment
 
 - Increase frontend API timeout from 10s to 60s for Render cold starts
 - Add root health endpoint (/) to backend
 - Update security config to allow root access
+- Fix CORS double configuration (NGINX + Nelmio conflict)
+- Remove CORS headers from nginx.conf
+- Update Nelmio CORS path from ^/api/ to ^/
 - Improve timeout error messages
+- Add user-friendly loading messages
 - Add comprehensive troubleshooting documentation
 
-Fixes timeout errors and 404 issues on production deployment."
+Fixes timeout errors, 404 issues, and CORS policy errors on production."
     
     Write-Host ""
     Write-Host "🚀 Pushing to repository..." -ForegroundColor Yellow
