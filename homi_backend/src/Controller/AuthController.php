@@ -6,6 +6,7 @@ use App\Dto\LoginRequest;
 use App\Dto\RegisterRequest;
 use App\Dto\AuthResponse;
 use App\Entity\User;
+use App\Message\SendVerificationEmailMessage;
 use App\Repository\UserRepository;
 use App\Security\JwtTokenProvider;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,12 +15,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Psr\Log\LoggerInterface;
 
 #[Route('/api/auth')]
@@ -31,7 +30,7 @@ class AuthController extends AbstractController
         private UserPasswordHasherInterface $passwordHasher,
         private JwtTokenProvider $jwtTokenProvider,
         private ValidatorInterface $validator,
-        private MailerInterface $mailer,
+        private MessageBusInterface $messageBus,
         private LoggerInterface $logger,
     ) {
     }
@@ -106,8 +105,15 @@ class AuthController extends AbstractController
                 $this->em->persist($user);
                 $this->em->flush();
 
-                // Envoyer l'email de vérification
-                $this->sendVerificationEmail($user, $verificationToken);
+                // Dispatcher un message pour envoyer l'email de manière asynchrone
+                $this->messageBus->dispatch(
+                    new SendVerificationEmailMessage(
+                        userId: $user->getId(),
+                        email: $user->getEmail(),
+                        token: $verificationToken,
+                        firstName: $user->getFirstName() ?? ''
+                    )
+                );
             } catch (UniqueConstraintViolationException) {
                 $this->logger->warning('Registration conflict: email already exists', [
                     'email' => $registerRequest->email,
@@ -358,8 +364,15 @@ class AuthController extends AbstractController
             
             $this->em->flush();
 
-            // Renvoyer l'email
-            $this->sendVerificationEmail($user, $verificationToken);
+            // Dispatcher un message pour envoyer l'email de manière asynchrone
+            $this->messageBus->dispatch(
+                new SendVerificationEmailMessage(
+                    userId: $user->getId(),
+                    email: $user->getEmail(),
+                    token: $verificationToken,
+                    firstName: $user->getFirstName() ?? ''
+                )
+            );
 
             return $this->json(
                 ['message' => 'Un nouvel email de vérification a été envoyé.'],
@@ -374,50 +387,11 @@ class AuthController extends AbstractController
     }
 
     /**
-     * Méthode privée pour envoyer l'email de vérification
+     * Méthode privée pour envoyer l'email de vérification (DÉPRÉCIÉE - utiliser SendVerificationEmailMessage via Messenger)
      */
     private function sendVerificationEmail(User $user, string $token): void
     {
-        // URL de vérification (à ajuster selon votre configuration frontend)
-        $verificationUrl = sprintf(
-            '%s/verify-email/%s',
-            $_ENV['FRONTEND_URL'] ?? 'http://localhost:5173',
-            $token
-        );
-
-        try {
-            $email = (new Email())
-                ->from($_ENV['MAILER_FROM'] ?? 'noreply@homi.com')
-                ->to($user->getEmail())
-                ->subject('Vérification de votre compte Homi')
-                ->html(sprintf(
-                    '<html><body>' .
-                    '<h1>Bienvenue sur Homi !</h1>' .
-                    '<p>Bonjour %s,</p>' .
-                    '<p>Merci de vous être inscrit(e) sur Homi. Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :</p>' .
-                    '<p><a href="%s" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Vérifier mon email</a></p>' .
-                    '<p>Ou copiez ce lien dans votre navigateur : %s</p>' .
-                    '<p>Si vous n\'avez pas créé de compte, vous pouvez ignorer cet email.</p>' .
-                    '<p>Cordialement,<br>L\'équipe Homi</p>' .
-                    '</body></html>',
-                    $user->getFirstName() ?? $user->getEmail(),
-                    $verificationUrl,
-                    $verificationUrl
-                ));
-
-            $this->mailer->send($email);
-            $this->logger->info('Verification email sent', [
-                'to' => $user->getEmail(),
-                'verificationUrl' => $verificationUrl,
-            ]);
-        } catch (\Throwable $e) {
-            $this->logger->error('Failed to send verification email', [
-                'to' => $user->getEmail(),
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            error_log('Verification email error: ' . $e->getMessage());
-            throw $e;
-        }
+        // Cette méthode n'est plus utilisée
+        // Les emails sont maintenant envoyés de manière asynchrone via Messenger
     }
 }
