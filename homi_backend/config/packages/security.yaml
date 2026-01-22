@@ -17,6 +17,10 @@ security:
             pattern: ^/(index\.php)?$
             security: false
 
+        root:
+            pattern: ^/$
+            security: false
+
         api:
             pattern: ^/api
             stateless: true
@@ -24,6 +28,7 @@ security:
                 - App\Security\JwtAuthenticator
 
     access_control:
+        - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/api/health, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth, roles: PUBLIC_ACCESS }
         - { path: ^/api, methods: [OPTIONS], roles: PUBLIC_ACCESS }

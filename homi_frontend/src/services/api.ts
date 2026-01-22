@@ -54,12 +54,13 @@ if (!envApiUrl && !import.meta.env.PROD) {
 }
 
 // Create axios instance with default config
+// Note: Timeout increased to 60s for Render free tier cold starts
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 60000, // 60 seconds for Render cold starts
 });
 
 // Request interceptor to add auth token
@@ -91,6 +92,12 @@ apiClient.interceptors.response.use(
       message: 'An error occurred',
       status: error.response?.status || 500,
     };
+
+    // Handle timeout errors
+    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+      apiError.message = 'Le serveur met trop de temps à répondre. Veuillez réessayer dans quelques instants.';
+      apiError.status = 408; // Request Timeout
+    }
 
     if (error.response?.data) {
       const data = error.response.data as any;

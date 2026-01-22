@@ -97,6 +97,15 @@ export const LoginPage: React.FC = () => {
             </div>
           )}
 
+          {/* Loading Info Message */}
+          {isLoading && (
+            <div className="mb-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
+              <p className="text-blue-700 text-sm">
+                ⏳ Connexion en cours... Le serveur peut prendre 30-60 secondes lors de la première connexion.
+              </p>
+            </div>
+          )}
+
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
