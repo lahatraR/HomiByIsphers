@@ -24,7 +24,7 @@ framework:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: sync
             Symfony\Component\Notifier\Message\ChatMessage: async
             Symfony\Component\Notifier\Message\SmsMessage: async
-            App\Message\SendVerificationEmailMessage: async
+            App\Message\SendVerificationEmailMessage: sync
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
