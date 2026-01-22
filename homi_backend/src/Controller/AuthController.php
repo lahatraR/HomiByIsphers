@@ -92,41 +92,18 @@ class AuthController extends AbstractController
             );
             $user->setRole($registerRequest->role);
             
-            // Générer un token de vérification
-            $verificationToken = bin2hex(random_bytes(32));
-            $user->setEmailVerificationToken($verificationToken);
-            $user->setIsEmailVerified(false);
-            
-            // Token expire dans 24h
-            $expiresAt = new \DateTime('+24 hours');
-            $user->setEmailVerificationTokenExpiresAt($expiresAt);
+            // Auto-vérifier l'email (vérification désactivée)
+            $user->setIsEmailVerified(true);
+            $user->setEmailVerificationToken(null);
+            $user->setEmailVerificationTokenExpiresAt(null);
 
             try {
                 $this->em->persist($user);
                 $this->em->flush();
                 
-                $this->logger->info('✅ [Register] User created', [
+                $this->logger->info('✅ [Register] User created and auto-verified', [
                     'userId' => $user->getId(),
                     'email' => $user->getEmail(),
-                ]);
-
-                // Enqueuer l'email pour envoi APRÈS la réponse HTTP
-                $this->logger->info('📧 [Register] Enqueueing verification email', [
-                    'userId' => $user->getId(),
-                    'email' => $user->getEmail(),
-                ]);
-                
-                $this->emailQueue->enqueue(
-                    new SendVerificationEmailMessage(
-                        userId: $user->getId(),
-                        email: $user->getEmail(),
-                        token: $verificationToken,
-                        firstName: $user->getFirstName() ?? ''
-                    )
-                );
-                
-                $this->logger->info('✅ [Register] Email enqueued successfully', [
-                    'userId' => $user->getId(),
                 ]);
             } catch (UniqueConstraintViolationException) {
                 $this->logger->warning('Registration conflict: email already exists', [
@@ -147,7 +124,7 @@ class AuthController extends AbstractController
             }
 
             return $this->json([
-                'message' => 'Inscription réussie. Veuillez vérifier votre email pour activer votre compte.',
+                'message' => 'Inscription réussie. Vous pouvez maintenant vous connecter.',
                 'email' => $user->getEmail()
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
