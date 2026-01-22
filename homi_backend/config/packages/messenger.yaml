@@ -24,6 +24,8 @@ framework:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: sync
             Symfony\Component\Notifier\Message\ChatMessage: async
             Symfony\Component\Notifier\Message\SmsMessage: async
+            # Emails envoyés APRÈS la réponse HTTP via TerminateListener
+            # Donc sync ne bloque pas la requête - c'est très rapide!
             App\Message\SendVerificationEmailMessage: sync
 
             # Route your messages to the transports

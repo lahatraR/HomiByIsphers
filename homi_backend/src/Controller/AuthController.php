@@ -6,6 +6,7 @@ use App\Dto\LoginRequest;
 use App\Dto\RegisterRequest;
 use App\Dto\AuthResponse;
 use App\Entity\User;
+use App\EventListener\TerminateListener;
 use App\Message\SendVerificationEmailMessage;
 use App\Repository\UserRepository;
 use App\Security\JwtTokenProvider;
@@ -31,6 +32,7 @@ class AuthController extends AbstractController
         private JwtTokenProvider $jwtTokenProvider,
         private ValidatorInterface $validator,
         private MessageBusInterface $messageBus,
+        private TerminateListener $terminateListener,
         private LoggerInterface $logger,
     ) {
     }
@@ -105,8 +107,8 @@ class AuthController extends AbstractController
                 $this->em->persist($user);
                 $this->em->flush();
 
-                // Dispatcher un message pour envoyer l'email de manière asynchrone
-                $this->messageBus->dispatch(
+                // Enqueuer l'email pour envoi APRÈS la réponse HTTP
+                $this->terminateListener->enqueueEmail(
                     new SendVerificationEmailMessage(
                         userId: $user->getId(),
                         email: $user->getEmail(),
@@ -364,8 +366,8 @@ class AuthController extends AbstractController
             
             $this->em->flush();
 
-            // Dispatcher un message pour envoyer l'email de manière asynchrone
-            $this->messageBus->dispatch(
+            // Enqueuer l'email pour envoi APRÈS la réponse HTTP
+            $this->terminateListener->enqueueEmail(
                 new SendVerificationEmailMessage(
                     userId: $user->getId(),
                     email: $user->getEmail(),
