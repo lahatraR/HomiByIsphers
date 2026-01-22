@@ -1,0 +1,27 @@
+name: Send Pending Emails
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # every 5 minutes
+  workflow_dispatch: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call backend HTTP cron endpoint
+        env:
+          EMAIL_CRON_URL: ${{ secrets.EMAIL_CRON_URL }}
+          EMAIL_CRON_TOKEN: ${{ secrets.EMAIL_CRON_TOKEN }}
+        run: |
+          if [ -z "$EMAIL_CRON_URL" ] || [ -z "$EMAIL_CRON_TOKEN" ]; then
+            echo "Missing EMAIL_CRON_URL or EMAIL_CRON_TOKEN secrets"
+            exit 1
+          fi
+          echo "Triggering: $EMAIL_CRON_URL"
+          # Pass token as querystring; you can also use header X-Email-Cron-Token
+          STATUS=$(curl -sS -o response.json -w "%{http_code}" -X POST "$EMAIL_CRON_URL""?token=$EMAIL_CRON_TOKEN")
+          echo "HTTP $STATUS"
+          cat response.json || true
+          # Consider 2xx as success
+          [[ "$STATUS" =~ ^2 ]] || exit 1
