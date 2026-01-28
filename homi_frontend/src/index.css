@@ -150,7 +150,11 @@ body::before {
     );
   pointer-events: none;
   z-index: 0;
-  opacity: 0.5ration de base */
+  opacity: 0.5;
+}
+
+/* Configuration de base */
+:root {
   font-family: var(--font-body);
   line-height: 1.6;
   font-weight: 400;
