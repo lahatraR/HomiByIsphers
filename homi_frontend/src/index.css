@@ -1,3 +1,32 @@
+/* --- MOBILE FIXED ACTION BUTTONS --- */
+@media (max-width: 640px) {
+  .mobile-fixed-actions {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1200;
+    display: flex;
+    justify-content: space-around;
+    gap: 0.7em;
+    background: linear-gradient(90deg, #f8f6f1ee 80%, #e7c87333 100%);
+    box-shadow: 0 -2px 24px 0 #1a224044, 0 -1.5px 0 #e7c87344;
+    padding: 0.7em 0.5em 0.9em 0.5em;
+    border-top: 2px solid var(--royal-gold);
+    border-radius: 1.2em 1.2em 0 0;
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+  }
+  .mobile-fixed-actions .btn {
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: 1.08rem;
+    margin: 0 0.2em;
+    box-shadow: 0 2px 12px 0 #e7c87344, 0 1.5px 0 #1a224022;
+    border-radius: var(--royal-radius);
+    padding: 0.9em 0.2em;
+  }
+}
 /* ========================================
    HOMI - ROYAL DIGITAL PALACE
    Interface Majestueuse & Contrastée
@@ -100,7 +129,7 @@
   
   /* ===== TYPOGRAPHIE ROYALE ===== */
   --font-royal: 'Cinzel', 'Playfair Display', Georgia, serif;
-  --font-display: 'Playfair Display', Georgia, serif;
+  /*
   --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   
   /* ===== BORDURES ORNEMENTALES ===== */
@@ -108,6 +137,8 @@
   --border-gold-thick: 3px solid var(--royal-gold);
   --border-gold-double: 4px double var(--royal-gold);
   --border-subtle: 1px solid var(--marble-gray);
+
+  :root {
 }
 html {
   font-size: 16px;
@@ -144,6 +175,8 @@ body::before {
   background-image: 
     repeating-linear-gradient(
       0deg,
+
+  html, body {
       transparent,
       transparent 2px,
       rgba(107, 63, 160, 0.015) 2px,
@@ -152,33 +185,47 @@ body::before {
   pointer-events: none;
   z-index: 0;
   opacity: 0.5;
+
+  body {
 }
 
 /* Configuration de base */
 :root {
   font-family: var(--font-body);
+
+  h1, h2, h3, h4, h5, h6 {
   line-height: 1.6;
   font-weight: 400;
   color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+
+  h1 {
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* ========================================
+  h2 {
    BASE STYLES - FONDATIONS ROYALES
    ======================================== */
 * {
+  h3 {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
+  a {
 }
 
 body {
   min-height: 100vh;
+  a:hover {
   background: var(--gradient-marble);
   color: var(--royal-black);
+
+  /* BUTTONS */
+  .btn {
   position: relative;
   overflow-x: hidden;
 }
@@ -195,6 +242,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.2;
   color: var(--royal-purple-deep);
+  .btn:before {
   letter-spacing: 0.02em;
   margin-bottom: var(--spacing-md);
 }
@@ -203,48 +251,62 @@ h1 {
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 900;
   background: var(--gradient-gold);
+  .btn:hover:before {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  .btn:active {
   background-clip: text;
   filter: drop-shadow(0 2px 4px var(--royal-gold-shadow));
   text-transform: uppercase;
+  .btn-primary {
   letter-spacing: 0.05em;
 }
 
 h2 {
   font-size: clamp(1.5rem, 4vw, 2.5rem);
+  .btn-primary:hover {
   font-weight: 800;
   color: var(--royal-purple-dark);
 }
 
+  .btn-secondary {
 h3 {
   font-size: clamp(1.25rem, 3vw, 2rem);
   font-weight: 700;
   color: var(--royal-blue-dark);
 }
+  .btn-secondary:hover {
 
 h4 {
   font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  .btn-danger {
   font-weight: 600;
 }
 
 h5 {
   font-size: clamp(1rem, 2vw, 1.25rem);
+  .btn-danger:hover {
   font-weight: 600;
 }
 
+  .btn-ghost {
 h6 {
   font-size: clamp(0.875rem, 1.5vw, 1.125rem);
   font-weight: 600;
 }
 
+  .btn-ghost:hover {
 p {
   font-family: var(--font-body);
   line-height: 1.7;
+  .btn[disabled], .btn.disabled {
   color: var(--obsidian-medium);
   margin-bottom: var(--spacing-md);
 }
 
+
+  /* CARDS */
+  .card {
 /* Classes utilitaires typographie */
 .text-display {
   font-family: var(--font-display);
@@ -255,15 +317,20 @@ p {
 }
 
 .text-body {
+  .card:hover {
   font-family: var(--font-body);
 }
 
+  .card-title {
 /* ========================================
    COMPOSANTS ROYAUX - SYSTÈME DE BOUTONS
    Hiérarchie visuelle claire & contraste élevé
    ======================================== */
 
 /* Base commune pour tous les boutons */
+
+  /* INPUTS */
+  .input, input, select, textarea {
 .btn, 
 button,
 [role="button"],
@@ -276,12 +343,17 @@ input[type="button"] {
   gap: var(--spacing-sm);
   
   /* Typographie */
+  .input:focus, input:focus, select:focus, textarea:focus {
   font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(0.875rem, 2vw, 1rem);
+  .input[disabled], input[disabled] {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   text-decoration: none;
+
+  /* NAVBAR */
+  .navbar {
   line-height: 1;
   
   /* Dimensions responsives */
@@ -293,6 +365,9 @@ input[type="button"] {
   border: 2px solid transparent;
   cursor: pointer;
   position: relative;
+
+  /* SIDEBAR */
+  .sidebar {
   overflow: hidden;
   
   /* Transitions */
@@ -302,6 +377,9 @@ input[type="button"] {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
+
+  /* MODALS */
+  .modal {
 
 /* Effet de brillance animé */
 .btn::before, 
@@ -316,9 +394,13 @@ button::before {
   transition: var(--transition-smooth);
   z-index: 1;
 }
+  @keyframes modalAppear {
 
 .btn:hover::before,
 button:hover::before {
+
+  /* BADGES & ALERTS */
+  .badge {
   left: 100%;
 }
 
@@ -329,6 +411,7 @@ button > * {
   z-index: 2;
 }
 
+  .alert {
 /* ===== HIÉRARCHIE NIVEAU 1 - PRIMARY (Or Royal) ===== */
 .btn-primary,
 button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger) {
@@ -337,18 +420,24 @@ button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger) {
   box-shadow: var(--shadow-gold), var(--shadow-md);
   border-color: var(--royal-gold-dark);
   font-weight: 800;
+  .alert-danger {
 }
 
 .btn-primary:hover,
 button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger):hover {
+  .alert-success {
   transform: translateY(-3px) scale(1.02);
   box-shadow: var(--shadow-gold-glow), var(--shadow-xl);
   border-color: var(--royal-gold-bright);
   background: linear-gradient(135deg, var(--royal-gold) 0%, var(--royal-gold-bright) 100%);
+
+  /* TASK LISTS */
+  .task-list {
 }
 
 .btn-primary:active {
   transform: translateY(-1px) scale(1);
+  .task-item {
 }
 
 /* ===== HIÉRARCHIE NIVEAU 2 - SECONDARY (Pourpre Royal) ===== */
@@ -360,9 +449,13 @@ button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger):hover
   font-weight: 700;
 }
 
+  .task-item:hover {
 .btn-secondary:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+
+  /* TABLES */
+  table {
   border-color: var(--royal-purple-light);
   filter: brightness(1.1);
 }
@@ -371,33 +464,46 @@ button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger):hover
 .btn-ghost,
 .btn-outline {
   background: transparent;
+  th, td {
   color: var(--royal-purple-deep);
   border: 2px solid var(--royal-gold);
   box-shadow: var(--shadow-xs);
   font-weight: 700;
+  th {
 }
 
 .btn-ghost:hover,
 .btn-outline:hover {
   background: var(--royal-gold);
+  tr:last-child td {
   color: var(--obsidian-black);
   border-color: var(--royal-gold-dark);
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar {
   box-shadow: var(--shadow-gold), var(--shadow-md);
   transform: translateY(-2px);
 }
+  ::-webkit-scrollbar-thumb {
 
 /* ===== VARIANTES SPÉCIALES ===== */
 
 /* Danger / Delete */
+
+  /* ANIMATIONS */
+  .glow-gold {
 .btn-danger {
   background: linear-gradient(135deg, var(--ruby-dark) 0%, var(--ruby-red) 100%);
   color: var(--ivory);
+  @keyframes goldGlow {
   box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3);
   border-color: var(--ruby-dark);
 }
+  .shine {
 
 .btn-danger:hover {
   transform: translateY(-2px);
+  .shine:after {
   box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
   filter: brightness(1.15);
 }
@@ -410,11 +516,16 @@ button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger):hover
   border-color: var(--emerald-dark);
 }
 
+  @keyframes shineMove {
 .btn-success:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4);
+  .emboss {
   filter: brightness(1.15);
 }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
 
 /* Info */
 .btn-info {
@@ -427,6 +538,7 @@ button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger):hover
 .btn-info:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(8, 145, 178, 0.4);
+  @media (max-width: 640px) {
   filter: brightness(1.15);
 }
 
@@ -449,9 +561,37 @@ button:disabled,
 .btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
+
+  /* ACCESSIBILITÉ */
+  .btn:focus, .input:focus, input:focus, select:focus, textarea:focus {
   pointer-events: none;
   filter: grayscale(0.5);
 }
+
+  /* Z-INDEX SYSTEM */
+  .z-modal { z-index: var(--royal-z-modal); }
+  .z-navbar { z-index: var(--royal-z-navbar); }
+  .z-sidebar { z-index: var(--royal-z-sidebar); }
+  .z-dropdown { z-index: var(--royal-z-dropdown); }
+
+  /* UTILS */
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .mt-royal { margin-top: 2.2em; }
+  .mb-royal { margin-bottom: 2.2em; }
+  .p-royal { padding: 1.2em; }
+  .shadow-royal { box-shadow: 0 4px 32px 0 #1a224022, 0 1.5px 0 #e7c87344; }
+  .border-gold { border: 2px solid var(--royal-gold); }
+  .bg-marble { background: var(--royal-marble); }
+  .bg-gold { background: var(--royal-gold); color: var(--royal-blue); }
+  .text-gold { color: var(--royal-gold); }
+  .text-royal { color: var(--royal-blue); }
+  .text-bordeaux { color: var(--royal-bordeaux); }
+  .text-emerald { color: var(--royal-emerald); }
+  .radius-lg { border-radius: var(--royal-radius-lg); }
+  .radius { border-radius: var(--royal-radius); }
+  .radius-sm { border-radius: var(--royal-radius-sm); }
+
+  /* FIN ROYAL PALACE THEME */
 
 .btn:focus-visible,
 button:focus-visible {
