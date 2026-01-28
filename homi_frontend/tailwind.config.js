@@ -6,33 +6,33 @@ export default {
   ],
   theme: {
     extend: {
-      // Palette Royale - Couleurs Nobles
+      // ========== PALETTE ROYALE - COULEURS NOBLES ==========
       colors: {
         // Or Royal
         gold: {
-          50: '#FFFEF7',
-          100: '#F4E4C1',
-          200: '#E8D19F',
-          300: '#DCBE7D',
-          400: '#D4AF37',
-          500: '#B8941F',
-          600: '#8B6914',
-          700: '#6B5010',
-          800: '#4A370B',
-          900: '#2A1F06',
+          50: '#FFFEF9',
+          100: '#FFF4C4',
+          200: '#FFED4E',
+          300: '#FFD700',
+          400: '#F4C430',
+          500: '#C9A400',
+          600: '#B8941F',
+          700: '#8B7500',
+          800: '#6B5010',
+          900: '#4A370B',
         },
         // Pourpre Impérial
         purple: {
           50: '#F5F0F9',
           100: '#E6D9F0',
           200: '#C8B3E0',
-          300: '#AA8DD1',
-          400: '#8B6AA8',
-          500: '#5D3A7E',
-          600: '#3E2555',
-          700: '#2A1A3A',
-          800: '#1D1228',
-          900: '#120A1A',
+          300: '#9B72C0',
+          400: '#6B3FA0',
+          500: '#4A1F70',
+          600: '#2E1545',
+          700: '#1A0D2E',
+          800: '#120A1A',
+          900: '#0A050F',
         },
         // Bleu Royal
         royal: {
@@ -40,122 +40,172 @@ export default {
           100: '#DBE4FF',
           200: '#B6CBFF',
           300: '#91B2FF',
-          400: '#3B5998',
-          500: '#1E3A8A',
-          600: '#0F1D4A',
-          700: '#0A1128',
-          800: '#060B19',
+          400: '#3B82F6',
+          500: '#1E40AF',
+          600: '#1E3A8A',
+          700: '#0C1E4A',
+          800: '#050B1F',
           900: '#03050D',
         },
         // Ivoire & Marbre
         ivory: {
           50: '#FFFFFF',
-          100: '#FFFEF7',
-          200: '#F5F3E8',
-          300: '#E8E6DA',
-          400: '#D6D3C4',
-          500: '#C4C0B2',
-          600: '#A8A49A',
-          700: '#8C8882',
-          800: '#5D5A54',
-          900: '#2E2C29',
+          100: '#FFFEF9',
+          200: '#FFF9E6',
+          300: '#F7F5E8',
+          400: '#EAE7D6',
+          500: '#C9C5B5',
+          600: '#9A9786',
+          700: '#6B6A5E',
+          800: '#3C3B36',
+          900: '#1C1B19',
+        },
+        // Obsidienne (Noirs profonds)
+        obsidian: {
+          50: '#F5F5F5',
+          100: '#E0E0E0',
+          200: '#B0B0B0',
+          300: '#808080',
+          400: '#505050',
+          500: '#2A2A2A',
+          600: '#1A1A1A',
+          700: '#0A0A0A',
+          800: '#050505',
+          900: '#000000',
         },
         // Accents Précieux
         ruby: {
-          500: '#9B2226',
-          600: '#7A1B1E',
-          700: '#5A1416',
+          500: '#DC2626',
+          600: '#991B1B',
+          700: '#7A1416',
         },
         emerald: {
-          500: '#2D6A4F',
-          600: '#1B4332',
-          700: '#081C15',
+          500: '#059669',
+          600: '#047857',
+          700: '#065F46',
         },
         sapphire: {
-          500: '#1A5F7A',
-          600: '#114B5F',
-          700: '#0A3744',
+          500: '#0891B2',
+          600: '#0E7490',
+          700: '#155E75',
         },
       },
       
-      // Typographie Royale
+      // ========== TYPOGRAPHIE ROYALE ==========
       fontFamily: {
-        royal: ['Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
-        body: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        royal: ['Cinzel', 'Playfair Display', 'Georgia', 'serif'],
+        display: ['Playfair Display', 'Georgia', 'serif'],
+        body: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         serif: ['Cormorant Garamond', 'Georgia', 'serif'],
       },
       
-      // Dégradés Royaux
+      // ========== DÉGRADÉS ROYAUX ==========
       backgroundImage: {
-        'royal-gradient': 'linear-gradient(135deg, #3E2555 0%, #0F1D4A 100%)',
-        'gold-gradient': 'linear-gradient(135deg, #B8941F 0%, #D4AF37 50%, #F4E4C1 100%)',
-        'throne-gradient': 'linear-gradient(180deg, #2A1A3A 0%, #0A1128 100%)',
-        'marble-gradient': 'linear-gradient(135deg, #FFFEF7 0%, #E8E6DA 100%)',
-        'vitrail-gradient': 'linear-gradient(135deg, rgba(93, 58, 126, 0.1) 0%, rgba(30, 58, 138, 0.1) 100%)',
-        'gold-shimmer': 'linear-gradient(90deg, #B8941F 0%, #D4AF37 50%, #F4E4C1 75%, #D4AF37 100%)',
+        'royal-gradient': 'linear-gradient(135deg, #2E1545 0%, #0C1E4A 100%)',
+        'gold-gradient': 'linear-gradient(135deg, #C9A400 0%, #FFD700 50%, #FFF4C4 100%)',
+        'gold-shimmer': 'linear-gradient(90deg, transparent 0%, rgba(255, 215, 0, 0.3) 50%, transparent 100%)',
+        'throne-gradient': 'linear-gradient(180deg, #0A0A0A 0%, #1A0D2E 50%, #050B1F 100%)',
+        'marble-gradient': 'linear-gradient(135deg, #FFFEF9 0%, #F7F5E8 100%)',
+        'obsidian-gradient': 'linear-gradient(180deg, #0A0A0A 0%, #1A1A1A 100%)',
+        'vitrail-gradient': 'linear-gradient(135deg, rgba(107, 63, 160, 0.08) 0%, rgba(30, 64, 175, 0.08) 100%)',
+        'radial-gold': 'radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%)',
       },
       
-      // Ombres Royales (Chandelles)
+      // ========== OMBRES ROYALES (Chandelles) ==========
       boxShadow: {
-        'soft': '0 2px 8px rgba(212, 175, 55, 0.1)',
-        'medium': '0 4px 16px rgba(93, 58, 126, 0.15)',
-        'deep': '0 8px 32px rgba(30, 58, 138, 0.2)',
-        'royal': '0 12px 48px rgba(26, 26, 26, 0.25)',
-        'gold': '0 4px 20px rgba(212, 175, 55, 0.3)',
-        'gold-glow': '0 0 30px rgba(212, 175, 55, 0.5)',
-        'inner': 'inset 0 2px 8px rgba(0, 0, 0, 0.1)',
-        'ornate': '0 8px 32px rgba(93, 58, 126, 0.2), 0 2px 8px rgba(212, 175, 55, 0.1)',
+        'xs': '0 1px 3px rgba(10, 10, 10, 0.08)',
+        'sm': '0 2px 8px rgba(10, 10, 10, 0.12)',
+        'md': '0 4px 16px rgba(10, 10, 10, 0.16)',
+        'lg': '0 8px 32px rgba(10, 10, 10, 0.2)',
+        'xl': '0 12px 48px rgba(10, 10, 10, 0.25)',
+        '2xl': '0 20px 64px rgba(10, 10, 10, 0.35)',
+        'gold': '0 4px 24px rgba(255, 215, 0, 0.4)',
+        'gold-glow': '0 0 32px rgba(255, 215, 0, 0.5)',
+        'inner': 'inset 0 2px 8px rgba(10, 10, 10, 0.15)',
+        'inner-light': 'inset 0 1px 3px rgba(10, 10, 10, 0.08)',
+        'ornate': '0 8px 32px rgba(107, 63, 160, 0.2), 0 2px 8px rgba(255, 215, 0, 0.1)',
+        'none': 'none',
       },
       
-      // Animations & Transitions Élégantes
+      // ========== ANIMATIONS & TRANSITIONS ==========
       transitionDuration: {
         'royal': '400ms',
+        'smooth': '300ms',
       },
       transitionTimingFunction: {
         'royal': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'smooth': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
       
-      // Bordures Ornementales
+      // ========== BORDURES ORNEMENTALES ==========
       borderWidth: {
         '3': '3px',
+        '4': '4px',
+        '6': '6px',
       },
       
-      // Espacements pour l'élégance
+      // ========== ESPACEMENTS SUPPLÉMENTAIRES ==========
       spacing: {
         '18': '4.5rem',
         '88': '22rem',
         '128': '32rem',
       },
       
-      // Animation keyframes
+      // ========== ANIMATION KEYFRAMES ==========
       keyframes: {
         'fade-in-royal': {
           '0%': { opacity: '0', transform: 'translateY(20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'slide-in-royal': {
+          '0%': { opacity: '0', transform: 'scale(0.9) translateY(-20px)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
         },
         'shimmer-gold': {
           '0%': { backgroundPosition: '-200% center' },
           '100%': { backgroundPosition: '200% center' },
         },
         'pulse-gold': {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(212, 175, 55, 0.4)' },
-          '50%': { boxShadow: '0 0 0 10px rgba(212, 175, 55, 0)' },
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(255, 215, 0, 0.4)' },
+          '50%': { boxShadow: '0 0 0 15px rgba(255, 215, 0, 0)' },
         },
         'float': {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
         },
+        'glow': {
+          '0%, 100%': { filter: 'drop-shadow(0 0 5px rgba(255, 215, 0, 0.4))' },
+          '50%': { filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.4))' },
+        },
+        'spin': {
+          'to': { transform: 'rotate(360deg)' },
+        },
       },
       animation: {
         'fade-in-royal': 'fade-in-royal 0.6s ease-out',
+        'slide-in-royal': 'slide-in-royal 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
         'shimmer-gold': 'shimmer-gold 3s linear infinite',
         'pulse-gold': 'pulse-gold 2s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite',
+        'spin': 'spin 1s linear infinite',
       },
       
-      // Backdrop blur pour effets vitraux
+      // ========== BACKDROP BLUR ==========
       backdropBlur: {
         'royal': '20px',
+      },
+      
+      // ========== Z-INDEX SYSTEM ==========
+      zIndex: {
+        'base': '1',
+        'elevated': '10',
+        'floating': '100',
+        'overlay': '1000',
+        'modal': '1100',
+        'navigation': '2000',
+        'toast': '3000',
       },
     },
   },
