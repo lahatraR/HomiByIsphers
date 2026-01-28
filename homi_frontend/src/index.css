@@ -1,83 +1,156 @@
 /* ========================================
-   HOMI - ROYAL PALACE DESIGN SYSTEM
-   Interface Royale et Majestueuse
+   HOMI - ROYAL DIGITAL PALACE
+   Interface Majestueuse & Contrastée
+   Design System Premium v2.0
    ======================================== */
 
 /* Typographie Royale: Sérif élégante pour titres + Sans-serif moderne pour contenu */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ========================================
-   VARIABLES ROYALES
+   VARIABLES ROYALES - PALETTE CONTRASTÉE
    ======================================== */
 :root {
-  /* Palette Royale - Or & Pourpre */
-  --royal-gold: #D4AF37;
-  --royal-gold-light: #F4E4C1;
-  --royal-gold-dark: #B8941F;
-  --royal-gold-deep: #8B6914;
+  /* ===== PALETTE PRINCIPALE - OR ROYAL ===== */
+  --royal-gold: #FFD700;
+  --royal-gold-light: #FFF4C4;
+  --royal-gold-bright: #FFED4E;
+  --royal-gold-dark: #C9A400;
+  --royal-gold-deep: #8B7500;
+  --royal-gold-shadow: rgba(255, 215, 0, 0.4);
   
-  /* Pourpre Impérial */
-  --royal-purple: #5D3A7E;
-  --royal-purple-light: #8B6AA8;
-  --royal-purple-dark: #3E2555;
-  --royal-purple-deep: #2A1A3A;
+  /* ===== POURPRE IMPÉRIAL ===== */
+  --royal-purple: #6B3FA0;
+  --royal-purple-light: #9B72C0;
+  --royal-purple-dark: #4A1F70;
+  --royal-purple-deep: #2E1545;
+  --royal-purple-black: #1A0D2E;
   
-  /* Bleu Royal */
-  --royal-blue: #1E3A8A;
-  --royal-blue-light: #3B5998;
-  --royal-blue-dark: #0F1D4A;
-  --royal-blue-navy: #0A1128;
+  /* ===== BLEU ROYAL ===== */
+  --royal-blue: #1E40AF;
+  --royal-blue-light: #3B82F6;
+  --royal-blue-dark: #1E3A8A;
+  --royal-blue-navy: #0C1E4A;
+  --royal-blue-midnight: #050B1F;
   
-  /* Ivoire & Marbre */
-  --ivory: #FFFEF7;
-  --ivory-cream: #F5F3E8;
-  --marble-white: #E8E6DA;
-  --marble-gray: #C4C0B2;
+  /* ===== IVOIRE & MARBRE ===== */
+  --ivory: #FFFEF9;
+  --ivory-warm: #FFF9E6;
+  --ivory-cream: #F7F5E8;
+  --marble-white: #EAE7D6;
+  --marble-gray: #C9C5B5;
+  --marble-dark: #9A9786;
   
-  /* Noir Profond & Ombres */
-  --royal-black: #1A1A1A;
-  --shadow-black: #0D0D0D;
-  --velvet-dark: #2D2424;
+  /* ===== NOIR OBSIDIENNE ===== */
+  --obsidian-black: #0A0A0A;
+  --obsidian-dark: #1A1A1A;
+  --obsidian-medium: #2A2A2A;
+  --velvet-black: #1C1516;
   
-  /* Accents Précieux */
-  --ruby-red: #9B2226;
-  --emerald-green: #2D6A4F;
-  --sapphire-blue: #1A5F7A;
+  /* ===== ACCENTS PRÉCIEUX (HAUTE VISIBILITÉ) ===== */
+  --ruby-red: #DC2626;
+  --ruby-dark: #991B1B;
+  --emerald-green: #059669;
+  --emerald-dark: #047857;
+  --sapphire-blue: #0891B2;
+  --sapphire-dark: #0E7490;
   
-  /* Dégradés Royaux */
-  --gradient-royal: linear-gradient(135deg, var(--royal-purple-dark) 0%, var(--royal-blue-dark) 100%);
-  --gradient-gold: linear-gradient(135deg, var(--royal-gold-dark) 0%, var(--royal-gold) 50%, var(--royal-gold-light) 100%);
-  --gradient-throne: linear-gradient(180deg, var(--royal-purple-deep) 0%, var(--royal-blue-navy) 100%);
-  --gradient-marble: linear-gradient(135deg, var(--ivory) 0%, var(--marble-white) 100%);
-  --gradient-vitrail: linear-gradient(135deg, rgba(93, 58, 126, 0.1) 0%, rgba(30, 58, 138, 0.1) 100%);
+  /* ===== DÉGRADÉS ROYAUX CONTRASTÉS ===== */
+  --gradient-royal: linear-gradient(135deg, var(--royal-purple-deep) 0%, var(--royal-blue-navy) 100%);
+  --gradient-gold: linear-gradient(135deg, var(--royal-gold-dark) 0%, var(--royal-gold) 50%, var(--royal-gold-bright) 100%);
+  --gradient-throne: linear-gradient(180deg, var(--obsidian-black) 0%, var(--royal-purple-black) 50%, var(--royal-blue-midnight) 100%);
+  --gradient-marble: linear-gradient(135deg, var(--ivory) 0%, var(--ivory-cream) 100%);
+  --gradient-obsidian: linear-gradient(180deg, var(--obsidian-black) 0%, var(--obsidian-dark) 100%);
+  --gradient-vitrail: linear-gradient(135deg, rgba(107, 63, 160, 0.08) 0%, rgba(30, 64, 175, 0.08) 100%);
+  --gradient-gold-shine: linear-gradient(90deg, transparent 0%, rgba(255, 215, 0, 0.3) 50%, transparent 100%);
   
-  /* Ombres Chandelles */
-  --shadow-soft: 0 2px 8px rgba(212, 175, 55, 0.1);
-  --shadow-medium: 0 4px 16px rgba(93, 58, 126, 0.15);
-  --shadow-deep: 0 8px 32px rgba(30, 58, 138, 0.2);
-  --shadow-royal: 0 12px 48px rgba(26, 26, 26, 0.25);
-  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.3);
-  --shadow-inner: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* ===== OMBRES & PROFONDEUR (Z-INDEX SYSTEM) ===== */
+  /* Niveau 1 - Surfaces de base */
+  --shadow-xs: 0 1px 3px rgba(10, 10, 10, 0.08);
+  --z-base: 1;
   
-  /* Typographie */
-  --font-royal: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Niveau 2 - Éléments surélevés */
+  --shadow-sm: 0 2px 8px rgba(10, 10, 10, 0.12);
+  --shadow-md: 0 4px 16px rgba(10, 10, 10, 0.16);
+  --z-elevated: 10;
   
-  /* Ornements */
-  --border-ornate: 2px solid var(--royal-gold);
+  /* Niveau 3 - Éléments flottants */
+  --shadow-lg: 0 8px 32px rgba(10, 10, 10, 0.2);
+  --shadow-xl: 0 12px 48px rgba(10, 10, 10, 0.25);
+  --z-floating: 100;
+  
+  /* Niveau 4 - Overlays & Modales */
+  --shadow-2xl: 0 20px 64px rgba(10, 10, 10, 0.35);
+  --z-overlay: 1000;
+  --z-modal: 1100;
+  
+  /* Niveau 5 - Navigation & Toasts */
+  --z-navigation: 2000;
+  --z-toast: 3000;
+  
+  /* Ombres spéciales */
+  --shadow-gold: 0 4px 24px var(--royal-gold-shadow);
+  --shadow-gold-glow: 0 0 32px var(--royal-gold-shadow);
+  --shadow-inner: inset 0 2px 8px rgba(10, 10, 10, 0.15);
+  --shadow-inner-light: inset 0 1px 3px rgba(10, 10, 10, 0.08);
+  
+  /* ===== TYPOGRAPHIE ROYALE ===== */
+  --font-royal: 'Cinzel', 'Playfair Display', Georgia, serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* ===== BORDURES ORNEMENTALES ===== */
+  --border-gold: 2px solid var(--royal-gold);
+  --border-gold-thick: 3px solid var(--royal-gold);
+  --border-gold-double: 4px double var(--royal-gold);
   --border-subtle: 1px solid var(--marble-gray);
-  --border-royal: 3px double var(--royal-gold);
-  
-  /* Transitions Élégantes */
-  --transition-royal: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: all 0.3s ease-in-out;
-  --transition-fast: all 0.15s ease;
-  
-  /* Configuration de base */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+/* Responsive font-size */
+@media (max-width: 768px) {
+  html { font-size: 14px; }
+}
+
+@media (max-width: 480px) {
+  html { font-size: 13px; }
+}
+
+body {
+  min-height: 100vh;
+  background: var(--gradient-marble);
+  color: var(--obsidian-dark);
+  position: relative;
+  overflow-x: hidden;
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+/* Texture de fond subtile noble */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(107, 63, 160, 0.015) 2px,
+      rgba(107, 63, 160, 0.015) 4px
+    );
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5ration de base */
   font-family: var(--font-body);
   line-height: 1.6;
   font-weight: 400;
@@ -109,102 +182,281 @@ body {
 body::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(93, 58, 126, 0.01) 2px,
-      rgba(93, 58, 126, 0.01) 4px
-    );
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ========================================
-   TYPOGRAPHIE ROYALE
+  top: 0; - HIÉRARCHIE CLAIRE
    ======================================== */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-royal);
   font-weight: 700;
   line-height: 1.2;
-  color: var(--royal-purple-dark);
-  letter-spacing: 0.01em;
+  color: var(--royal-purple-deep);
+  letter-spacing: 0.02em;
+  margin-bottom: var(--spacing-md);
 }
 
 h1 {
-  font-size: 3rem;
-  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
   background: var(--gradient-gold);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+  filter: drop-shadow(0 2px 4px var(--royal-gold-shadow));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 h2 {
-  font-size: 2.25rem;
-  font-weight: 700;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: var(--royal-purple-dark);
 }
 
 h3 {
-  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--royal-blue-dark);
+}
+
+h4 {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 600;
+}
+
+h5 {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 600;
+}
+
+h6 {
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
   font-weight: 600;
 }
 
 p {
   font-family: var(--font-body);
   line-height: 1.7;
-  color: var(--velvet-dark);
-}
-
-/* ========================================
-   COMPOSANTS ROYAUX - BOUTONS
+  color: var(--obsidian-medium);
+  margin-bottom: var(--SYSTÈME DE BOUTONS
+   Hiérarchie visuelle claire & contraste élevé
    ======================================== */
-.btn, button {
+
+/* Base commune pour tous les boutons */
+.btn, 
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"] {
+  /* Structure */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  
+  /* Typographie */
   font-family: var(--font-body);
-  font-weight: 600;
-  padding: 0.875rem 2rem;
-  border-radius: 0.5rem;
-  border: none;
+  font-weight: 700;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  line-height: 1;
+  
+  /* Dimensions responsives */
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem);
+  min-height: 44px; /* Touch target minimum */
+  
+  /* Style */
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
   cursor: pointer;
-  transition: var(--transition-royal);
   position: relative;
   overflow: hidden;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.875rem;
+  
+  /* Transitions */
+  transition: var(--transition-royal);
+  
+  /* Accessibilité */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
-/* Bouton Or Royal (Primary) */
-.btn-primary, button[type="submit"] {
-  background: var(--gradient-gold);
-  color: var(--royal-purple-deep);
-  box-shadow: var(--shadow-gold);
-  border: 1px solid var(--royal-gold-dark);
-}
-
-.btn-primary::before, button[type="submit"]::before {
+/* Effet de brillance animé */
+.btn::before, 
+button::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: var(--gradient-gold-shine);
   transition: var(--transition-smooth);
+  z-index: 1;
 }
 
-.btn-primary:hover, button[type="submit"]:hover {
+.btn:hover::before,
+button:hover::before {
+  left: 100%;
+}
+
+/* Contenu du bouton au-dessus de l'effet */
+.btn > *, 
+button > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== HIÉRARCHIE NIVEAU 1 - PRIMARY (Or Royal) ===== */
+.btn-primary,
+button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger) {
+  background: var(--gradient-gold);
+  color: var(--obsidian-black);
+  box-shadow: var(--shadow-gold), var(--shadow-md);
+  border-color: var(--royal-gold-dark);
+  font-weight: 800;
+}
+
+.btn-primary:hover,
+button[type="submit"]:not(.btn-secondary):not(.btn-ghost):not(.btn-danger):hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: var(--shadow-gold-glow), var(--shadow-xl);
+  border-color: var(--royal-gold-bright);
+  background: linear-gradient(135deg, var(--royal-gold) 0%, var(--royal-gold-bright) 100%);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px) scale(1);
+}
+
+/* ===== HIÉRARCHIE NIVEAU 2 - SECONDARY (Pourpre Royal) ===== */
+.btn-secondary {
+  background: var(--gradient-royal);
+  color: var(--ivory);
+  box-shadow: var(--shadow-md);
+  border-color: var(--royal-purple);
+  font-weight: 700;
+}
+
+.btn-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.4);
-  border-color: var(--royal-gold);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--royal-purple-light);
+  filter: brightness(1.1);
 }
 
+/* ===== HIÉRARCHIE NIVEAU 3 - GHOST / OUTLINE ===== */
+.btn-ghost,
+.btn-outline {
+  background: transparent;
+  color: var(--royal-purple-deep);
+  border: 2px solid var(--royal-gold);
+  box-shadow: var(--shadow-xs);
+  font-weight: 700;
+}
+
+.btn-ghost:hover,
+.btn-outline:hover {
+  background: var(--royal-gold);
+  color: var(--obsidian-black);
+  border-color: var(--royal-gold-dark);
+  box-shadow: var(--shadow-gold), var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ===== VARIANTES SPÉCIALES ===== */
+
+/* Danger / Delete */
+.btn-danger {
+  background: linear-gradient(135deg, var(--ruby-dark) 0%, var(--ruby-red) 100%);
+  color: var(--ivory);
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3);
+  border-color: var(--ruby-dark);
+}
+
+.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
+  filter: brightness(1.15);
+}
+
+/* Success */
+.btn-success {
+  background: linear-gradient(135deg, var(--emerald-dark) 0%, var(--emerald-green) 100%);
+  color: var(--ivory);
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);
+  border-color: var(--emerald-dark);
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4);
+  filter: brightness(1.15);
+}
+
+/* Info */
+.btn-info {
+  background: linear-gradient(135deg, var(--sapphire-dark) 0%, var(--sapphire-blue) 100%);
+  color: var(--ivory);
+  box-shadow: 0 4px 16px rgba(8, 145, 178, 0.3);
+  border-color: var(--sapphire-dark);
+}
+
+.btn-info:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(8, 145, 178, 0.4);
+  filter: brightness(1.15);
+}
+
+/* ===== TAILLES DE BOUTONS ===== */
+.btn-sm, button.btn-sm {
+  padding: clamp(0.5rem, 1.5vw, 0.625rem) clamp(1rem, 3vw, 1.5rem);
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  min-height: 36px;
+}
+
+.btn-lg, button.btn-lg {
+  padding: clamp(1rem, 2.5vw, 1.25rem) clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+  min-height: 52px;
+}
+
+/* ===== ÉTATS ===== */
+.btn:disabled,
+button:disabled,
+.btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.5);
+}
+
+.btn:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--royal-gold);
+  outline-offset: 3px;
+}
+
+/* ===== BOUTONS ICON ONLY ===== */
+.btn-icon {
+  padding: clamp(0.625rem, 2vw, 0.75rem);
+  min-width: 44px;
+  aspect-ratio: 1;
+}
+
+/* ===== GROUPE DE BOUTONS ===== */
+.btn-group {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* Mobile: boutons pleine largeur */
+@media (max-width: 640px) {
+  .btn-group.btn-group-mobile-full .btn,
+  .btn-group.btn-group-mobile-full button {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
 .btn-primary:hover::before, button[type="submit"]:hover::before {
   left: 100%;
 }
@@ -242,20 +494,30 @@ p {
 }
 
 /* ========================================
-   COMPOSANTS ROYAUX - CARTES
+   COMPOSANTS ROYAUX - CARTES (CARDS)
    ======================================== */
 .card {
+  /* Structure */
   background: var(--ivory);
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: var(--shadow-medium);
-  border: 1px solid var(--marble-gray);
+  border-radius: var(--radius-xl);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  
+  /* Bordure & Ombre */
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--marble-gray);
+  
+  /* Transitions */
   transition: var(--transition-royal);
+  
+  /* Position pour ornements */
   position: relative;
   overflow: hidden;
+  
+  /* Z-index */
+  z-index: var(--z-elevated);
 }
 
-/* Bordure ornementale */
+/* Bordure ornementale dorée supérieure */
 .card::before {
   content: '';
   position: absolute;
@@ -264,68 +526,678 @@ p {
   right: 0;
   height: 4px;
   background: var(--gradient-gold);
+  z-index: 1;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-deep);
-  border-color: var(--royal-gold);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--royal-gold-dark);
 }
 
-/* Carte Premium avec fond vitrail */
-.card-royal {
-  background: linear-gradient(135deg, rgba(255, 254, 247, 0.95) 0%, rgba(245, 243, 232, 0.95) 100%);
+/* ===== VARIANTES DE CARTES ===== */
+
+/* Carte Royale Premium */
+.card-royal,
+.card-premium {
+  background: linear-gradient(135deg, rgba(255, 254, 249, 0.98) 0%, rgba(247, 245, 232, 0.95) 100%);
   backdrop-filter: blur(10px);
-  border: 2px solid var(--royal-gold-light);
+  border: 2px solid var(--royal-gold);
+  box-shadow: var(--shadow-gold), var(--shadow-lg);
 }
 
-.card-royal::before {
+.card-royal::before,
+.card-premium::before {
   height: 6px;
-  background: var(--gradient-gold);
+}
+
+.card-royal::after,
+.card-premium::after {
+  content: '◆';
+  position: absolute;
+  top: -12px;
+  right: clamp(1rem, 3vw, 2rem);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--royal-gold);
+  filter: drop-shadow(0 2px 8px var(--royal-gold-shadow));
+  z-index: 2;
+}
+
+/* Carte Sombre (Dark) */
+.card-dark {
+  background: var(--gradient-obsidian);
+  color: var(--ivory);
+  border-color: var(--royal-purple);
+}
+
+.card-dark::before {
+  background: var(--gradient-royal);
+}
+
+/* Carte avec glow */
+.card-glow {
+  box-shadow: var(--shadow-gold-glow), var(--shadow-xl);
+}
+
+/* ===== RESPONSIVE CARDS ===== */
+@media (max-width: 768px) {
+  .card {
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+    border-radius: var(--radius-lg);
+  }
 }
 
 /* ========================================
-   COMPOSANTS ROYAUX - INPUTS
+   COMPOSANTS ROYAUX - INPUTS & FORMS
    ======================================== */
-input, textarea, select {
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+  /* Structure */
+  width: 100%;
+  display: block;
+  
+  /* Typographie */
   font-family: var(--font-body);
-  padding: 0.875rem 1.25rem;
-  border-radius: 0.5rem;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-weight: 500;
+  color: var(--obsidian-dark);
+  
+  /* Dimensions */
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 2.5vw, 1.25rem);
+  min-height: 44px; /* Touch target */
+  
+  /* Style */
+  border-radius: var(--radius-md);
   border: 2px solid var(--marble-gray);
   background: var(--ivory);
-  color: var(--royal-black);
+  
+  /* Transitions */
   transition: var(--transition-smooth);
-  font-size: 1rem;
+  
+  /* Accessibilité */
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-input:focus, textarea:focus, select:focus {
+/* Focus state - Très visible */
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border-color: var(--royal-gold);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-  background: var(--ivory-cream);
+  background: var(--ivory-warm);
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.15), var(--shadow-md);
 }
 
-input::placeholder, textarea::placeholder {
-  color: var(--marble-gray);
+/* Placeholder */
+input::placeholder,
+textarea::placeholder {
+  color: var(--marble-dark);
   font-style: italic;
+  opacity: 0.7;
+}
+
+/* Invalid state */
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown),
+input.error,
+textarea.error {
+  border-color: var(--ruby-red);
+  background: rgba(220, 38, 38, 0.05);
+}
+
+input:invalid:focus,
+textarea:invalid:focus,
+input.error:focus,
+textarea.error:focus {
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15), var(--shadow-md);
+}
+
+/* Valid state */
+input:valid:not(:placeholder-shown):not([type="email"]):not([type="password"]),
+input.success,
+textarea.success {
+  border-color: var(--emerald-green);
+  background: rgba(5, 150, 105, 0.05);
+}
+
+/* Disabled state */
+input:disabled,
+textarea:disabled,
+select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--marble-white);
+}
+
+/* Textarea spécifique */
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Select custom */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232A2A2A' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 3rem;
+  cursor: pointer;
+}
+
+/* Labels */
+label {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  color: var(--royal-purple-deep);
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 0.02em;
+}
+
+label.required::after {
+  content: ' *';
+  color: var(--ruby-red);
+  font-weight: 800;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
+}
+
+/* Input Group (avec icon) */
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--marble-dark);
+  pointer-events: none;
+}
+
+.input-group input {
+  padding-left: 3rem;
+}
+
+/* Checkbox & Radio custom */
+input[type="checkbox"],
+input[type="radio"] {
+  width: clamp(1.25rem, 3vw, 1.5rem);
+  height: clamp(1.25rem, 3vw, 1.5rem);
+  accent-color: var(--royal-gold);
+  cursor: pointer;
 }
 
 /* ========================================
    LAYOUT - NAVBAR ROYALE
    ======================================== */
-nav {
-  background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(45, 36, 36, 0.95) 100%);
+nav,
+.navbar {
+  background: var(--gradient-throne);
   backdrop-filter: blur(20px);
   border-bottom: 3px solid var(--royal-gold);
-  box-shadow: var(--shadow-royal);
+  box-shadow: var(--shadow-2xl);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-navigation);
+  padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 3vw, 2rem);
+}
+
+/* Nav items */
+.nav-link,
+nav a {
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(0.875rem, 1.8vw, 1rem);
+  text-decoration: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+.nav-link:hover,
+nav a:hover {
+  color: var(--royal-gold-bright);
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.nav-link.active,
+nav a.active {
+  color: var(--royal-gold);
+  background: rgba(255, 215, 0, 0.15);
+  font-weight: 700;
+}
+
+.nav-link.active::after,
+nav a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--royal-gold);
+}
+
+/* ========================================
+   LAYOUT - SIDEBAR ROYALE
+   ======================================== */
+.sidebar {
+  background: linear-gradient(180deg, var(--ivory) 0%, var(--ivory-cream) 100%);
+  border-right: 2px solid var(--royal-gold-dark);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-elevated);
+  overflow-y: auto;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: clamp(0.75rem, 2vw, 1rem);
+  margin-bottom: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  color: var(--royal-purple-deep);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+  border: 2px solid transparent;
+}
+
+.sidebar-link:hover {
+  background: var(--gradient-vitrail);
+  border-color: var(--royal-gold-dark);
+  transform: translateX(4px);
+}
+
+.sidebar-link.active {
+  background: var(--gradient-gold);
+  color: var(--obsidian-black);
+  border-color: var(--royal-gold-dark);
+  box-shadow: var(--shadow-gold);
+  font-weight: 800;
+}
+
+/* Sidebar mobile */
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 280px;
+    max-width: 85vw;
+    transition: var(--transition-royal);
+    z-index: var(--z-overlay);
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: calc(var(--z-overlay) - 1);
+    display: none;
+  }
+  
+  .sidebar-overlay.show {
+    display: block;
+  }
+}
+
+/* ========================================
+   MODALES & OVERLAYS ROYALES
+   ======================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(12px);
+  z-index: var(--z-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content,
+.modal {
+  background: var(--ivory);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+  border: 3px solid var(--royal-gold);
+  max-width: min(90vw, 600px);
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  position: relative;
+  z-index: var(--z-modal);
+  animation: slideInRoyal 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Header modal */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--royal-gold-dark);
+}
+
+.modal-title {
+  font-family: var(--font-royal);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--royal-purple-deep);
+  font-weight: 800;
+}
+
+.modal-close {
+  background: transparent;
+  border: 2px solid var(--marble-gray);
+  color: var(--obsidian-medium);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0;
+  transition: var(--transition-smooth);
+}
+
+.modal-close:hover {
+  background: var(--ruby-red);
+  border-color: var(--ruby-dark);
+  color: var(--ivory);
+  transform: rotate(90deg);
+}
+
+/* ========================================
+   TABLES ROYALES
+   ======================================== */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  margin: var(--spacing-xl) 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--ivory);
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+}
+
+thead {
+  background: var(--gradient-royal);
+  color: var(--ivory);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-elevated);
+}
+
+thead th {
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  font-family: var(--font-royal);
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--marble-gray);
+  transition: var(--transition-fast);
+}
+
+tbody tr:hover {
+  background: var(--gradient-vitrail);
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+tbody td {
+  padding: clamp(0.875rem, 2vw, 1.25rem);
+  font-family: var(--font-body);
+  color: var(--obsidian-medium);
+}
+
+/* Mobile: scroll horizontal */
+@media (max-width: 768px) {
+  .table-container {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    min-width: 600px;
+  }
+}
+
+/* ========================================
+   BADGES & PILLS ROYAUX
+   ======================================== */
+.badge,
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: clamp(0.375rem, 1vw, 0.5rem) clamp(0.75rem, 2vw, 1rem);
+  border-radius: var(--radius-full);
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: var(--transition-smooth);
+}
+
+.badge-gold {
+  background: var(--gradient-gold);
+  color: var(--obsidian-black);
+  box-shadow: var(--shadow-gold);
+}
+
+.badge-royal {
+  background: var(--gradient-royal);
+  color: var(--ivory);
+  box-shadow: var(--shadow-md);
+}
+
+.badge-success {
+  background: var(--emerald-green);
+  color: var(--ivory);
+}
+
+.badge-danger {
+  background: var(--ruby-red);
+  color: var(--ivory);
+}
+
+.badge-info {
+  background: var(--sapphire-blue);
+  color: var(--ivory);
+}
+
+.badge-warning {
+  background: var(--royal-gold);
+  color: var(--obsidian-black);
+}
+
+/* ========================================
+   ALERTES ROYALES
+   ======================================== */
+.alert {
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid;
+  margin: var(--spacing-md) 0;
+  font-family: var(--font-body);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.alert-success {
+  background: rgba(5, 150, 105, 0.1);
+  border-left-color: var(--emerald-green);
+  color: var(--emerald-dark);
+}
+
+.alert-warning {
+  background: rgba(255, 215, 0, 0.15);
+  border-left-color: var(--royal-gold);
+  color: var(--royal-gold-deep);
+}
+
+.alert-error,
+.alert-danger {
+  background: rgba(220, 38, 38, 0.1);
+  border-left-color: var(--ruby-red);
+  color: var(--ruby-dark);
+}
+
+.alert-info {
+  background: rgba(8, 145, 178, 0.1);
+  border-left-color: var(--sapphire-blue);
+  color: var(--sapphire-dark);
+}
+
+/* ========================================
+   LOADING SPINNER ROYAL
+   ======================================== */
+.spinner,
+.spinner-royal {
+  width: clamp(48px, 10vw, 64px);
+  height: clamp(48px, 10vw, 64px);
+  border: 4px solid var(--marble-gray);
+  border-top-color: var(--royal-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: var(--spacing-xl) auto;
+}
+
+.spinner-sm {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+.spinner-lg {
+  width: 80px;
+  height: 80px;
+  border-width: 6px;
+}
+
+/* ========================================
+   DIVIDERS & SEPARATORS ORNEMENTAUX
+   ======================================== */
+.divider,
+.divider-royal {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--royal-gold) 50%, transparent 100%);
+  margin: clamp(1.5rem, 4vw, 3rem) 0;
+  position: relative;
+}
+
+.divider::after,
+.divider-royal::after {
+  content: '◆';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--ivory);
+  padding: 0 var(--spacing-md);
+  color: var(--royal-gold);
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+}
+
+/* ========================================
+   TOOLTIPS ROYAUX
+   ======================================== */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--royal-purple-deep);
+  color: var(--ivory);
+  border-radius: var(--radius-md);
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-toast);
+}
+
+[data-tooltip]::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--royal-purple-deep);
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+  opacity: 1;
 }
 
 /* ========================================
    ANIMATIONS ROYALES
    ======================================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @keyframes fadeInRoyal {
   from {
     opacity: 0;
@@ -334,6 +1206,17 @@ nav {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideInRoyal {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 
@@ -348,13 +1231,36 @@ nav {
 
 @keyframes pulseGold {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 0 0 var(--royal-gold-shadow);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(212, 175, 55, 0);
+    box-shadow: 0 0 0 15px rgba(255, 215, 0, 0);
   }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px var(--royal-gold-shadow));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px var(--royal-gold-shadow));
+  }
+}
+
+/* Classes d'animation */
 .animate-fade-in {
   animation: fadeInRoyal 0.6s ease-out;
 }
@@ -364,39 +1270,320 @@ nav {
   animation: shimmerGold 3s linear infinite;
 }
 
+.animate-pulse-gold {
+  animation: pulseGold 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
 /* ========================================
-   SCROLLBAR ROYALE
+   SCROLLBAR ROYALE PERSONNALISÉE
    ======================================== */
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 
 ::-webkit-scrollbar-track {
   background: var(--ivory-cream);
-  border-left: 1px solid var(--marble-gray);
+  border-left: 2px solid var(--marble-gray);
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--gradient-gold);
-  border-radius: 6px;
-  border: 2px solid var(--ivory-cream);
+  border-radius: 8px;
+  border: 3px solid var(--ivory-cream);
+  box-shadow: var(--shadow-inner-light);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, var(--royal-gold) 0%, var(--royal-gold-light) 100%);
+  background: linear-gradient(135deg, var(--royal-gold) 0%, var(--royal-gold-bright) 100%);
+  border-width: 2px;
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--ivory-cream);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--royal-gold) var(--ivory-cream);
 }
 
 /* ========================================
-   UTILITAIRES ROYAUX
+   UTILITAIRES RESPONSIVES
+   ======================================== */
+
+/* Container responsive */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+}
+
+/* Grid système */
+.grid {
+  display: grid;
+  gap: clamp(1rem, 3vw, 2rem);
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 1024px) {
+  .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-cols-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .grid-cols-4,
+  .grid-cols-3,
+  .grid-cols-2 { 
+    grid-template-columns: repeat(1, 1fr); 
+  }
+}
+
+/* Flex utilities */
+.flex {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+/* Espacements */
+.space-y > * + * {
+  margin-top: var(--spacing-md);
+}
+
+.space-y-sm > * + * {
+  margin-top: var(--spacing-sm);
+}
+
+.space-y-lg > * + * {
+  margin-top: var(--spacing-lg);
+}
+
+/* Visibilité responsive */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+/* Text utilities */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.text-sm { font-size: clamp(0.75rem, 1.5vw, 0.875rem); }
+.text-base { font-size: clamp(0.875rem, 2vw, 1rem); }
+.text-lg { font-size: clamp(1rem, 2.5vw, 1.125rem); }
+.text-xl { font-size: clamp(1.125rem, 3vw, 1.25rem); }
+.text-2xl { font-size: clamp(1.25rem, 3.5vw, 1.5rem); }
+
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+.font-black { font-weight: 900; }
+
+/* Couleurs de texte */
+.text-gold { color: var(--royal-gold); }
+.text-purple { color: var(--royal-purple); }
+.text-royal { color: var(--royal-blue); }
+.text-success { color: var(--emerald-green); }
+.text-danger { color: var(--ruby-red); }
+.text-info { color: var(--sapphire-blue); }
+.text-muted { color: var(--marble-dark); }
+
+/* Backgrounds */
+.bg-ivory { background: var(--ivory); }
+.bg-gold { background: var(--gradient-gold); }
+.bg-royal { background: var(--gradient-royal); }
+.bg-dark { background: var(--gradient-obsidian); }
+
+/* Borders */
+.border-gold { border: var(--border-gold); }
+.border-subtle { border: var(--border-subtle); }
+.border-none { border: none; }
+
+/* Shadows */
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-gold { box-shadow: var(--shadow-gold); }
+.shadow-none { box-shadow: none; }
+
+/* Rounded corners */
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* Overflow */
+.overflow-hidden { overflow: hidden; }
+.overflow-auto { overflow: auto; }
+.overflow-x-auto { 
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.overflow-y-auto { 
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ========================================
+   ÉTATS & INTERACTIONS
+   ======================================== */
+
+/* Focus visible pour accessibilité */
+*:focus-visible {
+  outline: 3px solid var(--royal-gold);
+  outline-offset: 2px;
+}
+
+/* Selection de texte */
+::selection {
+  background: var(--royal-gold);
+  color: var(--obsidian-black);
+}
+
+::-moz-selection {
+  background: var(--royal-gold);
+  color: var(--obsidian-black);
+}
+
+/* Cursor pointer */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: var(--transition-smooth);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ========================================
+   MOBILE OPTIMIZATIONS
+   Touch-friendly & Accessibility
+   ======================================== */
+
+/* Minimum touch target */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"],
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Reduce animations for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark mode support (optionnel) */
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --ivory: #1A1A1A;
+    --ivory-cream: #2A2A2A;
+    --obsidian-black: #FFFEF9;
+    --obsidian-dark: #F5F3E8;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+  nav,
+  .sidebar,
+  .btn,
+  button,
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* ========================================
+   TAILWIND UTILITIES LAYER
    ======================================== */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
-  }
-  
-  .text-royal {
-    font-family: var(--font-royal);
   }
   
   .bg-royal-gradient {
@@ -408,10 +1595,14 @@ nav {
   }
   
   .shadow-royal {
-    box-shadow: var(--shadow-royal);
+    box-shadow: var(--shadow-2xl);
   }
   
   .border-ornate {
-    border: var(--border-ornate);
+    border: var(--border-gold-double);
+  }
+  
+  .transition-royal {
+    transition: var(--transition-royal);
   }
 }

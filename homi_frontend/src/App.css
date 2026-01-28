@@ -1,28 +1,562 @@
 /* ========================================
-   HOMI APP - COMPOSANTS ROYAUX
+   HOMI APP - COMPOSANTS SPÉCIFIQUES
+   Royal Digital Palace Theme
    ======================================== */
 
 #root {
-  max-width: 1920px;
-  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+  min-height: 100vh;
   position: relative;
-  z-index: 1;
+  z-index: var(--z-base);
 }
 
 /* ========================================
-   LOGO ROYAL
+   LOGO & BRANDING ROYAL
    ======================================== */
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
+  height: clamp(4rem, 10vw, 6rem);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  will-change: transform, filter;
   transition: var(--transition-royal);
-  filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.2));
+  filter: drop-shadow(0 4px 16px var(--royal-gold-shadow));
 }
 
 .logo:hover {
-  filter: drop-shadow(0 6px 24px rgba(212, 175, 55, 0.4));
+  filter: drop-shadow(0 8px 32px var(--royal-gold-shadow));
+  transform: scale(1.08) rotate(-2deg);
+}
+
+.logo:active {
+  transform: scale(1.02);
+}
+
+/* Logo avec animation */
+.logo.animate {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ========================================
+   PAGE LAYOUTS
+   ======================================== */
+.page-royal {
+  min-height: 100vh;
+  background: var(--gradient-marble);
+  position: relative;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+/* Overlay décoratif subtil */
+.page-royal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(150px, 25vh, 300px);
+  background: var(--gradient-royal);
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-content {
+  position: relative;
+  z-index: var(--z-base);
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ========================================
+   HERO SECTION ROYALE
+   ======================================== */
+.hero-royal {
+  text-align: center;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 3vw, 2rem);
+  background: var(--gradient-vitrail);
+  border-radius: var(--radius-2xl);
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-royal::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--royal-gold-shadow) 0%, transparent 70%);
+  opacity: 0.1;
+  animation: float 20s ease-in-out infinite;
+}
+
+.hero-title {
+  font-family: var(--font-royal);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--spacing-lg);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  filter: drop-shadow(0 4px 8px var(--royal-gold-shadow));
+}
+
+.hero-subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  color: var(--royal-purple-dark);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xl);
+}
+
+/* ========================================
+   DASHBOARD CARDS AVANCÉES
+   ======================================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: clamp(1rem, 3vw, 2rem);
+  margin: clamp(1.5rem, 4vw, 3rem) 0;
+}
+
+.stat-card {
+  background: var(--ivory);
+  border-radius: var(--radius-xl);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--marble-gray);
+  transition: var(--transition-royal);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--gradient-gold);
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--royal-gold);
+}
+
+.stat-card-icon {
+  width: clamp(48px, 10vw, 64px);
+  height: clamp(48px, 10vw, 64px);
+  background: var(--gradient-royal);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: var(--ivory);
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card-value {
+  font-family: var(--font-royal);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: var(--royal-purple-deep);
+  margin-bottom: var(--spacing-sm);
+}
+
+.stat-card-label {
+  font-family: var(--font-body);
+  font-size: clamp(0.875rem, 1.8vw, 1rem);
+  color: var(--obsidian-medium);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ========================================
+   TASK CARDS
+   ======================================== */
+.task-card {
+  background: var(--ivory);
+  border-radius: var(--radius-lg);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border: 2px solid var(--marble-gray);
+  border-left: 5px solid var(--royal-gold);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  margin-bottom: var(--spacing-md);
+}
+
+.task-card:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+  border-left-color: var(--royal-gold-bright);
+}
+
+.task-card.completed {
+  opacity: 0.7;
+  border-left-color: var(--emerald-green);
+}
+
+.task-card.priority-high {
+  border-left-color: var(--ruby-red);
+  border-left-width: 6px;
+}
+
+.task-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.task-card-title {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  font-weight: 700;
+  color: var(--royal-purple-deep);
+  flex: 1;
+  min-width: 150px;
+}
+
+.task-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  color: var(--marble-dark);
+  flex-wrap: wrap;
+}
+
+/* ========================================
+   FORMS AVANCÉS
+   ======================================== */
+.form-royal {
+  background: var(--ivory);
+  border-radius: var(--radius-xl);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--royal-gold-dark);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-royal::before {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 5px;
+  background: var(--gradient-gold);
+  margin: 0 auto var(--spacing-xl);
+  border-radius: var(--radius-full);
+}
+
+.form-title {
+  font-family: var(--font-royal);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: var(--royal-purple-deep);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-2xl);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.form-actions .btn,
+.form-actions button {
+  flex: 1;
+  min-width: 140px;
+}
+
+@media (max-width: 480px) {
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions .btn,
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   LIST ITEMS ROYAUX
+   ======================================== */
+.list-royal {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-royal-item {
+  background: var(--ivory);
+  border-radius: var(--radius-md);
+  padding: clamp(1rem, 2vw, 1.25rem);
+  margin-bottom: var(--spacing-md);
+  border: 2px solid var(--marble-gray);
+  transition: var(--transition-smooth);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.list-royal-item:hover {
+  background: var(--gradient-vitrail);
+  border-color: var(--royal-gold-dark);
+  transform: translateX(4px);
+}
+
+.list-royal-item::before {
+  content: '◆';
+  color: var(--royal-gold);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   BREADCRUMBS ROYAUX
+   ======================================== */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-xl);
+  font-size: clamp(0.875rem, 1.8vw, 1rem);
+}
+
+.breadcrumb-item {
+  color: var(--royal-purple-dark);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.breadcrumb-item:hover {
+  color: var(--royal-gold);
+}
+
+.breadcrumb-item.active {
+  color: var(--marble-dark);
+  pointer-events: none;
+}
+
+.breadcrumb-separator {
+  color: var(--marble-dark);
+  margin: 0 var(--spacing-xs);
+}
+
+/* ========================================
+   PAGINATION ROYALE
+   ======================================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-2xl) 0;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  min-width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--marble-gray);
+  background: var(--ivory);
+  color: var(--royal-purple-dark);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  text-decoration: none;
+}
+
+.pagination-btn:hover {
+  background: var(--royal-gold-light);
+  border-color: var(--royal-gold);
   transform: scale(1.05);
+}
+
+.pagination-btn.active {
+  background: var(--gradient-gold);
+  border-color: var(--royal-gold-dark);
+  color: var(--obsidian-black);
+  box-shadow: var(--shadow-gold);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ========================================
+   TABS ROYAUX
+   ======================================== */
+.tabs {
+  display: flex;
+  gap: var(--spacing-sm);
+  border-bottom: 3px solid var(--marble-gray);
+  margin-bottom: var(--spacing-xl);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab {
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--obsidian-medium);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(0.875rem, 1.8vw, 1rem);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  white-space: nowrap;
+  margin-bottom: -3px;
+}
+
+.tab:hover {
+  color: var(--royal-gold-dark);
+  background: var(--gradient-vitrail);
+}
+
+.tab.active {
+  color: var(--royal-purple-deep);
+  border-bottom-color: var(--royal-gold);
+  font-weight: 800;
+}
+
+/* ========================================
+   PROGRESS BAR ROYAL
+   ======================================== */
+.progress-bar {
+  width: 100%;
+  height: clamp(12px, 2vw, 16px);
+  background: var(--marble-white);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  box-shadow: var(--shadow-inner);
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--gradient-gold);
+  border-radius: var(--radius-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-gold-shine);
+  animation: shimmerGold 2s linear infinite;
+}
+
+/* ========================================
+   EMPTY STATE ROYAL
+   ======================================== */
+.empty-state {
+  text-align: center;
+  padding: clamp(3rem, 8vw, 5rem) clamp(1rem, 3vw, 2rem);
+}
+
+.empty-state-icon {
+  font-size: clamp(4rem, 10vw, 6rem);
+  color: var(--marble-gray);
+  margin-bottom: var(--spacing-xl);
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-family: var(--font-royal);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--royal-purple-dark);
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-state-message {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  color: var(--marble-dark);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* ========================================
+   RESPONSIVE MOBILE ADAPTATIONS
+   ======================================== */
+@media (max-width: 768px) {
+  /* Augmenter les touch targets */
+  .btn,
+  button,
+  a,
+  input,
+  select {
+    min-height: 44px;
+  }
+  
+  /* Réduire les espacements */
+  .page-royal {
+    padding: var(--spacing-md);
+  }
+  
+  /* Cards pleine largeur */
+  .card,
+  .stat-card,
+  .task-card {
+    width: 100%;
+  }
+  
+  /* Tabs scrollables */
+  .tabs {
+    justify-content: flex-start;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITÉ - HIGH CONTRAST
+   ======================================== */
+@media (prefers-contrast: high) {
+  .btn,
+  button,
+  .card {
+    border-width: 3px;
+  }
+  
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: 4px solid var(--royal-gold);
+    outline-offset: 2px;
+  }
 }
 
 /* ========================================
