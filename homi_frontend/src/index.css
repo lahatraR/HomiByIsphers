@@ -108,6 +108,7 @@
   --border-gold-thick: 3px solid var(--royal-gold);
   --border-gold-double: 4px double var(--royal-gold);
   --border-subtle: 1px solid var(--marble-gray);
+}
 html {
   font-size: 16px;
   scroll-behavior: smooth;
@@ -186,8 +187,9 @@ body {
 body::before {
   content: '';
   position: fixed;
-  top: 0; - HIÉRARCHIE CLAIRE
-   ======================================== */
+  top: 0; 
+}
+  
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-royal);
   font-weight: 700;
@@ -240,7 +242,24 @@ p {
   font-family: var(--font-body);
   line-height: 1.7;
   color: var(--obsidian-medium);
-  margin-bottom: var(--SYSTÈME DE BOUTONS
+  margin-bottom: var(--spacing-md);
+}
+
+/* Classes utilitaires typographie */
+.text-display {
+  font-family: var(--font-display);
+}
+
+.text-royal {
+  font-family: var(--font-royal);
+}
+
+.text-body {
+  font-family: var(--font-body);
+}
+
+/* ========================================
+   COMPOSANTS ROYAUX - SYSTÈME DE BOUTONS
    Hiérarchie visuelle claire & contraste élevé
    ======================================== */
 
@@ -461,6 +480,7 @@ button:focus-visible {
     flex: 1 1 100%;
     min-width: 100%;
   }
+}
 .btn-primary:hover::before, button[type="submit"]:hover::before {
   left: 100%;
 }
