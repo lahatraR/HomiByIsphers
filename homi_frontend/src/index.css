@@ -1,5 +1,126 @@
 /*
   =============================
+  SCALE SYSTEM: 4px/8px grid, fluid, ergonomic
+  =============================
+*/
+:root {
+  --size-4: 0.25rem;   /* 4px */
+  --size-8: 0.5rem;    /* 8px */
+  --size-12: 0.75rem;  /* 12px */
+  --size-16: 1rem;     /* 16px */
+  --size-20: 1.25rem;  /* 20px */
+  --size-24: 1.5rem;   /* 24px */
+  --size-32: 2rem;     /* 32px */
+  --size-40: 2.5rem;   /* 40px */
+  --size-44: 2.75rem;  /* 44px (min touch target) */
+  --size-48: 3rem;     /* 48px */
+  --size-56: 3.5rem;   /* 56px */
+  --size-64: 4rem;     /* 64px (max touch target) */
+  --gap: var(--size-8);
+  --gap-lg: var(--size-16);
+  --container-padding: clamp(var(--size-8), 4vw, var(--size-32));
+  --safe-area-inset-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+  --safe-area-inset-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px);
+  /* Fluid typography scale */
+  --font-min: 1rem;
+  --font-max: 1.25rem;
+  --font-fluid: clamp(var(--font-min), 2vw + 1rem, var(--font-max));
+  --font-title-min: 1.5rem;
+  --font-title-max: 2.5rem;
+  --font-title-fluid: clamp(var(--font-title-min), 4vw + 1rem, var(--font-title-max));
+}
+.container {
+  inline-size: 100%;
+  max-inline-size: 1400px;
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+  padding-block: 0;
+  box-sizing: border-box;
+  container-type: inline-size;
+  container-name: main;
+  /* Safe area for foldables/TV */
+  padding-left: max(var(--container-padding), env(safe-area-inset-left));
+  padding-right: max(var(--container-padding), env(safe-area-inset-right));
+}
+.container-fluid {
+  inline-size: 100%;
+  padding-inline: var(--container-padding);
+  padding-block: 0;
+  box-sizing: border-box;
+  container-type: inline-size;
+  container-name: fluid;
+  padding-left: max(var(--container-padding), env(safe-area-inset-left));
+  padding-right: max(var(--container-padding), env(safe-area-inset-right));
+}
+.card {
+  background: var(--ivory);
+  border-radius: var(--radius-xl);
+  padding-block: clamp(var(--size-16), 3vw, var(--size-32));
+  padding-inline: clamp(var(--size-16), 3vw, var(--size-32));
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--marble-gray);
+  transition: var(--transition-royal);
+  position: relative;
+  overflow: hidden;
+  z-index: var(--z-elevated);
+  box-sizing: border-box;
+  aspect-ratio: 1.6/1;
+  max-inline-size: 100%;
+}
+.sidebar {
+  background: linear-gradient(180deg, var(--ivory) 0%, var(--ivory-cream) 100%);
+  border-inline-end: 2px solid var(--royal-gold-dark);
+  box-shadow: var(--shadow-lg);
+  padding-block: clamp(var(--size-16), 2.5vw, var(--size-32));
+  padding-inline: clamp(var(--size-16), 2.5vw, var(--size-32));
+  min-block-size: 100dvh;
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-elevated);
+  overflow-y: auto;
+  box-sizing: border-box;
+  max-inline-size: 100vw;
+}
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  margin-block: var(--spacing-xl);
+  margin-inline: 0;
+  box-sizing: border-box;
+  max-inline-size: 100vw;
+}
+.grid {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  box-sizing: border-box;
+  width: 100%;
+}
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"],
+  .btn {
+    min-block-size: var(--size-44);
+    min-inline-size: var(--size-44);
+    max-block-size: var(--size-64);
+    max-inline-size: var(--size-64);
+    min-height: var(--size-44);
+    min-width: var(--size-44);
+    padding-block: clamp(var(--size-8), 1.5vw, var(--size-16));
+    padding-inline: clamp(var(--size-16), 3vw, var(--size-32));
+    font-size: var(--font-fluid);
+    border-radius: var(--radius-lg, 0.75em);
+    aspect-ratio: 2.5/1;
+    box-sizing: border-box;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+    touch-action: manipulation;
+  }
+}
+/*
+  =============================
   ORIGINAL VISUAL SIGNATURE ELEMENT
   - .royal-accent-underline: a unique, elegant underline accent for headings or key elements
   - Use sparingly for visual signature
@@ -34,21 +155,22 @@
   =============================
 */
 @media (max-width: 640px) {
-  .mobile-fixed-actions {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1200;
-    display: flex;
-    justify-content: space-around;
-    gap: 0.9em;
-    background: linear-gradient(90deg, #f8f6f1ee 80%, #e7c87333 100%);
-    box-shadow: 0 -2px 24px 0 #1a224044, 0 -1.5px 0 #e7c87344;
-    padding: 1em 0.7em 1.1em 0.7em;
-    border-top: 2px solid var(--royal-gold);
-    border-radius: 1.2em 1.2em 0 0;
-    backdrop-filter: blur(10px);
+  .mobile-fixed-actions .btn {
+    min-block-size: var(--size-44);
+    min-inline-size: var(--size-44);
+    max-block-size: var(--size-64);
+    max-inline-size: var(--size-64);
+    min-height: var(--size-44);
+    min-width: var(--size-44);
+    padding-block: clamp(var(--size-8), 1.5vw, var(--size-16));
+    padding-inline: clamp(var(--size-16), 3vw, var(--size-32));
+    font-size: var(--font-fluid);
+    border-radius: var(--radius-lg, 0.75em);
+    aspect-ratio: 2.5/1;
+    box-sizing: border-box;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+    touch-action: manipulation;
+  
     pointer-events: auto;
     max-width: 100vw;
     overflow-x: auto;
@@ -64,11 +186,16 @@
     min-height: 48px;
     min-width: 44px;
   }
+  
 }
 .btn-lg, button.btn-lg {
-  padding: clamp(1rem, 2.5vw, 1.25rem) clamp(2rem, 5vw, 3rem);
-  font-size: clamp(1rem, 2.5vw, 1.125rem);
-  min-height: 52px;
+  padding-block: clamp(var(--size-12), 2vw, var(--size-20));
+  padding-inline: clamp(var(--size-24), 6vw, var(--size-48));
+  font-size: var(--font-title-fluid);
+  min-block-size: var(--size-56);
+  min-inline-size: var(--size-56);
+  border-radius: var(--radius-xl, 1em);
+  aspect-ratio: 2.5/1;
 }
 
 
@@ -1267,8 +1394,20 @@ tbody td {
   input[type="button"],
   input[type="submit"],
   .btn {
-    min-height: 44px;
-    min-width: 44px;
+    min-block-size: var(--size-44);
+    min-inline-size: var(--size-44);
+    max-block-size: var(--size-64);
+    max-inline-size: var(--size-64);
+    min-height: var(--size-44);
+    min-width: var(--size-44);
+    padding-block: clamp(var(--size-8), 1.5vw, var(--size-16));
+    padding-inline: clamp(var(--size-16), 3vw, var(--size-32));
+    font-size: var(--font-fluid);
+    border-radius: var(--radius-lg, 0.75em);
+    aspect-ratio: 2.5/1;
+    box-sizing: border-box;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+    touch-action: manipulation;
   }
 }
 
@@ -1405,6 +1544,20 @@ tbody td {
   button,
   .no-print {
     display: none !important;
+    min-block-size: var(--size-44) !important;
+    min-inline-size: var(--size-44) !important;
+    max-block-size: var(--size-64) !important;
+    max-inline-size: var(--size-64) !important;
+    min-height: var(--size-44) !important;
+    min-width: var(--size-44) !important;
+    padding-block: clamp(var(--size-8), 1.5vw, var(--size-16)) !important;
+    padding-inline: clamp(var(--size-16), 3vw, var(--size-32)) !important;
+    font-size: var(--font-fluid) !important;
+    border-radius: var(--radius-lg, 0.75em) !important;
+    aspect-ratio: 2.5/1 !important;
+    box-sizing: border-box !important;
+    transition: none !important;
+    touch-action: manipulation !important;
   }
   
   body {
