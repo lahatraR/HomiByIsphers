@@ -1,34 +1,32 @@
 /* --- MOBILE FIXED ACTION BUTTONS --- */
 @media (max-width: 640px) {
-
-  @media (max-width: 640px) {
-    .mobile-fixed-actions {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1200;
-      display: flex;
-      justify-content: space-around;
-      gap: 0.7em;
-      background: linear-gradient(90deg, #f8f6f1ee 80%, #e7c87333 100%);
-      box-shadow: 0 -2px 24px 0 #1a224044, 0 -1.5px 0 #e7c87344;
-      padding: 0.7em 0.5em 0.9em 0.5em;
-      border-top: 2px solid var(--royal-gold);
-      border-radius: 1.2em 1.2em 0 0;
-      backdrop-filter: blur(8px);
-      pointer-events: auto;
-    }
-    .mobile-fixed-actions .btn {
-      flex: 1 1 0;
-      min-width: 0;
-      font-size: 1.08rem;
-      margin: 0 0.2em;
-      box-shadow: 0 2px 12px 0 #e7c87344, 0 1.5px 0 #1a224022;
-      border-radius: var(--royal-radius);
-      padding: 0.9em 0.2em;
-    }
+  .mobile-fixed-actions {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1200;
+    display: flex;
+    justify-content: space-around;
+    gap: 0.7em;
+    background: linear-gradient(90deg, #f8f6f1ee 80%, #e7c87333 100%);
+    box-shadow: 0 -2px 24px 0 #1a224044, 0 -1.5px 0 #e7c87344;
+    padding: 0.7em 0.5em 0.9em 0.5em;
+    border-top: 2px solid var(--royal-gold);
+    border-radius: 1.2em 1.2em 0 0;
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
   }
+  .mobile-fixed-actions .btn {
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: 1.08rem;
+    margin: 0 0.2em;
+    box-shadow: 0 2px 12px 0 #e7c87344, 0 1.5px 0 #1a224022;
+    border-radius: var(--royal-radius);
+    padding: 0.9em 0.2em;
+  }
+}
 .btn-lg, button.btn-lg {
   padding: clamp(1rem, 2.5vw, 1.25rem) clamp(2rem, 5vw, 3rem);
   font-size: clamp(1rem, 2.5vw, 1.125rem);
@@ -1226,6 +1224,7 @@ tbody td {
 /* ========================================
    TAILWIND UTILITIES LAYER
    ======================================== */
+@tailwind utilities;
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -1251,4 +1250,3 @@ tbody td {
     transition: var(--transition-royal);
   }
    }
-}
