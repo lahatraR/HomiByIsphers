@@ -3,6 +3,11 @@ import { persist } from 'zustand/middleware';
 import type { User } from '../types';
 import { authService } from '../services/auth.service';
 
+// Vérification auto de l'expiration du token à chaque chargement
+if (authService.isTokenExpired()) {
+  authService.logout();
+}
+
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
@@ -25,7 +30,15 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
       error: null,
 
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      setUser: (user) => {
+        // Si le token est expiré, forcer la déconnexion
+        if (authService.isTokenExpired()) {
+          authService.logout();
+          set({ user: null, isAuthenticated: false });
+        } else {
+          set({ user, isAuthenticated: !!user });
+        }
+      },
 
       login: async (email, password) => {
         set({ isLoading: true, error: null });

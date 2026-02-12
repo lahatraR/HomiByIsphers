@@ -20,6 +20,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Psr\Log\LoggerInterface;
+use App\Service\MailjetService;
+
 
 #[Route('/api/auth')]
 class AuthController extends AbstractController
@@ -32,6 +34,7 @@ class AuthController extends AbstractController
         private ValidatorInterface $validator,
         private EmailQueue $emailQueue,
         private LoggerInterface $logger,
+        private MailjetService $mailjetService,
     ) {
     }
 
@@ -92,10 +95,40 @@ class AuthController extends AbstractController
             );
             $user->setRole($registerRequest->role);
             
-            // Auto-vérifier l'email (vérification désactivée)
-            $user->setIsEmailVerified(true);
-            $user->setEmailVerificationToken(null);
-            $user->setEmailVerificationTokenExpiresAt(null);
+
+            // Générer un token de vérification unique
+            $token = bin2hex(random_bytes(32));
+            $expiresAt = (new \DateTimeImmutable())->modify('+1 day');
+            $user->setIsEmailVerified(false);
+            $user->setEmailVerificationToken($token);
+            $user->setEmailVerificationTokenExpiresAt($expiresAt);
+
+
+            // Envoyer l'e-mail de vérification directement avec Mailjet
+            $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:5173';
+            $verificationUrl = sprintf('%s/verify-email/%s', $frontendUrl, $token);
+            $htmlContent = sprintf(
+                '<html><body style="font-family: Arial, sans-serif;">'
+                .'<div style="max-width: 600px; margin: 0 auto;">'
+                .'<h1 style="color: #4F46E5;">Bienvenue sur Homi !</h1>'
+                .'<p>Bonjour <strong>%s</strong>,</p>'
+                .'<p>Merci de vous être inscrit(e) sur Homi. Pour activer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>'
+                .'<p style="margin: 30px 0;"><a href="%s" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Vérifier mon email</a></p>'
+                .'<p>Ou copiez ce lien :</p>'
+                .'<p style="word-break: break-all; color: #666;"><small>%s</small></p>'
+                .'<hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">'
+                .'<p style="color: #999; font-size: 12px;">Si vous n\'avez pas créé de compte, ignorez cet email.</p>'
+                .'</div></body></html>',
+                htmlspecialchars($user->getFirstName() ?: $user->getEmail()),
+                htmlspecialchars($verificationUrl),
+                htmlspecialchars($verificationUrl)
+            );
+            $this->mailjetService->sendEmail(
+                $user->getEmail(),
+                $user->getFirstName() ?: $user->getEmail(),
+                'Vérification de votre compte Homi',
+                $htmlContent
+            );
 
             try {
                 $this->em->persist($user);
@@ -124,7 +157,7 @@ class AuthController extends AbstractController
             }
 
             return $this->json([
-                'message' => 'Inscription réussie. Vous pouvez maintenant vous connecter.',
+                'message' => 'Inscription réussie. Veuillez vérifier votre e-mail pour activer votre compte.',
                 'email' => $user->getEmail()
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {

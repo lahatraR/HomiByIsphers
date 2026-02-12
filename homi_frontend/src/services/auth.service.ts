@@ -1,6 +1,17 @@
 import { api } from './api';
 import type { LoginCredentials, AuthResponse, User, UserRole } from '../types';
 
+
+// Décoder le payload JWT (base64)
+function decodeJwtPayload(token: string): any {
+  try {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload));
+  } catch {
+    return null;
+  }
+}
+
 const mapAuthToUser = (auth: AuthResponse): User => ({
   id: auth.userId,
   email: auth.email,
@@ -15,9 +26,15 @@ export const authService = {
     const response = await api.post<AuthResponse>('/auth/login', credentials);
     const user = mapAuthToUser(response.data);
 
+
     if (response.data.token) {
       localStorage.setItem('authToken', response.data.token);
       localStorage.setItem('user', JSON.stringify(user));
+      // Stocker l'expiration du token (en ms)
+      const payload = decodeJwtPayload(response.data.token);
+      if (payload && payload.exp) {
+        localStorage.setItem('authTokenExpiresAt', String(payload.exp * 1000));
+      }
     }
 
     return { auth: response.data, user };
@@ -29,6 +46,7 @@ export const authService = {
   logout: (): void => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('authTokenExpiresAt');
   },
 
   /**
@@ -50,7 +68,19 @@ export const authService = {
    * Check if user is authenticated
    */
   isAuthenticated: (): boolean => {
-    return !!localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken');
+    const expiresAt = localStorage.getItem('authTokenExpiresAt');
+    if (!token || !expiresAt) return false;
+    const now = Date.now();
+    return now < Number(expiresAt);
+  },
+  /**
+   * Vérifie si le token JWT est expiré
+   */
+  isTokenExpired: (): boolean => {
+    const expiresAt = localStorage.getItem('authTokenExpiresAt');
+    if (!expiresAt) return true;
+    return Date.now() > Number(expiresAt);
   },
 
   /**

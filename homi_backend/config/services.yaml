@@ -17,3 +17,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Serializer/'
+
+    App\Service\MailjetService:
+        arguments:
+            $apiKey: '%env(MAILJET_API_KEY)%'
+            $apiSecret: '%env(MAILJET_API_SECRET)%'
+            $fromEmail: '%env(MAILER_FROM)%'
+            $fromName: 'Homi'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { Button, Input, PasswordInput } from '../components/common';
@@ -11,22 +11,33 @@ export const LoginPage: React.FC = () => {
     email: '',
     password: '',
   });
+  const [showSlowMessage, setShowSlowMessage] = useState(false);
+  const timerRef = useRef<number | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowSlowMessage(false);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => setShowSlowMessage(true), 2000);
     try {
       await login(formData.email, formData.password);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      setShowSlowMessage(false);
       navigate('/dashboard', { replace: true });
     } catch (error: any) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      setShowSlowMessage(false);
       // Error is handled by the store
       console.error('Login failed:', error);
-      
-      // Afficher un message spécifique si email non vérifié
-      if (error?.response?.status === 403 || error?.message?.includes('vérifier')) {
-        // Le message d'erreur sera affiché par le store
-      }
     }
   };
+
+  // Nettoyage du timer si le composant est démonté
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -98,10 +109,10 @@ export const LoginPage: React.FC = () => {
           )}
 
           {/* Loading Info Message */}
-          {isLoading && (
-            <div className="mb-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
+          {isLoading && showSlowMessage && (
+            <div className="mb-4 p-3 rounded-lg bg-blue-50 border border-blue-200 animate-pulse">
               <p className="text-blue-700 text-sm">
-                ⏳ Connexion en cours... Le serveur peut prendre 30-60 secondes lors de la première connexion.
+                ⏳ Initialisation du service, merci de patienter…
               </p>
             </div>
           )}
