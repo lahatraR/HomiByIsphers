@@ -16,6 +16,8 @@ const mapAuthToUser = (auth: AuthResponse): User => ({
   id: auth.userId,
   email: auth.email,
   role: auth.role,
+  firstName: auth.firstName,
+  lastName: auth.lastName,
 });
 
 export const authService = {

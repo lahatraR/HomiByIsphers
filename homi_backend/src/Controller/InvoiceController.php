@@ -32,7 +32,7 @@ class InvoiceController extends AbstractController
      * Générer une nouvelle facture
      * POST /api/invoices
      */
-    #[Route('/', name: 'api_invoices_create', methods: ['POST'])]
+    #[Route('', name: 'api_invoices_create', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): JsonResponse
     {
@@ -103,7 +103,7 @@ class InvoiceController extends AbstractController
      * Récupérer toutes les factures (avec filtres)
      * GET /api/invoices
      */
-    #[Route('/', name: 'api_invoices_index', methods: ['GET'])]
+    #[Route('', name: 'api_invoices_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): JsonResponse
     {

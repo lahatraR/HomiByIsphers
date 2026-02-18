@@ -21,7 +21,7 @@ class TwoFAController extends AbstractController
         private EntityManagerInterface $em
     ) {}
 
-    #[Route('/', name: 'api_2fa_status', methods: ['GET'])]
+    #[Route('', name: 'api_2fa_status', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function status(): JsonResponse
     {

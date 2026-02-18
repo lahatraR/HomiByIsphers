@@ -21,7 +21,7 @@ export const domicileService = {
      * Récupérer tous les domiciles
      */
         getAllDomiciles: async (): Promise<Domicile[]> => {
-            const response = await api.get<Domicile[]>('/domiciles/');
+            const response = await api.get<Domicile[]>('/domiciles');
             return response.data;
         },
 
@@ -29,7 +29,7 @@ export const domicileService = {
      * Récupérer un domicile par ID
      */
         getDomicileById: async (id: number): Promise<Domicile> => {
-            const response = await api.get<Domicile>(`/domiciles/${id}/`);
+            const response = await api.get<Domicile>(`/domiciles/${id}`);
             return response.data;
         },
 
@@ -51,7 +51,7 @@ export const domicileService = {
      * Mettre à jour un domicile
      */
     updateDomicile: async (id: number, data: Partial<Domicile>): Promise<Domicile> => {
-        const response = await api.put<Domicile>(`/domiciles/${id}/`, data);
+        const response = await api.put<Domicile>(`/domiciles/${id}`, data);
         return response.data;
     },
 
@@ -59,6 +59,6 @@ export const domicileService = {
      * Supprimer un domicile
      */
     deleteDomicile: async (id: number): Promise<void> => {
-        await api.delete(`/domiciles/${id}/`);
+        await api.delete(`/domiciles/${id}`);
     },
 };

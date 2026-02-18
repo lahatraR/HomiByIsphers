@@ -21,7 +21,7 @@ class NotificationController extends AbstractController
         private EntityManagerInterface $em
     ) {}
 
-    #[Route('/', name: 'api_notifications_list', methods: ['GET'])]
+    #[Route('', name: 'api_notifications_list', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function list(): JsonResponse
     {
@@ -39,7 +39,7 @@ class NotificationController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/', name: 'api_notifications_create', methods: ['POST'])]
+    #[Route('', name: 'api_notifications_create', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request): JsonResponse
     {

@@ -46,7 +46,7 @@ export const taskService = {
      */
     getAllTasks: async (): Promise<Task[]> => {
       
-        const response = await api.get<Task[]>('/tasks/');
+        const response = await api.get<Task[]>('/tasks');
         return response.data;
     },
 
@@ -55,7 +55,7 @@ export const taskService = {
      */
     getTaskById: async (id: number): Promise<Task> => {
      
-        const response = await api.get<Task>(`/tasks/${id}/`);
+        const response = await api.get<Task>(`/tasks/${id}`);
         return response.data;
     },
 
@@ -96,7 +96,7 @@ export const taskService = {
      */
     getStats: async (): Promise<TaskStats> => {
      
-        const response = await api.get<TaskStats>('/tasks/stats/');
+        const response = await api.get<TaskStats>('/tasks/stats');
         return response.data;
     },
 

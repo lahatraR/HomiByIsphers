@@ -41,7 +41,7 @@ export interface InvoiceStats {
  */
 export const getInvoices = async (status?: string): Promise<Invoice[]> => {
   try {
-    const url = status ? `/invoices/?status=${encodeURIComponent(status)}` : '/invoices/';
+    const url = status ? `/invoices?status=${encodeURIComponent(status)}` : '/invoices';
     const response = await api.get<Invoice[]>(url);
     return response.data;
   } catch (error) {

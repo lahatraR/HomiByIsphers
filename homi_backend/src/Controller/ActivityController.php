@@ -14,7 +14,7 @@ class ActivityController extends AbstractController
 {
     public function __construct(private ActivityRepository $activityRepository) {}
 
-    #[Route('/', name: 'api_activity_list', methods: ['GET'])]
+    #[Route('', name: 'api_activity_list', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function list(): JsonResponse
     {

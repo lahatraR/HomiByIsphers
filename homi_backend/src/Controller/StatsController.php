@@ -23,7 +23,7 @@ class StatsController extends AbstractController
         private EntityManagerInterface $em
     ) {}
 
-    #[Route('/', name: 'api_admin_stats', methods: ['GET'])]
+    #[Route('', name: 'api_admin_stats', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function stats(): JsonResponse
     {

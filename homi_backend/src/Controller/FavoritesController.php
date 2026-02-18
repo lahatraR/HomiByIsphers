@@ -21,7 +21,7 @@ class FavoritesController extends AbstractController
         private EntityManagerInterface $em
     ) {}
 
-    #[Route('/', name: 'api_favorites_list', methods: ['GET'])]
+    #[Route('', name: 'api_favorites_list', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function list(): JsonResponse
     {
@@ -38,7 +38,7 @@ class FavoritesController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/', name: 'api_favorites_add', methods: ['POST'])]
+    #[Route('', name: 'api_favorites_add', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function add(Request $request): JsonResponse
     {

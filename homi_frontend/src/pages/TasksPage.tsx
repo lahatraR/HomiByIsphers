@@ -31,7 +31,7 @@ export const TasksPage: React.FC = () => {
       const executors = response.data;
      
       const isAuthorized = executors.some((executor: any) => executor.id === user?.id);
-      
+   
       if (!isAuthorized) {
         setError(t('tasks.notAuthorized'));
         return;

@@ -35,7 +35,7 @@ class TaskController extends AbstractController
     /**
      * Get all tasks
      */
-    #[Route('/', name: 'api_tasks_index', methods: ['GET'])]
+    #[Route('', name: 'api_tasks_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(): JsonResponse
     {
@@ -62,7 +62,7 @@ class TaskController extends AbstractController
     /**
      * Get a specific task
      */
-    #[Route('/{id}/', name: 'api_tasks_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'api_tasks_show', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(int $id): JsonResponse
     {

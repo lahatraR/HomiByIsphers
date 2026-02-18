@@ -16,7 +16,7 @@ class SupportController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $em) {}
 
-    #[Route('/', name: 'api_support_list', methods: ['GET'])]
+    #[Route('', name: 'api_support_list', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function list(): JsonResponse
     {
@@ -41,7 +41,7 @@ class SupportController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/', name: 'api_support_contact', methods: ['POST'])]
+    #[Route('', name: 'api_support_contact', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function contact(Request $request): JsonResponse
     {

@@ -207,6 +207,8 @@ class AuthController extends AbstractController
                 userId: $user->getId(),
                 email: $user->getEmail(),
                 role: $user->getRole(),
+                firstName: $user->getFirstName(),
+                lastName: $user->getLastName(),
             );
 
             return $this->json($authResponse, Response::HTTP_OK);

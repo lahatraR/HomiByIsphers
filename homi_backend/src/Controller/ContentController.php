@@ -20,7 +20,7 @@ class ContentController extends AbstractController
         private EntityManagerInterface $em
     ) {}
 
-    #[Route('/', name: 'api_admin_content_list', methods: ['GET'])]
+    #[Route('', name: 'api_admin_content_list', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function list(): JsonResponse
     {
@@ -35,7 +35,7 @@ class ContentController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/', name: 'api_admin_content_create', methods: ['POST'])]
+    #[Route('', name: 'api_admin_content_create', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): JsonResponse
     {

@@ -33,7 +33,7 @@ class TimeTrackingController extends AbstractController
      * Créer un nouveau log de temps
      * POST /api/time-logs
      */
-    #[Route('/', name: 'api_time_logs_create', methods: ['POST'])]
+    #[Route('', name: 'api_time_logs_create', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request): JsonResponse
     {
@@ -104,7 +104,7 @@ class TimeTrackingController extends AbstractController
      * Récupérer tous les logs de l'utilisateur courant
      * GET /api/time-logs
      */
-    #[Route('/', name: 'api_time_logs_index', methods: ['GET'])]
+    #[Route('', name: 'api_time_logs_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): JsonResponse
     {

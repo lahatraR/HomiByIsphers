@@ -62,7 +62,7 @@ export const submitTimeLog = async (
  */
 export const getMyTimeLogs = async (status?: string): Promise<TimeLog[]> => {
   try {
-    const url = status ? `/time-logs/?status=${encodeURIComponent(status)}` : '/time-logs/';
+    const url = status ? `/time-logs?status=${encodeURIComponent(status)}` : '/time-logs';
     const response = await api.get<TimeLog[]>(url);
     return response.data;
   } catch (error) {

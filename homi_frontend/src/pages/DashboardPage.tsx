@@ -61,7 +61,8 @@ export const DashboardPage: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                            {t('dashboard.welcomeBack', { name: user?.firstName || user?.email })} 👋
+                            {t('dashboard.welcomeBack', { name: user?.firstName })} 
+                            
                         </h1>
                         <p className="text-gray-600">
                             {isAdmin ? t('dashboard.manageDomiciles') : t('dashboard.hereIsWhatsHappening')}

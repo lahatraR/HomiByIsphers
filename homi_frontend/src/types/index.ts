@@ -122,6 +122,8 @@ export interface AuthResponse {
   userId: number;
   email: string;
   role: UserRole;
+  firstName?: string;
+  lastName?: string;
 }
 
 // API Response types

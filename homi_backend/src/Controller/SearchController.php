@@ -21,7 +21,7 @@ class SearchController extends AbstractController
         private DomicileRepository $domicileRepository
     ) {}
 
-    #[Route('/', name: 'api_search', methods: ['GET'])]
+    #[Route('', name: 'api_search', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function search(Request $request): JsonResponse
     {

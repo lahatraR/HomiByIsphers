@@ -10,6 +10,8 @@ class AuthResponse
         public int $userId,
         public string $email,
         public string $role,
+        public ?string $firstName = null,
+        public ?string $lastName = null,
     ) {
     }
 }

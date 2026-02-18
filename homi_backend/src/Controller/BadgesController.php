@@ -14,7 +14,7 @@ class BadgesController extends AbstractController
 {
     public function __construct(private BadgeRepository $badgeRepository) {}
 
-    #[Route('/', name: 'api_badges_list', methods: ['GET'])]
+    #[Route('', name: 'api_badges_list', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function list(): JsonResponse
     {

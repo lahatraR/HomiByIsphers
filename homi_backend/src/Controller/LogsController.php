@@ -14,7 +14,7 @@ class LogsController extends AbstractController
 {
     public function __construct(private LogEntryRepository $logEntryRepository) {}
 
-    #[Route('/', name: 'api_admin_logs_list', methods: ['GET'])]
+    #[Route('', name: 'api_admin_logs_list', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function list(): JsonResponse
     {

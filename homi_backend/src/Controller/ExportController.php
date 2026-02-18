@@ -16,7 +16,7 @@ class ExportController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $em) {}
 
-    #[Route('/', name: 'api_export_data', methods: ['POST'])]
+    #[Route('', name: 'api_export_data', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function export(Request $request): JsonResponse
     {
