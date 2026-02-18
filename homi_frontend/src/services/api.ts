@@ -1,57 +1,16 @@
 import axios, { type AxiosInstance, type AxiosError } from 'axios';
 import type { ApiError, ApiResponse } from '../types';
 
-// API Configuration
-// Prod: utilise directement VITE_API_BASE_URL (pas de détection async)
-// Dev: essaie localhost si aucune env fournie
-const backendUrls = [
-  'http://127.0.0.1:8000/api',  // Symfony par défaut
-  'http://localhost:8000/api',   // Alternative localhost
-  'https://localhost:8000/api',  // HTTPS localhost
-];
+// ============================================
+// Configuration API automatique par environnement
+// npm run dev          → .env.development (LOCAL)
+// npm run dev:deployed → .env.deployed    (RENDER)
+// npm run build        → .env.production  (PROD)
+// ============================================
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+const ENV_LABEL = import.meta.env.VITE_ENV_LABEL || 'UNKNOWN';
 
-const envApiUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
-export let API_BASE_URL = envApiUrl || backendUrls[0];
-
-// Si pas d'URL définie et en dev, tenter de détecter un backend local
-if (!envApiUrl && !import.meta.env.PROD) {
-  const detectLocalApi = async () => {
-    for (const url of backendUrls) {
-      try {
-        const response = await axios.get(`${url}/health`, {
-          timeout: 1500,
-          validateStatus: () => true,
-        });
-        if (response.status < 500) {
-          console.log(`✅ Backend local trouvé: ${url}`);
-          return url;
-        }
-      } catch (_) {
-        continue;
-      }
-    }
-    console.error('❌ ERREUR: Aucun backend local disponible!');
-    return backendUrls[0];
-  };
-
-  detectLocalApi().then((url) => {
-    API_BASE_URL = url;
-    apiClient.defaults.baseURL = API_BASE_URL;
-    console.log('🔧 API Configuration finalisée (auto-détection):', {
-      isProd: import.meta.env.PROD,
-      url: API_BASE_URL,
-    });
-  }).catch(() => {
-    API_BASE_URL = backendUrls[0];
-    apiClient.defaults.baseURL = API_BASE_URL;
-    console.error('❌ Impossible de configurer l\'URL API');
-  });
-} else {
-  console.log('🔧 API Configuration finalisée:', {
-    isProd: import.meta.env.PROD,
-    url: API_BASE_URL,
-  });
-}
+console.log(`🔧 API [${ENV_LABEL}] → ${API_BASE_URL}`);
 
 // Create axios instance with default config
 // Note: Timeout increased to 60s for Render free tier cold starts

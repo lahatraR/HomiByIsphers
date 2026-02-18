@@ -46,7 +46,21 @@
     "profile": "Profil",
     "settings": "Paramètres",
     "search": "Recherche",
-    "domiciles": "Domiciles"
+    "domiciles": "Domiciles",
+    "support": "Support",
+    "favorites": "Favoris",
+    "activity": "Activité",
+    "badges": "Badges",
+    "exportData": "Exporter les données",
+    "twofa": "Sécurité 2FA",
+    "onboarding": "Guide de démarrage",
+    "adminUsers": "Utilisateurs",
+    "adminLogs": "Journaux",
+    "adminContent": "Contenu",
+    "adminStats": "Statistiques",
+    "administration": "Administration",
+    "myAccount": "Mon compte",
+    "createDomicile": "Créer un domicile"
   },
   "dashboard": {
     "welcomeBack": "Bon retour, {{name}} ! 👋",
@@ -132,7 +146,8 @@
     "addExecutor": "Ajouter un exécutant",
     "removeExecutor": "Retirer",
     "noExecutors": "Aucun exécutant assigné",
-    "confirmDeleteDomicile": "Êtes-vous sûr de vouloir supprimer ce domicile ?"
+    "confirmDeleteDomicile": "Êtes-vous sûr de vouloir supprimer ce domicile ?",
+    "createdBy": "Créé par"
   },
   "createDomicile": {
     "title": "Créer un nouveau domicile",

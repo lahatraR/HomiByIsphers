@@ -46,7 +46,21 @@
     "profile": "个人资料",
     "settings": "设置",
     "search": "搜索",
-    "domiciles": "住所"
+    "domiciles": "住所",
+    "support": "支持",
+    "favorites": "收藏",
+    "activity": "活动",
+    "badges": "徽章",
+    "exportData": "导出数据",
+    "twofa": "2FA安全",
+    "onboarding": "入门指南",
+    "adminUsers": "用户",
+    "adminLogs": "日志",
+    "adminContent": "内容",
+    "adminStats": "统计",
+    "administration": "管理",
+    "myAccount": "我的账户",
+    "createDomicile": "创建住所"
   },
   "dashboard": {
     "welcomeBack": "欢迎回来，{{name}}！👋",
@@ -132,7 +146,8 @@
     "addExecutor": "添加执行人",
     "removeExecutor": "移除",
     "noExecutors": "未分配执行人",
-    "confirmDeleteDomicile": "您确定要删除此住所吗？"
+    "confirmDeleteDomicile": "您确定要删除此住所吗？",
+    "createdBy": "创建者"
   },
   "createDomicile": {
     "title": "创建新住所",

@@ -91,20 +91,14 @@ export const DomicilesPage: React.FC = () => {
 
                             <div className="pt-4 border-t border-gray-200 mt-4">
                                 <p className="text-xs text-gray-500 mb-4">
-                                    Created by {domicile.createdBy.firstName} {domicile.createdBy.lastName}
+                                    {t('domiciles.createdBy')} {domicile.createdBy.firstName} {domicile.createdBy.lastName}
                                 </p>
                                 <div className="flex gap-2">
-                                    <Button
-                                        onClick={() => navigate(`/domiciles/${domicile.id}`)}
-                                        className="flex-1 bg-primary-600 hover:bg-primary-700 text-white text-sm"
-                                    >
-                                        View
-                                    </Button>
                                     <Button
                                         onClick={() => handleDelete(domicile.id)}
                                         className="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm"
                                     >
-                                        Delete
+                                        {t('common.delete')}
                                     </Button>
                                 </div>
                             </div>

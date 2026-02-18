@@ -46,7 +46,21 @@
     "profile": "Profile",
     "settings": "Settings",
     "search": "Search",
-    "domiciles": "Domiciles"
+    "domiciles": "Domiciles",
+    "support": "Support",
+    "favorites": "Favorites",
+    "activity": "Activity",
+    "badges": "Badges",
+    "exportData": "Export Data",
+    "twofa": "2FA Security",
+    "onboarding": "Getting Started",
+    "adminUsers": "Users",
+    "adminLogs": "Logs",
+    "adminContent": "Content",
+    "adminStats": "Statistics",
+    "administration": "Administration",
+    "myAccount": "My Account",
+    "createDomicile": "Create Domicile"
   },
   "dashboard": {
     "welcomeBack": "Welcome back, {{name}}! 👋",
@@ -132,7 +146,8 @@
     "addExecutor": "Add Executor",
     "removeExecutor": "Remove",
     "noExecutors": "No executors assigned",
-    "confirmDeleteDomicile": "Are you sure you want to delete this domicile?"
+    "confirmDeleteDomicile": "Are you sure you want to delete this domicile?",
+    "createdBy": "Created by"
   },
   "createDomicile": {
     "title": "Create a New Domicile",

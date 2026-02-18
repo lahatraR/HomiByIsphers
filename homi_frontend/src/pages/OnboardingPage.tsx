@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button } from '../components/common';
 import { useTranslation } from 'react-i18next';
+import { useAuthStore } from '../stores/authStore';
+import { UserRoles } from '../types';
 
 interface OnboardingStep {
   title: string;
@@ -16,34 +18,39 @@ export const OnboardingPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+  const isAdmin = useMemo(() => user?.role === UserRoles.ADMIN, [user]);
 
-  const steps: OnboardingStep[] = [
+  const allSteps: OnboardingStep[] = [
     {
       title: t('onboarding.steps.welcome.title'),
       description: t('onboarding.steps.welcome.description'),
       icon: '🏠',
     },
-    {
+    // Admin-only: créer un domicile
+    ...( isAdmin ? [{
       title: t('onboarding.steps.domicile.title'),
       description: t('onboarding.steps.domicile.description'),
       icon: '🏗️',
       action: t('onboarding.steps.domicile.action'),
       link: '/create-domicile',
-    },
-    {
+    }] : []),
+    // Admin-only: créer une tâche
+    ...( isAdmin ? [{
       title: t('onboarding.steps.tasks.title'),
       description: t('onboarding.steps.tasks.description'),
       icon: '📋',
       action: t('onboarding.steps.tasks.action'),
       link: '/create-task',
-    },
-    {
+    }] : []),
+    // User-only: suivi du temps
+    ...( !isAdmin ? [{
       title: t('onboarding.steps.time.title'),
       description: t('onboarding.steps.time.description'),
       icon: '⏱️',
       action: t('onboarding.steps.time.action'),
       link: '/my-time-logs',
-    },
+    }] : []),
     {
       title: t('onboarding.steps.profile.title'),
       description: t('onboarding.steps.profile.description'),
@@ -60,6 +67,7 @@ export const OnboardingPage: React.FC = () => {
     },
   ];
 
+  const steps = allSteps;
   const step = steps[currentStep];
   const isLast = currentStep === steps.length - 1;
   const isFirst = currentStep === 0;

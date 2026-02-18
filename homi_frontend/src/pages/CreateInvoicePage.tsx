@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button, LoadingSpinner } from '../components/common';
@@ -24,6 +25,7 @@ export const CreateInvoicePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     void loadData();
@@ -97,10 +99,18 @@ export const CreateInvoicePage: React.FC = () => {
   return (
     <MainLayout>
       <div className="max-w-3xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t('invoices.create')}</h1>
-          <p className="text-gray-600 mt-1">{t('invoices.createDesc')}</p>
-          <p className="text-sm text-gray-500">{t('invoices.periodHint')}</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">{t('invoices.create')}</h1>
+            <p className="text-gray-600 mt-1">{t('invoices.createDesc')}</p>
+            <p className="text-sm text-gray-500">{t('invoices.periodHint')}</p>
+          </div>
+          <button
+            onClick={() => navigate('/admin/invoices')}
+            className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+          >
+            ← {t('common.back')}
+          </button>
         </div>
 
         {error && (

@@ -51,9 +51,6 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/tasks" element={<TasksPage />} />
-          <Route path="/create-task" element={<CreateTaskPage />} />
-          <Route path="/create-domicile" element={<CreateDomicilePage />} />
-          <Route path="/domiciles" element={<DomicilesPage />} />
           <Route path="/tasks/:taskId/timer" element={<TaskTimerPage />} />
           <Route path="/my-time-logs" element={<MyTimeLogsPage />} />
           <Route path="/my-time-logs/manual" element={<ManualTimeLogPage />} />
@@ -71,8 +68,11 @@ function App() {
           <Route path="/badges" element={<BadgesPage />} />
           {/* Onboarding always accessible for logged-in users */}
           <Route path="/onboarding" element={<OnboardingPage />} />
-          {/* Admin features */}
+          {/* Admin features (Propriétaire) */}
           <Route element={<AdminRoute />}>
+            <Route path="/create-task" element={<CreateTaskPage />} />
+            <Route path="/create-domicile" element={<CreateDomicilePage />} />
+            <Route path="/domiciles" element={<DomicilesPage />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/logs" element={<AdminLogsPage />} />
             <Route path="/admin/content" element={<AdminContentPage />} />

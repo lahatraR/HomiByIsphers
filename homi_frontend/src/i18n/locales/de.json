@@ -46,7 +46,21 @@
     "profile": "Profil",
     "settings": "Einstellungen",
     "search": "Suche",
-    "domiciles": "Domizile"
+    "domiciles": "Domizile",
+    "support": "Support",
+    "favorites": "Favoriten",
+    "activity": "Aktivität",
+    "badges": "Abzeichen",
+    "exportData": "Daten exportieren",
+    "twofa": "2FA-Sicherheit",
+    "onboarding": "Erste Schritte",
+    "adminUsers": "Benutzer",
+    "adminLogs": "Protokolle",
+    "adminContent": "Inhalte",
+    "adminStats": "Statistiken",
+    "administration": "Verwaltung",
+    "myAccount": "Mein Konto",
+    "createDomicile": "Domizil erstellen"
   },
   "dashboard": {
     "welcomeBack": "Willkommen zurück, {{name}}! 👋",
@@ -132,7 +146,8 @@
     "addExecutor": "Ausführenden hinzufügen",
     "removeExecutor": "Entfernen",
     "noExecutors": "Keine Ausführenden zugewiesen",
-    "confirmDeleteDomicile": "Sind Sie sicher, dass Sie dieses Domizil löschen möchten?"
+    "confirmDeleteDomicile": "Sind Sie sicher, dass Sie dieses Domizil löschen möchten?",
+    "createdBy": "Erstellt von"
   },
   "createDomicile": {
     "title": "Neues Domizil erstellen",
