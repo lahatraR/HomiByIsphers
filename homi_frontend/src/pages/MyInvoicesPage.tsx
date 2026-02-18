@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, LoadingSpinner } from '../components/common';
 import { getInvoices, type Invoice } from '../services/invoice.service';
+import { useTranslation } from 'react-i18next';
 
 export const MyInvoicesPage: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadInvoices();
@@ -21,7 +23,7 @@ export const MyInvoicesPage: React.FC = () => {
       const data = await getInvoices(status);
       setInvoices(data);
     } catch (err: any) {
-      setError(err.message || 'Erreur lors du chargement des factures');
+      setError(err.message || t('invoices.errorLoad'));
     } finally {
       setIsLoading(false);
     }
@@ -37,11 +39,11 @@ export const MyInvoicesPage: React.FC = () => {
     };
 
     const labels: Record<string, string> = {
-      DRAFT: 'Brouillon',
-      SENT: 'En attente',
-      PAID: 'Payée',
-      OVERDUE: 'En retard',
-      CANCELLED: 'Annulée'
+      DRAFT: t('invoices.draft'),
+      SENT: t('invoices.unpaid'),
+      PAID: t('invoices.paid'),
+      OVERDUE: t('invoices.overdue'),
+      CANCELLED: t('invoices.cancelled')
     };
 
     return (
@@ -79,28 +81,28 @@ export const MyInvoicesPage: React.FC = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mes Factures</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('invoices.title')}</h1>
           <p className="mt-1 text-sm text-gray-600">
-            Consultez l'historique de vos factures et paiements
+            {t('invoices.subtitle')}
           </p>
         </div>
 
         {/* Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
-            <div className="text-sm font-medium text-gray-600">Total Factures</div>
+            <div className="text-sm font-medium text-gray-600">{t('invoices.totalInvoices')}</div>
             <div className="mt-2 text-3xl font-semibold text-gray-900">
               {invoices.length}
             </div>
           </Card>
           <Card>
-            <div className="text-sm font-medium text-gray-600">Montant Payé</div>
+            <div className="text-sm font-medium text-gray-600">{t('invoices.amountPaid')}</div>
             <div className="mt-2 text-2xl font-semibold text-green-600">
               {formatCurrency(totalPaid)}
             </div>
           </Card>
           <Card>
-            <div className="text-sm font-medium text-gray-600">En Attente</div>
+            <div className="text-sm font-medium text-gray-600">{t('invoices.pendingAmount')}</div>
             <div className="mt-2 text-2xl font-semibold text-orange-600">
               {formatCurrency(totalPending)}
             </div>
@@ -118,7 +120,7 @@ export const MyInvoicesPage: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Toutes
+              {t('common.all')}
             </button>
             <button
               onClick={() => setFilterStatus('SENT')}
@@ -128,7 +130,7 @@ export const MyInvoicesPage: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              En attente
+              {t('invoices.unpaid')}
             </button>
             <button
               onClick={() => setFilterStatus('PAID')}
@@ -138,7 +140,7 @@ export const MyInvoicesPage: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Payées
+              {t('invoices.paid')}
             </button>
           </div>
         </Card>
@@ -158,7 +160,7 @@ export const MyInvoicesPage: React.FC = () => {
         ) : invoices.length === 0 ? (
           <Card>
             <div className="text-center py-12">
-              <p className="text-gray-500">Aucune facture trouvée</p>
+              <p className="text-gray-500">{t('invoices.noInvoices')}</p>
             </div>
           </Card>
         ) : (
@@ -177,21 +179,21 @@ export const MyInvoicesPage: React.FC = () => {
                     
                     <div className="space-y-2 text-sm">
                       <div>
-                        <span className="text-gray-600">Domicile:</span>
+                        <span className="text-gray-600">{t('common.domicile')}:</span>
                         <span className="ml-2 font-medium">{invoice.domicile.name}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Période:</span>
+                        <span className="text-gray-600">{t('invoices.period')}:</span>
                         <span className="ml-2 font-medium">
                           {formatDate(invoice.periodStart)} - {formatDate(invoice.periodEnd)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Heures travaillées:</span>
+                        <span className="text-gray-600">{t('invoices.hoursWorked')}:</span>
                         <span className="ml-2 font-medium">{invoice.totalHours}h</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Taux horaire:</span>
+                        <span className="text-gray-600">{t('invoices.hourlyRate')}:</span>
                         <span className="ml-2 font-medium">{formatCurrency(invoice.hourlyRate)}/h</span>
                       </div>
                     </div>
@@ -200,15 +202,15 @@ export const MyInvoicesPage: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <div className="space-y-1 text-sm">
                           <div className="flex justify-between gap-8">
-                            <span className="text-gray-600">Sous-total:</span>
+                            <span className="text-gray-600">{t('invoices.subtotal')}:</span>
                             <span className="font-medium">{formatCurrency(invoice.subtotal)}</span>
                           </div>
                           <div className="flex justify-between gap-8">
-                            <span className="text-gray-600">TVA ({invoice.taxRate}%):</span>
+                            <span className="text-gray-600">{t('invoices.tax')} ({invoice.taxRate}%):</span>
                             <span className="font-medium">{formatCurrency(invoice.taxAmount)}</span>
                           </div>
                           <div className="flex justify-between gap-8 text-lg font-bold">
-                            <span className="text-gray-900">Total:</span>
+                            <span className="text-gray-900">{t('invoices.total')}:</span>
                             <span className="text-blue-600">{formatCurrency(invoice.total)}</span>
                           </div>
                         </div>
@@ -217,13 +219,13 @@ export const MyInvoicesPage: React.FC = () => {
 
                     {invoice.paidDate && (
                       <div className="mt-3 text-sm text-green-600">
-                        ✓ Payée le {formatDate(invoice.paidDate)}
+                        ✓ {t('invoices.paidOn')} {formatDate(invoice.paidDate)}
                       </div>
                     )}
 
                     {invoice.notes && (
                       <div className="mt-3 text-sm text-gray-600 bg-gray-50 p-3 rounded">
-                        <span className="font-medium">Notes:</span> {invoice.notes}
+                        <span className="font-medium">{t('timeLogs.notes')}:</span> {invoice.notes}
                       </div>
                     )}
                   </div>

@@ -192,12 +192,12 @@ class AuthController extends AbstractController
             }
 
             // Vérifier si l'email est vérifié
-            if (!$user->isEmailVerified()) {
-                return $this->json(
-                    ['error' => 'Veuillez vérifier votre email avant de vous connecter. Consultez votre boîte de réception.'],
-                    Response::HTTP_FORBIDDEN
-                );
-            }
+            // if (!$user->isEmailVerified()) {
+            //     return $this->json(
+            //         ['error' => 'Veuillez vérifier votre email avant de vous connecter. Consultez votre boîte de réception.'],
+            //         Response::HTTP_FORBIDDEN
+            //     );
+            // }
 
             // Générer le token JWT
             $token = $this->jwtTokenProvider->generateToken($user);

@@ -8,6 +8,7 @@ import { useDomicileStore } from '../stores/domicileStore';
 import { UserRoles } from '../types';
 import type { User } from '../types';
 import { userService } from '../services/user.service';
+import { useTranslation } from 'react-i18next';
 
 export const CreateTaskPage: React.FC = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export const CreateTaskPage: React.FC = () => {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isAdmin = useMemo(() => user?.role === UserRoles.ADMIN, [user]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchExecutors = async () => {
@@ -95,8 +97,8 @@ export const CreateTaskPage: React.FC = () => {
     <MainLayout>
       <div className="max-w-3xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create New Task</h1>
-          <p className="text-gray-600">Provide the minimal information required by the API.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('createTask.title')}</h1>
+          <p className="text-gray-600">{t('createTask.subtitle')}</p>
         </div>
 
         {error && (
@@ -111,24 +113,24 @@ export const CreateTaskPage: React.FC = () => {
             
             <div className="space-y-4">
               <Input
-                label="Title"
+                label={t('createTask.taskTitle')}
                 type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                placeholder="Enter task title"
+                placeholder={t('createTask.taskTitlePlaceholder')}
                 required
               />
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description <span className="text-red-500">*</span>
+                  {t('createTask.description')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  placeholder="Describe the task..."
+                  placeholder={t('createTask.descriptionPlaceholder')}
                   rows={4}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   required
@@ -137,7 +139,7 @@ export const CreateTaskPage: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Select Domicile <span className="text-red-500">*</span>
+                  {t('createTask.selectDomicile')} <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="domicileId"
@@ -147,7 +149,7 @@ export const CreateTaskPage: React.FC = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
                   <option value="" disabled>
-                    {domicilesLoading ? 'Loading domiciles...' : 'Select a domicile'}
+                    {domicilesLoading ? t('common.loading') : t('createTask.selectDomicile')}
                   </option>
                   {domiciles.map((domicile) => (
                     <option key={domicile.id} value={domicile.id}>
@@ -157,13 +159,13 @@ export const CreateTaskPage: React.FC = () => {
                 </select>
                 {domiciles.length === 0 && !domicilesLoading && (
                   <p className="text-sm text-red-600 mt-2">
-                    No domiciles available. <button type="button" onClick={() => navigate('/create-domicile')} className="text-primary-600 hover:text-primary-700 font-medium">Create one</button>
+                    {t('createTask.noDomiciles')} <button type="button" onClick={() => navigate('/create-domicile')} className="text-primary-600 hover:text-primary-700 font-medium">Create one</button>
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Assign to executor</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('createTask.assignTo')}</label>
                 <select
                   name="executorId"
                   value={formData.executorId}
@@ -172,7 +174,7 @@ export const CreateTaskPage: React.FC = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
                   <option value="" disabled>
-                    {isFetchingUsers ? 'Loading executors...' : 'Select executor'}
+                    {isFetchingUsers ? t('common.loading') : t('createTask.selectUser')}
                   </option>
                   {executors.map((exec) => (
                     <option key={exec.id} value={exec.id}>
@@ -184,7 +186,7 @@ export const CreateTaskPage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="Start at"
+                  label={t('createTask.startDate')}
                   type="datetime-local"
                   name="startTime"
                   value={formData.startTime}
@@ -193,7 +195,7 @@ export const CreateTaskPage: React.FC = () => {
                 />
 
                 <Input
-                  label="End at (optional)"
+                  label={t('createTask.endDate')}
                   type="datetime-local"
                   name="endTime"
                   value={formData.endTime}
@@ -210,7 +212,7 @@ export const CreateTaskPage: React.FC = () => {
               size="lg"
               isLoading={isLoading}
             >
-              Create Task
+              {t('createTask.create')}
             </Button>
             <Button
               type="button"

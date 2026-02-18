@@ -3,17 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button, LoadingSpinner } from '../components/common';
 import { useDomicileStore } from '../stores/domicileStore';
+import { useTranslation } from 'react-i18next';
 
 export const DomicilesPage: React.FC = () => {
     const navigate = useNavigate();
     const { domiciles, isLoading, error, fetchDomiciles, deleteDomicile } = useDomicileStore();
+    const { t } = useTranslation();
 
     useEffect(() => {
         fetchDomiciles();
     }, [fetchDomiciles]);
 
     const handleDelete = async (id: number) => {
-        if (window.confirm('Are you sure you want to delete this domicile?')) {
+        if (window.confirm(t('domiciles.confirmDeleteDomicile'))) {
             try {
                 await deleteDomicile(id);
             } catch (err) {
@@ -37,14 +39,14 @@ export const DomicilesPage: React.FC = () => {
             <div className="mb-8">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Domiciles</h1>
-                        <p className="text-gray-600">Manage all your domiciles</p>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('domiciles.title')}</h1>
+                        <p className="text-gray-600">{t('domiciles.subtitle')}</p>
                     </div>
                     <Button
                         onClick={() => navigate('/create-domicile')}
                         className="bg-primary-600 hover:bg-primary-700 text-white"
                     >
-                        + Add Domicile
+                        {t('domiciles.createNew')}
                     </Button>
                 </div>
             </div>
@@ -62,13 +64,13 @@ export const DomicilesPage: React.FC = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2.423 3.482A6.967 6.967 0 0012 18.75c5.523 0 10-4.477 10-10S17.523 2 12 2c-3.97 0-7.431 2.325-9.127 5.672M9 9h.008v.008H9V9m4 0h.008v.008H13V9m4 0h.008v.008H17V9" />
                         </svg>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No domiciles yet</h3>
-                    <p className="text-gray-600 mb-6">Create your first domicile to get started</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('domiciles.noDomiciles')}</h3>
+                    <p className="text-gray-600 mb-6">{t('domiciles.noDomicilesDesc')}</p>
                     <Button
                         onClick={() => navigate('/create-domicile')}
                         className="bg-primary-600 hover:bg-primary-700 text-white mx-auto"
                     >
-                        Create First Domicile
+                        {t('domiciles.createNew')}
                     </Button>
                 </Card>
             ) : (

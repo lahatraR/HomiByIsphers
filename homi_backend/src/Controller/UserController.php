@@ -31,9 +31,13 @@ class UserController extends AbstractController
         try {
             $users = $this->userRepository->findAll();
             $data = array_map(fn(User $u) => [
-                'id'    => $u->getId(),
-                'email' => $u->getEmail(),
-                'role'  => $u->getRole(),
+                'id'        => $u->getId(),
+                'email'     => $u->getEmail(),
+                'role'      => $u->getRole(),
+                'firstName' => $u->getFirstName(),
+                'lastName'  => $u->getLastName(),
+                'isEmailVerified' => $u->isEmailVerified(),
+                'createdAt' => $u->getCreatedAt()?->format(\DATE_ATOM),
             ], $users);
             return new JsonResponse($data);
         } catch (\Throwable $e) {
@@ -61,9 +65,13 @@ class UserController extends AbstractController
             $currentUser = $this->getUser();
             if ($currentUser instanceof User && ($currentUser->getId() === $id || $currentUser->getRole() === 'ROLE_ADMIN')) {
                 return new JsonResponse([
-                    'id'    => $user->getId(),
-                    'email' => $user->getEmail(),
-                    'role'  => $user->getRole(),
+                    'id'        => $user->getId(),
+                    'email'     => $user->getEmail(),
+                    'role'      => $user->getRole(),
+                    'firstName' => $user->getFirstName(),
+                    'lastName'  => $user->getLastName(),
+                    'isEmailVerified' => $user->isEmailVerified(),
+                    'createdAt' => $user->getCreatedAt()?->format(\DATE_ATOM),
                 ], Response::HTTP_OK);
             }
 

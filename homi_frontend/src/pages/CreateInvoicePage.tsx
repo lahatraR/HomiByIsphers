@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button, LoadingSpinner } from '../components/common';
 import { domicileService, type Domicile } from '../services/domicile.service';
@@ -22,6 +23,7 @@ export const CreateInvoicePage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     void loadData();
@@ -40,7 +42,7 @@ export const CreateInvoicePage: React.FC = () => {
       setExecutors(users);
       setAdminStats(stats);
     } catch (err: any) {
-      setError('Impossible de charger les données (domiciles ou exécutants)');
+      setError(t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -63,7 +65,7 @@ export const CreateInvoicePage: React.FC = () => {
     setSuccess(null);
 
     if (!domicileId || !executorId || !periodStart || !periodEnd) {
-      setError('Veuillez renseigner domicile, exécutant et période');
+      setError(t('invoices.validationError'));
       return;
     }
 
@@ -78,7 +80,7 @@ export const CreateInvoicePage: React.FC = () => {
         taxRate: taxRate ? Number(taxRate) : undefined,
         notes: notes || undefined,
       });
-      setSuccess('Facture générée avec succès');
+      setSuccess(t('invoices.createSuccess'));
       setDomicileId('');
       setExecutorId('');
       setPeriodStart('');
@@ -86,7 +88,7 @@ export const CreateInvoicePage: React.FC = () => {
       setHourlyRate('');
       setNotes('');
     } catch (err: any) {
-      setError(err?.message || 'Erreur lors de la génération de la facture');
+      setError(err?.message || t('common.error'));
     } finally {
       setSubmitting(false);
     }
@@ -96,9 +98,9 @@ export const CreateInvoicePage: React.FC = () => {
     <MainLayout>
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Créer une facture</h1>
-          <p className="text-gray-600 mt-1">Générer une facture à partir des heures approuvées</p>
-          <p className="text-sm text-gray-500">La période se pré-remplit au mois courant dès qu'un exécutant avec des heures approuvées est sélectionné.</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('invoices.create')}</h1>
+          <p className="text-gray-600 mt-1">{t('invoices.createDesc')}</p>
+          <p className="text-sm text-gray-500">{t('invoices.periodHint')}</p>
         </div>
 
         {error && (
@@ -120,13 +122,13 @@ export const CreateInvoicePage: React.FC = () => {
           ) : (
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Domicile</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('invoices.domicile')}</label>
                 <select
                   value={domicileId}
                   onChange={(e) => setDomicileId(e.target.value ? Number(e.target.value) : '')}
                   className="w-full rounded border border-gray-300 px-3 py-2"
                 >
-                  <option value="">Sélectionner un domicile</option>
+                  <option value="">{t('invoices.selectDomicile')}</option>
                   {domiciles.map((d) => (
                     <option key={d.id} value={d.id}>{d.name}</option>
                   ))}
@@ -134,13 +136,13 @@ export const CreateInvoicePage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Exécutant</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('invoices.executor')}</label>
                 <select
                   value={executorId}
                   onChange={(e) => setExecutorId(e.target.value ? Number(e.target.value) : '')}
                   className="w-full rounded border border-gray-300 px-3 py-2"
                 >
-                  <option value="">Sélectionner un exécutant</option>
+                  <option value="">{t('invoices.selectExecutor')}</option>
                   {executors.map((u) => (
                     <option key={u.id} value={u.id}>
                       {u.firstName} {u.lastName} ({u.email})
@@ -151,7 +153,7 @@ export const CreateInvoicePage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Période début</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('invoices.periodStart')}</label>
                   <input
                     type="date"
                     value={periodStart}
@@ -160,7 +162,7 @@ export const CreateInvoicePage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Période fin</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('invoices.periodEnd')}</label>
                   <input
                     type="date"
                     value={periodEnd}
@@ -172,19 +174,19 @@ export const CreateInvoicePage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Taux horaire (€)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('invoices.hourlyRate')}</label>
                   <input
                     type="number"
                     min="0"
                     step="0.01"
                     value={hourlyRate}
                     onChange={(e) => setHourlyRate(e.target.value)}
-                    placeholder="Optionnel (priorité au taux du domicile-exécutant)"
+                    placeholder={t('invoices.hourlyRatePlaceholder')}
                     className="w-full rounded border border-gray-300 px-3 py-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">TVA (%)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('invoices.taxRate')}</label>
                   <input
                     type="number"
                     min="0"
@@ -197,19 +199,19 @@ export const CreateInvoicePage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('invoices.notes')}</label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
                   className="w-full rounded border border-gray-300 px-3 py-2"
-                  placeholder="Optionnel"
+                  placeholder={t('common.optional')}
                 />
               </div>
 
               <div className="pt-2">
                 <Button type="submit" disabled={submitting}>
-                  {submitting ? 'Génération…' : 'Créer la facture'}
+                  {submitting ? t('invoices.creating') : t('invoices.create')}
                 </Button>
               </div>
             </form>

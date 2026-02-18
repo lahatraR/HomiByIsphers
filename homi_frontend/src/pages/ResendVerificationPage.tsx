@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button, Input } from '../components/common';
 import { api } from '../services/api';
 
 export const ResendVerificationPage: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -55,8 +57,8 @@ export const ResendVerificationPage: React.FC = () => {
                 <rect x="90" y="145" width="20" height="25" rx="3" fill="#1e40af" />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Renvoyer l'email</h1>
-            <p className="text-gray-600 mt-2">Entrez votre email pour recevoir un nouveau lien de vérification</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t('auth.resendTitle')}</h1>
+            <p className="text-gray-600 mt-2">{t('auth.resendSubtitle')}</p>
           </div>
 
           {error && (
@@ -73,7 +75,7 @@ export const ResendVerificationPage: React.FC = () => {
                 </svg>
                 <div>
                   <p className="text-success-800 font-medium text-sm">{message}</p>
-                  <p className="text-success-700 text-sm mt-1">Vérifiez votre boîte de réception.</p>
+                  <p className="text-success-700 text-sm mt-1">{t('auth.checkInbox')}</p>
                 </div>
               </div>
             </div>
@@ -81,7 +83,7 @@ export const ResendVerificationPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Email"
+              label={t('auth.email')}
               type="email"
               name="email"
               value={email}
@@ -99,19 +101,19 @@ export const ResendVerificationPage: React.FC = () => {
               isLoading={isLoading}
               disabled={isLoading || !!message}
             >
-              {message ? 'Email envoyé ✓' : 'Envoyer'}
+              {message ? t('auth.emailSent') : t('auth.send')}
             </Button>
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-600">
             <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
-              ← Retour à la connexion
+              {t('auth.backToLoginLink')}
             </Link>
           </div>
         </div>
 
         <div className="text-center mt-4 text-sm text-gray-600">
-          Homi © 2026 - All rights reserved
+          {t('auth.allRightsReserved')}
         </div>
       </div>
     </div>

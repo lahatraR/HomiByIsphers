@@ -25,9 +25,9 @@ class TaskService
         $task->setDescription($description);
         $task->setDomicile($domicile);
         $task->setAssignedTo($assignedTo);
-        $task->setStatus(false);
+        $task->setStatus('TODO');
         $task->setStartTime($startTime);
-         $task->setEndTime($endTime);
+        $task->setEndTime($endTime);
         $task->setCreatedAt(new \DateTimeImmutable());
         $task->setUpdatedAt(new \DateTimeImmutable());
 
@@ -52,7 +52,7 @@ class TaskService
 
     public function finishTask(Task $task): Task
     {
-        $task->setStatus(true);
+        $task->setStatus('COMPLETED');
         $task->setEndTime(new \DateTimeImmutable());
         $task->setUpdatedAt(new \DateTimeImmutable());
 

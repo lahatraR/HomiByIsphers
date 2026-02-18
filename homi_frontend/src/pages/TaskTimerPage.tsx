@@ -5,12 +5,14 @@ import { Card, Button, LoadingSpinner } from '../components/common';
 import { useTaskStore } from '../stores/taskStore';
 import { useAuthStore } from '../stores/authStore';
 import { submitTimeLog } from '../services/timeTracking.service';
+import { useTranslation } from 'react-i18next';
 
 export const TaskTimerPage: React.FC = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const navigate = useNavigate();
   const { tasks, isLoading, fetchTasks, startTask, completeTask } = useTaskStore();
   const { user } = useAuthStore();
+  const { t } = useTranslation();
 
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(true);
@@ -60,7 +62,7 @@ export const TaskTimerPage: React.FC = () => {
           await startTask(task.id);
           setTaskStarted(true);
         } catch (error: any) {
-          setSubmitError(error?.message || 'Impossible de démarrer la tâche');
+          setSubmitError(error?.message || t('timer.errorStart'));
         }
       }
     };
@@ -76,7 +78,7 @@ export const TaskTimerPage: React.FC = () => {
   };
 
   const handleCompleteTask = async () => {
-    if (window.confirm('Mark this task as completed?')) {
+    if (window.confirm(t('timer.confirmSave'))) {
       try {
         setIsSubmitting(true);
         setSubmitError(null);
@@ -97,7 +99,7 @@ export const TaskTimerPage: React.FC = () => {
           navigate('/tasks');
         }, 2000);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to submit time log';
+        const errorMessage = error instanceof Error ? error.message : t('timer.errorSubmit');
         setSubmitError(errorMessage);
         console.error('Failed to complete task', error);
       } finally {
@@ -107,7 +109,7 @@ export const TaskTimerPage: React.FC = () => {
   };
 
   const handleCancelTask = () => {
-    if (window.confirm('Cancel this task? Progress will be lost.')) {
+    if (window.confirm(t('timer.confirmDiscard'))) {
       setIsTimerRunning(false);
       navigate('/tasks');
     }
@@ -132,10 +134,10 @@ export const TaskTimerPage: React.FC = () => {
     return (
       <MainLayout>
         <Card className="p-8 max-w-xl mx-auto text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-          <p className="text-gray-600 mb-4">You can only access tasks assigned to you.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('common.accessDenied')}</h1>
+          <p className="text-gray-600 mb-4">{t('timer.accessDeniedDesc')}</p>
           <Button onClick={() => navigate('/tasks')} className="bg-primary-600 hover:bg-primary-700 text-white">
-            Return to Tasks
+            {t('timer.returnToTasks')}
           </Button>
         </Card>
       </MainLayout>
@@ -160,7 +162,7 @@ export const TaskTimerPage: React.FC = () => {
 
         {/* Timer Section */}
         <Card className="p-12 mb-6 text-center">
-          <p className="text-gray-600 text-lg mb-4">Time Elapsed</p>
+          <p className="text-gray-600 text-lg mb-4">{t('timer.elapsed')}</p>
           <div className="mb-8">
             <p className="text-7xl font-bold text-primary-600 font-mono">
               {formatTime(timerSeconds)}
@@ -174,7 +176,7 @@ export const TaskTimerPage: React.FC = () => {
                 ? 'bg-green-100 text-green-800'
                 : 'bg-yellow-100 text-yellow-800'
             }`}>
-              {isTimerRunning ? '⏱️ Timer Running' : '⏸️ Timer Paused'}
+              {isTimerRunning ? `⏱️ ${t('timer.running')}` : `⏸️ ${t('timer.paused')}`}
             </span>
           </div>
 
@@ -188,7 +190,7 @@ export const TaskTimerPage: React.FC = () => {
                   : 'bg-green-500 hover:bg-green-600'
               } text-white`}
             >
-              {isTimerRunning ? '⏸️ Pause' : '▶️ Resume'}
+              {isTimerRunning ? `⏸️ ${t('timer.pause')}` : `▶️ ${t('timer.resume')}`}
             </Button>
 
             <Button
@@ -196,30 +198,30 @@ export const TaskTimerPage: React.FC = () => {
               disabled={!isTimerRunning && timerSeconds === 0 || isSubmitting}
               className="bg-success-600 hover:bg-success-700 text-white"
             >
-              {isSubmitting ? '⏳ Submitting...' : '✅ Complete Task'}
+              {isSubmitting ? `⏳ ${t('timer.saving')}` : `✅ ${t('timer.save')}`}
             </Button>
 
             <Button
               onClick={handleCancelTask}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
-              ❌ Cancel Task
+              ❌ {t('timer.discard')}
             </Button>
           </div>
         </Card>
 
         {/* Task Details */}
         <Card className="p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Task Details</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">{t('timer.task')}</h2>
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-gray-600">Domicile</p>
+              <p className="text-sm text-gray-600">{t('common.domicile')}</p>
               <p className="text-lg font-medium text-gray-900">
                 {task.domicile?.name} - {task.domicile?.address}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Status</p>
+              <p className="text-sm text-gray-600">{t('timeLogs.status')}</p>
               <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
                 task.status === 'COMPLETED' ? 'bg-success-100 text-success-700' :
                 task.status === 'IN_PROGRESS' ? 'bg-primary-100 text-primary-700' :
@@ -229,13 +231,13 @@ export const TaskTimerPage: React.FC = () => {
               </span>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Planned Duration</p>
+              <p className="text-sm text-gray-600">{t('timer.plannedDuration')}</p>
               {task.startTime && task.endTime ? (
                 <p className="text-lg font-medium text-gray-900">
                   {new Date(task.startTime).toLocaleString()} - {new Date(task.endTime).toLocaleString()}
                 </p>
               ) : (
-                <p className="text-gray-500">No duration specified</p>
+                <p className="text-gray-500">{t('timer.noDuration')}</p>
               )}
             </div>
           </div>
@@ -245,7 +247,7 @@ export const TaskTimerPage: React.FC = () => {
         {(isTimerRunning || taskStarted) && (
           <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-800">
-              ⚠️ You cannot leave this page until you complete or cancel the task.
+              ⚠️ {t('timer.warningLeave')}
             </p>
           </div>
         )}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button, LoadingSpinner } from '../components/common';
 import { getMyTimeLogs, getTimeLogStats, type TimeLog } from '../services/timeTracking.service';
+import { useTranslation } from 'react-i18next';
 
 export const MyTimeLogsPage: React.FC = () => {
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
@@ -10,6 +11,7 @@ export const MyTimeLogsPage: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchData();
@@ -28,7 +30,7 @@ export const MyTimeLogsPage: React.FC = () => {
       setTimeLogs(logs);
       setStats(statistics);
     } catch (err) {
-      setError('Failed to load time logs');
+      setError(t('timeLogs.errorLoad'));
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -68,15 +70,15 @@ export const MyTimeLogsPage: React.FC = () => {
         {/* Header */}
         <div className="mb-8 flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">My Time Logs</h1>
-            <p className="text-gray-600">Track your submitted work hours</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('timeLogs.title')}</h1>
+            <p className="text-gray-600">{t('timeLogs.subtitle')}</p>
           </div>
           <Link to="/my-time-logs/manual">
             <Button>
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              Add Hours Manually
+              {t('timeLogs.addManually')}
             </Button>
           </Link>
         </div>
@@ -92,17 +94,17 @@ export const MyTimeLogsPage: React.FC = () => {
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Card className="p-6">
-              <p className="text-sm text-gray-600 mb-1">Total Approved Hours</p>
+              <p className="text-sm text-gray-600 mb-1">{t('timeLogs.totalApprovedHours')}</p>
               <p className="text-3xl font-bold text-green-600">
                 {stats.totalHours.toFixed(2)}h
               </p>
             </Card>
             <Card className="p-6">
-              <p className="text-sm text-gray-600 mb-1">Total Logs</p>
+              <p className="text-sm text-gray-600 mb-1">{t('timeLogs.totalLogs')}</p>
               <p className="text-3xl font-bold text-primary-600">{stats.logsCount}</p>
             </Card>
             <Card className="p-6">
-              <p className="text-sm text-gray-600 mb-1">Executor</p>
+              <p className="text-sm text-gray-600 mb-1">{t('timeLogs.executor')}</p>
               <p className="text-xl font-bold text-gray-900">
                 {stats.executor.firstName} {stats.executor.lastName}
               </p>
@@ -121,7 +123,7 @@ export const MyTimeLogsPage: React.FC = () => {
                   : 'bg-gray-200 text-gray-700'
               }`}
             >
-              All
+              {t('common.all')}
             </Button>
             <Button
               onClick={() => setFilterStatus('PENDING')}
@@ -131,7 +133,7 @@ export const MyTimeLogsPage: React.FC = () => {
                   : 'bg-gray-200 text-gray-700'
               }`}
             >
-              Pending
+              {t('timeLogs.pending')}
             </Button>
             <Button
               onClick={() => setFilterStatus('APPROVED')}
@@ -141,7 +143,7 @@ export const MyTimeLogsPage: React.FC = () => {
                   : 'bg-gray-200 text-gray-700'
               }`}
             >
-              Approved
+              {t('timeLogs.approved')}
             </Button>
             <Button
               onClick={() => setFilterStatus('REJECTED')}
@@ -151,7 +153,7 @@ export const MyTimeLogsPage: React.FC = () => {
                   : 'bg-gray-200 text-gray-700'
               }`}
             >
-              Rejected
+              {t('timeLogs.rejected')}
             </Button>
           </div>
         </Card>
@@ -160,7 +162,7 @@ export const MyTimeLogsPage: React.FC = () => {
         {timeLogs.length === 0 ? (
           <Card className="p-8 text-center">
             <p className="text-gray-600 text-lg">
-              No time logs found for this filter
+              {t('timeLogs.noLogs')}
             </p>
           </Card>
         ) : (
@@ -177,25 +179,25 @@ export const MyTimeLogsPage: React.FC = () => {
                     {/* Details Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                       <div>
-                        <p className="text-xs text-gray-600">Hours Worked</p>
+                        <p className="text-xs text-gray-600">{t('timeLogs.duration')}</p>
                         <p className="text-lg font-bold text-primary-600">
                           {log.hoursWorked.toFixed(2)}h
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">Start Time</p>
+                        <p className="text-xs text-gray-600">{t('timeLogs.startTime')}</p>
                         <p className="text-sm text-gray-900">
                           {formatDate(log.startTime)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">End Time</p>
+                        <p className="text-xs text-gray-600">{t('timeLogs.endTime')}</p>
                         <p className="text-sm text-gray-900">
                           {formatDate(log.endTime)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">Submitted</p>
+                        <p className="text-xs text-gray-600">{t('timeLogs.submitted')}</p>
                         <p className="text-sm text-gray-900">
                           {formatDate(log.createdAt)}
                         </p>
@@ -205,7 +207,7 @@ export const MyTimeLogsPage: React.FC = () => {
                     {/* Notes */}
                     {log.notes && (
                       <div className="mb-3">
-                        <p className="text-xs text-gray-600 mb-1">Notes</p>
+                        <p className="text-xs text-gray-600 mb-1">{t('timeLogs.notes')}</p>
                         <p className="text-sm text-gray-700 bg-gray-50 p-2 rounded">
                           {log.notes}
                         </p>
@@ -220,7 +222,7 @@ export const MyTimeLogsPage: React.FC = () => {
                         log.status
                       )}`}
                     >
-                      {log.status}
+                      {log.status === 'APPROVED' ? t('timeLogs.approved') : log.status === 'PENDING' ? t('timeLogs.pending') : log.status === 'REJECTED' ? t('timeLogs.rejected') : log.status}
                     </span>
                   </div>
                 </div>

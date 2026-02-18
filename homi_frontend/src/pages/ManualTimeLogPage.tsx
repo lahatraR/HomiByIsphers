@@ -4,9 +4,11 @@ import { Card, Button, LoadingSpinner } from '../components/common';
 import { taskService, type Task } from '../services/task.service';
 import { submitTimeLog } from '../services/timeTracking.service';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const ManualTimeLogPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -31,7 +33,7 @@ export const ManualTimeLogPage: React.FC = () => {
       // Filtrer les tâches assignées à l'utilisateur
       setTasks(allTasks);
     } catch (err: any) {
-      setError('Impossible de charger les tâches');
+      setError(t('timeLogs.errorLoadTasks'));
     } finally {
       setLoading(false);
     }
@@ -43,12 +45,12 @@ export const ManualTimeLogPage: React.FC = () => {
     setSuccess(null);
 
     if (!taskId) {
-      setError('Veuillez sélectionner une tâche');
+      setError(t('timeLogs.selectTaskError'));
       return;
     }
 
     if (!date || !startTime || !endTime) {
-      setError('Veuillez remplir tous les champs obligatoires');
+      setError(t('timeLogs.fillRequired'));
       return;
     }
 
@@ -57,7 +59,7 @@ export const ManualTimeLogPage: React.FC = () => {
     const endDateTime = new Date(`${date}T${endTime}:00`);
 
     if (endDateTime <= startDateTime) {
-      setError('L\'heure de fin doit être après l\'heure de début');
+      setError(t('timeLogs.endAfterStart'));
       return;
     }
 
@@ -69,7 +71,7 @@ export const ManualTimeLogPage: React.FC = () => {
         endDateTime,
         notes || undefined
       );
-      setSuccess('Heures soumises avec succès !');
+      setSuccess(t('timeLogs.submitSuccess'));
       
       // Réinitialiser le formulaire
       setTaskId('');
@@ -83,7 +85,7 @@ export const ManualTimeLogPage: React.FC = () => {
         navigate('/my-time-logs');
       }, 2000);
     } catch (err: any) {
-      setError(err?.message || 'Erreur lors de la soumission des heures');
+      setError(err?.message || t('timeLogs.submitError'));
     } finally {
       setSubmitting(false);
     }
@@ -101,9 +103,9 @@ export const ManualTimeLogPage: React.FC = () => {
     <MainLayout>
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Ajouter des heures manuellement</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('timeLogs.manualEntry')}</h1>
           <p className="text-gray-600 mt-1">
-            Soumettez vos heures de travail pour une tâche terminée
+            {t('timeLogs.manualSubtitle')}
           </p>
         </div>
 
@@ -129,7 +131,7 @@ export const ManualTimeLogPage: React.FC = () => {
               {/* Sélection de la tâche */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tâche <span className="text-red-500">*</span>
+                  {t('timeLogs.selectTask')} <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={taskId}
@@ -137,7 +139,7 @@ export const ManualTimeLogPage: React.FC = () => {
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   required
                 >
-                  <option value="">Sélectionner une tâche</option>
+                  <option value="">{t('timeLogs.selectTaskPlaceholder')}</option>
                   {tasks.map((task) => (
                     <option key={task.id} value={task.id}>
                       {task.title} - {task.domicile.name} ({task.status})
@@ -149,7 +151,7 @@ export const ManualTimeLogPage: React.FC = () => {
               {/* Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date <span className="text-red-500">*</span>
+                  {t('timeLogs.date')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -165,7 +167,7 @@ export const ManualTimeLogPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Heure de début <span className="text-red-500">*</span>
+                    {t('timeLogs.startTime')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -177,7 +179,7 @@ export const ManualTimeLogPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Heure de fin <span className="text-red-500">*</span>
+                    {t('timeLogs.endTime')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -192,7 +194,7 @@ export const ManualTimeLogPage: React.FC = () => {
               {/* Affichage du total d'heures */}
               <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Total d'heures :</span>
+                  <span className="text-sm font-medium text-gray-700">{t('timeLogs.totalHours')}:</span>
                   <span className="text-2xl font-bold text-primary-600">
                     {calculateHours()}h
                   </span>
@@ -202,21 +204,21 @@ export const ManualTimeLogPage: React.FC = () => {
               {/* Notes */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notes (optionnel)
+                  {t('timeLogs.notes')}
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={4}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Décrivez le travail effectué..."
+                  placeholder={t('timeLogs.notesPlaceholder')}
                 />
               </div>
 
               {/* Boutons d'action */}
               <div className="flex gap-3 pt-4">
                 <Button type="submit" disabled={submitting} className="flex-1">
-                  {submitting ? 'Soumission...' : 'Soumettre les heures'}
+                  {submitting ? t('common.saving') : t('common.save')}
                 </Button>
                 <Button
                   type="button"
@@ -224,7 +226,7 @@ export const ManualTimeLogPage: React.FC = () => {
                   onClick={() => navigate('/my-time-logs')}
                   disabled={submitting}
                 >
-                  Annuler
+                  {t('common.cancel')}
                 </Button>
               </div>
             </form>
@@ -246,11 +248,11 @@ export const ManualTimeLogPage: React.FC = () => {
               />
             </svg>
             <div className="text-sm text-blue-800">
-              <p className="font-medium mb-1">À savoir :</p>
+              <p className="font-medium mb-1">{t('timeLogs.infoTitle')}:</p>
               <ul className="list-disc list-inside space-y-1">
-                <li>Vos heures seront soumises en attente de validation</li>
-                <li>Un administrateur devra approuver vos heures</li>
-                <li>Vous pouvez consulter le statut dans "Mes heures"</li>
+                <li>{t('timeLogs.infoLine1')}</li>
+                <li>{t('timeLogs.infoLine2')}</li>
+                <li>{t('timeLogs.infoLine3')}</li>
               </ul>
             </div>
           </div>

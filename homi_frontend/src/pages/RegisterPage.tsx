@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button, Input, PasswordInput } from '../components/common';
 import { useAuthStore } from '../stores/authStore';
 import { UserRoles } from '../types';
+import { useTranslation } from 'react-i18next';
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const { register, isLoading, error } = useAuthStore();
+  const { t } = useTranslation();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number>(5);
 
@@ -66,8 +68,8 @@ export const RegisterPage: React.FC = () => {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Create your account</h1>
-            <p className="text-gray-600 mt-2">Join Homi and start managing your tasks</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t('auth.register')}</h1>
+            <p className="text-gray-600 mt-2">{t('auth.registerSubtitle')}</p>
           </div>
 
           {error && (
@@ -93,7 +95,7 @@ export const RegisterPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <Input
-                label="First Name"
+                label={t('auth.firstName')}
                 type="text"
                 name="firstName"
                 value={formData.firstName}
@@ -104,7 +106,7 @@ export const RegisterPage: React.FC = () => {
               />
 
               <Input
-                label="Last Name"
+                label={t('auth.lastName')}
                 type="text"
                 name="lastName"
                 value={formData.lastName}
@@ -116,7 +118,7 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <Input
-              label="Email"
+              label={t('auth.email')}
               type="email"
               name="email"
               value={formData.email}
@@ -127,7 +129,7 @@ export const RegisterPage: React.FC = () => {
             />
 
             <PasswordInput
-              label="Password"
+              label={t('auth.password')}
               name="password"
               value={formData.password}
               onChange={handleChange}
@@ -138,7 +140,7 @@ export const RegisterPage: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Role dans le domicile
+                {t('auth.role')}
               </label>
               <select
                 name="role"
@@ -147,8 +149,8 @@ export const RegisterPage: React.FC = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 required
               >
-                <option value={UserRoles.USER}>Agent</option>
-                <option value={UserRoles.ADMIN}>Propriétaire</option>
+                <option value={UserRoles.USER}>{t('auth.roleAgent')}</option>
+                <option value={UserRoles.ADMIN}>{t('auth.roleOwner')}</option>
               </select>
             </div>
 
@@ -160,23 +162,23 @@ export const RegisterPage: React.FC = () => {
               isLoading={isLoading}
               disabled={isLoading || !!successMessage}
             >
-              {successMessage ? 'Inscription réussie ✓' : 'Sign up'}
+              {successMessage ? `${t('auth.registrationSuccess')} ✓` : t('auth.signUp')}
             </Button>
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-600">
-            Already have an account?{' '}
+            {t('auth.alreadyHaveAccount')}{' '}
             <Link 
               to="/login" 
               className="text-primary-600 hover:text-primary-700 font-medium"
             >
-              Sign in
+              {t('auth.signInLink')}
             </Link>
           </div>
         </div>
 
         <div className="text-center mt-4 text-sm text-gray-600">
-          Homi © 2026 - All rights reserved
+          {t('auth.allRightsReserved')}
         </div>
       </div>
     </div>

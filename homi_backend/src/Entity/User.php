@@ -53,29 +53,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $emailVerificationTokenExpiresAt = null;
 
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    public function setFirstName(?string $firstName): static
-    {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(?string $lastName): static
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'assignedTo', targetEntity: Task::class)]
     private Collection $tasks;
@@ -102,19 +84,123 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
 
+    public function setFirstName(?string $firstName): static
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): static
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
 
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function getRoles(): array
+    {
+        return [$this->role];
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): static
+    {
+        $this->role = $role;
+        return $this;
+    }
+
+    public function isEmailVerified(): bool
+    {
+        return $this->isEmailVerified;
+    }
+
+    public function setIsEmailVerified(bool $isEmailVerified): static
+    {
+        $this->isEmailVerified = $isEmailVerified;
+        return $this;
+    }
+
+    public function getEmailVerifiedAt(): ?\DateTimeInterface
+    {
+        return $this->emailVerifiedAt;
+    }
+
+    public function setEmailVerifiedAt(?\DateTimeInterface $emailVerifiedAt): static
+    {
+        $this->emailVerifiedAt = $emailVerifiedAt;
+        return $this;
+    }
+
+    public function getEmailVerificationToken(): ?string
+    {
+        return $this->emailVerificationToken;
+    }
+
+    public function setEmailVerificationToken(?string $token): static
+    {
+        $this->emailVerificationToken = $token;
+        return $this;
+    }
+
+    public function getEmailVerificationTokenExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->emailVerificationTokenExpiresAt;
+    }
+
+    public function setEmailVerificationTokenExpiresAt(?\DateTimeInterface $expiresAt): static
+    {
+        $this->emailVerificationTokenExpiresAt = $expiresAt;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
 
     /**
      * @return Collection<int, Domicile>
@@ -133,122 +219,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeDomicile(Domicile $domicile): static
+    public function getUserIdentifier(): string
     {
-        if ($this->domiciles->removeElement($domicile)) {
-            if ($domicile->getCreatedBy() === $this) {
-                $domicile->setCreatedBy(null);
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Task>
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
-    }
-
-    public function addTask(Task $task): static
-    {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks->add($task);
-            $task->setAssignedTo($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTask(Task $task): static
-    {
-        if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
-            if ($task->getAssignedTo() === $this) {
-                $task->setAssignedTo(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Implémentation UserInterface
-     */
-    public function getRoles(): array
-    {
-        return [$this->role ?? 'ROLE_USER'];
-    }
-
-    public function getRole(): string
-    {
-        return $this->role ?? 'ROLE_USER';
-    }
-
-    public function setRole(string $role): static
-    {
-        $this->role = $role ?: 'ROLE_USER';
-        return $this;
+        return $this->email;
     }
 
     public function eraseCredentials(): void
     {
-        // Si vous stockez des données temporaires sensibles, nettoyez-les ici
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return $this->email ?? '';
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function isEmailVerified(): bool
-    {
-        return $this->isEmailVerified;
-    }
-
-    public function setIsEmailVerified(bool $isEmailVerified): static
-    {
-        $this->isEmailVerified = $isEmailVerified;
-        return $this;
-    }
-
-    public function getEmailVerificationToken(): ?string
-    {
-        return $this->emailVerificationToken;
-    }
-
-    public function setEmailVerificationToken(?string $token): static
-    {
-        $this->emailVerificationToken = $token;
-        return $this;
-    }
-
-    public function getEmailVerifiedAt(): ?\DateTimeInterface
-    {
-        return $this->emailVerifiedAt;
-    }
-
-    public function setEmailVerifiedAt(?\DateTimeInterface $emailVerifiedAt): static
-    {
-        $this->emailVerifiedAt = $emailVerifiedAt;
-        return $this;
-    }
-
-    public function getEmailVerificationTokenExpiresAt(): ?\DateTimeInterface
-    {
-        return $this->emailVerificationTokenExpiresAt;
-    }
-
-    public function setEmailVerificationTokenExpiresAt(?\DateTimeInterface $expiresAt): static
-    {
-        $this->emailVerificationTokenExpiresAt = $expiresAt;
-        return $this;
+        // If you store any temporary, sensitive data on the user, clear it here
     }
 }
+
 

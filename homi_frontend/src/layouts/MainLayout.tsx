@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../stores/authStore';
 import { UserRoles } from '../types';
+import { LanguageSwitcher } from '../components/common';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -10,6 +12,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const isAdmin = useMemo(() => user?.role === UserRoles.ADMIN, [user]);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
@@ -67,13 +70,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 to="/dashboard" 
                 className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
               >
-                Dashboard
+                {t('nav.dashboard')}
               </Link>
               <Link 
                 to="/tasks" 
                 className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
               >
-                My Tasks
+                {t('nav.myTasks')}
               </Link>
               {!isAdmin && (
                 <>
@@ -81,19 +84,19 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     to="/my-time-logs" 
                     className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
                   >
-                    My Hours
+                    {t('nav.myHours')}
                   </Link>
                   <Link 
                     to="/my-time-logs/manual" 
                     className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
                   >
-                    Add Hours
+                    {t('nav.addHours')}
                   </Link>
                   <Link 
                     to="/my-invoices" 
                     className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
                   >
-                    My Invoices
+                    {t('nav.myInvoices')}
                   </Link>
                 </>
               )}
@@ -103,25 +106,25 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     to="/create-task" 
                     className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
                   >
-                    Create Task
+                    {t('nav.createTask')}
                   </Link>
                   <Link 
                     to="/admin/time-logs" 
                     className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
                   >
-                    Time Logs
+                    {t('nav.timeLogs')}
                   </Link>
                   <Link 
                     to="/admin/invoices" 
                     className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
                   >
-                    Invoices
+                    {t('nav.invoices')}
                   </Link>
                   <Link 
                     to="/admin/invoices/create" 
                     className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
                   >
-                    Créer facture
+                    {t('nav.createInvoice')}
                   </Link>
                 </>
               )}
@@ -160,9 +163,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </svg>
               </button>
 
+              <div className="hidden md:block">
+                <LanguageSwitcher />
+              </div>
+
               <button 
                 className="hidden md:block p-2 text-gray-600 hover:text-primary-600 transition-colors relative"
-                aria-label="Notifications"
+                aria-label={t('nav.notifications')}
               >
                 <svg 
                   width="20" 
@@ -192,7 +199,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     onClick={handleLogout}
                     className="text-xs text-gray-600 hover:text-red-600 transition-colors"
                   >
-                    Logout
+                    {t('nav.logout')}
                   </button>
                 </div>
               </div>
@@ -221,14 +228,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Dashboard
+                {t('nav.dashboard')}
               </Link>
               <Link 
                 to="/tasks" 
                 className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                My Tasks
+                {t('nav.myTasks')}
               </Link>
               {!isAdmin && (
                 <>
@@ -237,21 +244,21 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    My Hours
+                    {t('nav.myHours')}
                   </Link>
                   <Link 
                     to="/my-time-logs/manual" 
                     className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Add Hours
+                    {t('nav.addHours')}
                   </Link>
                   <Link 
                     to="/my-invoices" 
                     className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    My Invoices
+                    {t('nav.myInvoices')}
                   </Link>
                 </>
               )}
@@ -262,31 +269,35 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Create Task
+                    {t('nav.createTask')}
                   </Link>
                   <Link 
                     to="/admin/time-logs" 
                     className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Time Logs
+                    {t('nav.timeLogs')}
                   </Link>
                   <Link 
                     to="/admin/invoices" 
                     className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Invoices
+                    {t('nav.invoices')}
                   </Link>
                   <Link 
                     to="/admin/invoices/create" 
                     className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md font-medium transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Créer facture
+                    {t('nav.createInvoice')}
                   </Link>
                 </>
               )}
+
+              <div className="px-3 py-2">
+                <LanguageSwitcher />
+              </div>
               
               <button 
                 onClick={() => {
@@ -295,7 +306,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 }}
                 className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 rounded-md font-medium transition-colors mt-2"
               >
-                Logout
+                {t('nav.logout')}
               </button>
             </div>
           </div>

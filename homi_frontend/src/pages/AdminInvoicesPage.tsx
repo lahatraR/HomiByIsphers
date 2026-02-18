@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button, LoadingSpinner } from '../components/common';
 import {
@@ -18,6 +19,7 @@ export const AdminInvoicesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [processingId, setProcessingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadData();
@@ -35,35 +37,35 @@ export const AdminInvoicesPage: React.FC = () => {
       setInvoices(invoicesData);
       setStats(statsData);
     } catch (err: any) {
-      setError(err.message || 'Erreur lors du chargement des factures');
+      setError(err.message || t('common.error'));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleMarkAsPaid = async (id: number) => {
-    if (!confirm('Marquer cette facture comme payée ?')) return;
+    if (!confirm(t('invoices.confirmMarkPaid'))) return;
 
     setProcessingId(id);
     try {
       await markInvoiceAsPaid(id);
       await loadData();
     } catch (err: any) {
-      alert(err.message || 'Erreur lors de la mise à jour');
+      alert(err.message || t('common.error'));
     } finally {
       setProcessingId(null);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) return;
+    if (!confirm(t('invoices.confirmDelete'))) return;
 
     setProcessingId(id);
     try {
       await deleteInvoice(id);
       await loadData();
     } catch (err: any) {
-      alert(err.message || 'Erreur lors de la suppression');
+      alert(err.message || t('common.error'));
     } finally {
       setProcessingId(null);
     }
@@ -79,11 +81,11 @@ export const AdminInvoicesPage: React.FC = () => {
     };
 
     const labels: Record<string, string> = {
-      DRAFT: 'Brouillon',
-      SENT: 'Envoyée',
-      PAID: 'Payée',
-      OVERDUE: 'En retard',
-      CANCELLED: 'Annulée'
+      DRAFT: t('invoices.draft'),
+      SENT: t('invoices.sent'),
+      PAID: t('invoices.paid'),
+      OVERDUE: t('invoices.overdue'),
+      CANCELLED: t('invoices.cancelled')
     };
 
     return (
@@ -114,13 +116,13 @@ export const AdminInvoicesPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Gestion des Factures</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t('invoices.titleAdmin')}</h1>
             <p className="mt-1 text-sm text-gray-600">
-              Gérez toutes les factures de votre domicile
+              {t('invoices.subtitleAdmin')}
             </p>
           </div>
           <Link to="/admin/invoices/create">
-            <Button>Créer une facture</Button>
+            <Button>{t('invoices.create')}</Button>
           </Link>
         </div>
 
@@ -128,25 +130,25 @@ export const AdminInvoicesPage: React.FC = () => {
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
-              <div className="text-sm font-medium text-gray-600">Total Factures</div>
+              <div className="text-sm font-medium text-gray-600">{t('invoices.totalInvoices')}</div>
               <div className="mt-2 text-3xl font-semibold text-gray-900">
                 {stats.totalInvoices}
               </div>
             </Card>
             <Card>
-              <div className="text-sm font-medium text-gray-600">Montant Total</div>
+              <div className="text-sm font-medium text-gray-600">{t('invoices.totalAmount')}</div>
               <div className="mt-2 text-2xl font-semibold text-blue-600">
                 {formatCurrency(stats.totalAmount)}
               </div>
             </Card>
             <Card>
-              <div className="text-sm font-medium text-gray-600">Montant Payé</div>
+              <div className="text-sm font-medium text-gray-600">{t('invoices.paidAmount')}</div>
               <div className="mt-2 text-2xl font-semibold text-green-600">
                 {formatCurrency(stats.paidAmount)}
               </div>
             </Card>
             <Card>
-              <div className="text-sm font-medium text-gray-600">En Attente</div>
+              <div className="text-sm font-medium text-gray-600">{t('invoices.unpaid')}</div>
               <div className="mt-2 text-2xl font-semibold text-orange-600">
                 {formatCurrency(stats.unpaidAmount)}
               </div>
@@ -165,7 +167,7 @@ export const AdminInvoicesPage: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Toutes
+              {t('invoices.all')}
             </button>
             <button
               onClick={() => setFilterStatus('DRAFT')}
@@ -175,7 +177,7 @@ export const AdminInvoicesPage: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Brouillons
+              {t('invoices.drafts')}
             </button>
             <button
               onClick={() => setFilterStatus('SENT')}
@@ -185,7 +187,7 @@ export const AdminInvoicesPage: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Envoyées
+              {t('invoices.sentPlural')}
             </button>
             <button
               onClick={() => setFilterStatus('PAID')}
@@ -195,7 +197,7 @@ export const AdminInvoicesPage: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Payées
+              {t('invoices.paidPlural')}
             </button>
             <button
               onClick={() => setFilterStatus('OVERDUE')}
@@ -205,7 +207,7 @@ export const AdminInvoicesPage: React.FC = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              En retard
+              {t('invoices.overdue')}
             </button>
           </div>
         </Card>
@@ -225,7 +227,7 @@ export const AdminInvoicesPage: React.FC = () => {
         ) : invoices.length === 0 ? (
           <Card>
             <div className="text-center py-12">
-              <p className="text-gray-500">Aucune facture trouvée</p>
+              <p className="text-gray-500">{t('invoices.noInvoices')}</p>
             </div>
           </Card>
         ) : (
@@ -244,34 +246,34 @@ export const AdminInvoicesPage: React.FC = () => {
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-600">Exécutant:</span>
+                        <span className="text-gray-600">{t('invoices.executor')}:</span>
                         <span className="ml-2 font-medium">
                           {invoice.executor.firstName} {invoice.executor.lastName}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Période:</span>
+                        <span className="text-gray-600">{t('invoices.period')}:</span>
                         <span className="ml-2 font-medium">
                           {formatDate(invoice.periodStart)} - {formatDate(invoice.periodEnd)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Heures:</span>
+                        <span className="text-gray-600">{t('invoices.hours')}:</span>
                         <span className="ml-2 font-medium">{invoice.totalHours}h</span>
                       </div>
                     </div>
 
                     <div className="mt-3 flex items-center gap-6 text-sm">
                       <div>
-                        <span className="text-gray-600">Sous-total:</span>
+                        <span className="text-gray-600">{t('invoices.subtotal')}:</span>
                         <span className="ml-2 font-medium">{formatCurrency(invoice.subtotal)}</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">TVA ({invoice.taxRate}%):</span>
+                        <span className="text-gray-600">{t('invoices.tax')} ({invoice.taxRate}%):</span>
                         <span className="ml-2 font-medium">{formatCurrency(invoice.taxAmount)}</span>
                       </div>
                       <div className="text-lg">
-                        <span className="text-gray-900 font-semibold">Total:</span>
+                        <span className="text-gray-900 font-semibold">{t('invoices.total')}:</span>
                         <span className="ml-2 text-blue-600 font-bold">
                           {formatCurrency(invoice.total)}
                         </span>
@@ -280,7 +282,7 @@ export const AdminInvoicesPage: React.FC = () => {
 
                     {invoice.notes && (
                       <div className="mt-2 text-sm text-gray-600">
-                        <span className="font-medium">Notes:</span> {invoice.notes}
+                        <span className="font-medium">{t('invoices.notes')}:</span> {invoice.notes}
                       </div>
                     )}
                   </div>
@@ -293,7 +295,7 @@ export const AdminInvoicesPage: React.FC = () => {
                         variant="success"
                         size="sm"
                       >
-                        Marquer Payée
+                        {t('invoices.markAsPaid')}
                       </Button>
                     )}
                     {invoice.status === 'DRAFT' && (
@@ -303,7 +305,7 @@ export const AdminInvoicesPage: React.FC = () => {
                         variant="danger"
                         size="sm"
                       >
-                        Supprimer
+                        {t('common.delete')}
                       </Button>
                     )}
                   </div>

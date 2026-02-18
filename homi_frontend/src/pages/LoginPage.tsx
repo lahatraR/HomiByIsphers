@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { Button, Input, PasswordInput } from '../components/common';
+import { useTranslation } from 'react-i18next';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, isLoading, error } = useAuthStore();
+  const { t } = useTranslation();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -90,7 +92,7 @@ export const LoginPage: React.FC = () => {
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-gray-900">Homi</h1>
-            <p className="text-gray-600 mt-2">Welcome back! Please sign in to continue.</p>
+            <p className="text-gray-600 mt-2">{t('auth.loginSubtitle')}</p>
           </div>
 
           {/* Error Message */}
@@ -120,7 +122,7 @@ export const LoginPage: React.FC = () => {
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Email"
+              label={t('auth.email')}
               type="email"
               name="email"
               value={formData.email}
@@ -131,7 +133,7 @@ export const LoginPage: React.FC = () => {
             />
 
             <PasswordInput
-              label="Password"
+              label={t('auth.password')}
               name="password"
               value={formData.password}
               onChange={handleChange}
@@ -146,10 +148,10 @@ export const LoginPage: React.FC = () => {
                   type="checkbox" 
                   className="rounded border-gray-300 text-primary-600 focus:ring-primary-500" 
                 />
-                <span className="ml-2 text-gray-600">Remember me</span>
+                <span className="ml-2 text-gray-600">{t('auth.rememberMe')}</span>
               </label>
               <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
-                Forgot password?
+                {t('auth.forgotPassword')}
               </a>
             </div>
 
@@ -160,22 +162,22 @@ export const LoginPage: React.FC = () => {
               fullWidth
               isLoading={isLoading}
             >
-              Sign In
+              {t('auth.signIn')}
             </Button>
           </form>
 
           {/* Footer */}
           <div className="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{' '}
+            {t('auth.noAccount')}{' '}
             <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
-              Sign up
+              {t('auth.createAccount')}
             </Link>
           </div>
         </div>
 
         {/* Version Info */}
         <div className="text-center mt-4 text-sm text-gray-600">
-          Homi © 2026 - All rights reserved
+          {t('auth.allRightsReserved')}
         </div>
       </div>
     </div>

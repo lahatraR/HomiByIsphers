@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../components/common';
 import { api } from '../services/api';
 
 export const VerifyEmailPage: React.FC = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'expired'>('loading');
   const [message, setMessage] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -14,7 +16,7 @@ export const VerifyEmailPage: React.FC = () => {
   useEffect(() => {
     if (!token) {
       setStatus('error');
-      setMessage('Token manquant. Veuillez utiliser le lien de vérification envoyé par email.');
+      setMessage(t('auth.missingToken'));
       return;
     }
 
@@ -109,11 +111,11 @@ export const VerifyEmailPage: React.FC = () => {
           {/* Loading State */}
           {status === 'loading' && (
             <div className="text-center">
-              <p className="text-lg font-semibold text-gray-900 mb-4">Vérification de votre email...</p>
+              <p className="text-lg font-semibold text-gray-900 mb-4">{t('auth.verifyingEmail')}</p>
               <div className="flex justify-center mb-6">
                 <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
               </div>
-              <p className="text-gray-600">Veuillez patienter pendant que nous vérifions votre adresse email.</p>
+              <p className="text-gray-600">{t('auth.pleaseWait')}</p>
             </div>
           )}
 
@@ -127,17 +129,17 @@ export const VerifyEmailPage: React.FC = () => {
                   </svg>
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Email vérifié !</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.emailVerified')}</h2>
               <p className="text-gray-600 mb-6">
-                Votre adresse email <span className="font-semibold">{email}</span> a été vérifiée avec succès.
+                {t('auth.emailVerifiedDesc', { email })}
               </p>
               <div className="mb-4 p-4 rounded-lg bg-success-50 border border-success-200">
                 <p className="text-success-800 text-sm">
-                  Vous pouvez maintenant vous connecter avec vos identifiants.
+                  {t('auth.canNowLogin')}
                 </p>
               </div>
               <p className="text-gray-600 text-sm mb-6">
-                Redirection vers la connexion dans {countdown} seconde{countdown > 1 ? 's' : ''}...
+                {t('auth.redirecting', { seconds: countdown })}
               </p>
               <Button 
                 onClick={() => navigate('/login', { replace: true })} 
@@ -145,7 +147,7 @@ export const VerifyEmailPage: React.FC = () => {
                 size="lg" 
                 fullWidth
               >
-                Aller à la connexion maintenant
+                {t('auth.goToLogin')}
               </Button>
             </div>
           )}
@@ -160,27 +162,27 @@ export const VerifyEmailPage: React.FC = () => {
                   </svg>
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Lien expiré</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.linkExpired')}</h2>
               <p className="text-gray-600 mb-6">
                 {message}
               </p>
               <div className="mb-4 p-4 rounded-lg bg-warning-50 border border-warning-200">
                 <p className="text-warning-800 text-sm mb-3">
-                  Les liens de vérification sont valides pendant 24 heures.
+                  {t('auth.linkExpiredDesc')}
                 </p>
                 <p className="text-warning-800 text-sm">
-                  Veuillez demander un nouvel email de vérification pour continuer.
+                  {t('auth.requestNewLink')}
                 </p>
               </div>
               <div className="space-y-3">
                 <Link to="/resend-verification" className="block">
                   <Button variant="primary" size="lg" fullWidth>
-                    Renvoyer l'email de vérification
+                    {t('auth.resendVerification')}
                   </Button>
                 </Link>
                 <Link to="/login" className="block">
                   <Button variant="secondary" size="lg" fullWidth>
-                    Revenir à la connexion
+                    {t('auth.backToLogin')}
                   </Button>
                 </Link>
               </div>
@@ -197,24 +199,24 @@ export const VerifyEmailPage: React.FC = () => {
                   </svg>
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Erreur de vérification</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.verificationError')}</h2>
               <p className="text-gray-600 mb-6">
                 {message}
               </p>
               <div className="mb-4 p-4 rounded-lg bg-red-50 border border-red-200">
                 <p className="text-red-800 text-sm">
-                  Si le problème persiste, veuillez nous contacter ou réessayer plus tard.
+                  {t('auth.errorPersists')}
                 </p>
               </div>
               <div className="space-y-3">
                 <Link to="/register" className="block">
                   <Button variant="primary" size="lg" fullWidth>
-                    Revenir à l'inscription
+                    {t('auth.backToRegister')}
                   </Button>
                 </Link>
                 <Link to="/login" className="block">
                   <Button variant="secondary" size="lg" fullWidth>
-                    Aller à la connexion
+                    {t('auth.goToLogin')}
                   </Button>
                 </Link>
               </div>
@@ -224,7 +226,7 @@ export const VerifyEmailPage: React.FC = () => {
 
         {/* Version Info */}
         <div className="text-center mt-4 text-sm text-gray-600">
-          Homi © 2026 - All rights reserved
+          {t('auth.allRightsReserved')}
         </div>
       </div>
     </div>

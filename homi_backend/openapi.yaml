@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  title: Homi API
+  version: 1.0.0
+  description: Documentation de l'API Homi (auth, users, invoices, etc.)
+servers:
+  - url: /api
+paths:
+  /auth/login:
+    post:
+      summary: Authentification utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Token JWT et refresh
+        '401':
+          description: Identifiants invalides
+  /auth/refresh:
+    post:
+      summary: Rafraîchir le JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Nouveau JWT
+        '401':
+          description: Token invalide

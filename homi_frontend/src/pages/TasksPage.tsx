@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MainLayout } from '../layouts/MainLayout';
 import { useTaskStore } from '../stores/taskStore';
 import { useAuthStore } from '../stores/authStore';
@@ -11,6 +12,7 @@ export const TasksPage: React.FC = () => {
   const { tasks, isLoading, fetchTasks } = useTaskStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const isAdmin = user?.role === UserRoles.ADMIN;
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +33,7 @@ export const TasksPage: React.FC = () => {
       const isAuthorized = executors.some((executor: any) => executor.id === user?.id);
       
       if (!isAuthorized) {
-        setError('You are not authorized to execute tasks for this domicile. Please contact the administrator.');
+        setError(t('tasks.notAuthorized'));
         return;
       }
 
@@ -39,7 +41,7 @@ export const TasksPage: React.FC = () => {
       navigate(`/tasks/${task.id}/timer`, { state: { task } });
     } catch (err) {
       console.error('Failed to verify executor status', err);
-      setError('Failed to start timer. Please try again.');
+      setError(t('tasks.failedStartTimer'));
     }
   };
 
@@ -58,10 +60,10 @@ export const TasksPage: React.FC = () => {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isAdmin ? 'All Tasks' : 'My Tasks'}
+            {isAdmin ? t('tasks.titleAdmin') : t('tasks.title')}
           </h1>
           <p className="text-gray-600">
-            {isAdmin ? 'Manage all tasks' : 'Manage and track your assigned tasks'}
+            {isAdmin ? t('tasks.subtitleAdmin') : t('tasks.subtitle')}
           </p>
         </div>
         {isAdmin && (
@@ -69,7 +71,7 @@ export const TasksPage: React.FC = () => {
             to="/create-task"
             className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
           >
-            + Create New Task
+            {t('tasks.createNew')}
           </Link>
         )}
       </div>
@@ -93,16 +95,16 @@ export const TasksPage: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No tasks yet</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('tasks.noTasks')}</h3>
             <p className="text-gray-600 mb-4">
-              {isAdmin ? 'Create your first task to get started!' : 'No tasks assigned to you yet'}
+              {isAdmin ? t('tasks.noTasksDesc') : t('tasks.noTasksAssignedDesc')}
             </p>
             {isAdmin && (
               <Link
                 to="/create-task"
                 className="inline-block px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
               >
-                Create task
+                {t('tasks.createTask')}
               </Link>
             )}
           </div>
@@ -120,7 +122,7 @@ export const TasksPage: React.FC = () => {
                       task.status === 'IN_PROGRESS' ? 'bg-primary-100 text-primary-700' :
                       'bg-gray-100 text-gray-700'
                     }`}>
-                      {task.status.replace('_', ' ')}
+                      {task.status === 'COMPLETED' ? t('tasks.statusCompleted') : task.status === 'IN_PROGRESS' ? t('tasks.statusInProgress') : t('tasks.statusTodo')}
                     </span>
                   </div>
                   <p className="text-gray-600 mb-3">{task.description}</p>
@@ -131,8 +133,8 @@ export const TasksPage: React.FC = () => {
                         <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <span className="font-medium mr-1">Planned:</span>
-                        {task.startTime ? new Date(task.startTime).toLocaleString() : 'No start date'}
+                        <span className="font-medium mr-1">{t('tasks.planned')}</span>
+                        {task.startTime ? new Date(task.startTime).toLocaleString() : t('tasks.noStartDate')}
                       </div>
                       {task.endTime && (
                         <div className="flex items-center">
@@ -185,7 +187,7 @@ export const TasksPage: React.FC = () => {
                       onClick={() => handleStartTimer(task)}
                       className="bg-primary-600 hover:bg-primary-700"
                     >
-                      ⏱️ Start Timer
+                      {t('tasks.startTimer')}
                     </Button>
                   )}
                   {isAdmin && (

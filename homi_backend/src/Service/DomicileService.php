@@ -19,7 +19,7 @@ class DomicileService
     {
         $domicile = new Domicile();
         $domicile->setName($name);
-        $domicile->setOwner($owner);
+        $domicile->setCreatedBy($owner);
         $domicile->setCreatedAt(new \DateTimeImmutable());
         $domicile->setUpdatedAt(new \DateTimeImmutable());
 

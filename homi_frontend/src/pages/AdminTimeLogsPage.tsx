@@ -9,6 +9,7 @@ import {
   type TimeLog,
   type AdminTimeLogStats
 } from '../services/timeTracking.service';
+import { useTranslation } from 'react-i18next';
 
 export const AdminTimeLogsPage: React.FC = () => {
   const [pendingLogs, setPendingLogs] = useState<TimeLog[]>([]);
@@ -16,6 +17,7 @@ export const AdminTimeLogsPage: React.FC = () => {
   const [processingId, setProcessingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<AdminTimeLogStats | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     Promise.all([fetchPendingLogs(), fetchStats()]).catch(() => {});
@@ -28,7 +30,7 @@ export const AdminTimeLogsPage: React.FC = () => {
       const logs = await getPendingTimeLogs();
       setPendingLogs(logs);
     } catch (err) {
-      setError('Failed to load pending time logs');
+      setError(t('timeLogs.errorLoad'));
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -45,7 +47,7 @@ export const AdminTimeLogsPage: React.FC = () => {
   };
 
   const handleApprove = async (logId: number) => {
-    if (!window.confirm('Approve this time log?')) return;
+    if (!window.confirm(t('timeLogs.confirmApprove'))) return;
 
     try {
       setProcessingId(logId);
@@ -53,7 +55,7 @@ export const AdminTimeLogsPage: React.FC = () => {
       // Retirer le log de la liste
       setPendingLogs(prev => prev.filter(log => log.id !== logId));
     } catch (err) {
-      setError('Failed to approve time log');
+      setError(t('timeLogs.errorApprove'));
       console.error(err);
     } finally {
       setProcessingId(null);
@@ -61,7 +63,7 @@ export const AdminTimeLogsPage: React.FC = () => {
   };
 
   const handleReject = async (logId: number) => {
-    const reason = window.prompt('Reason for rejection (optional):');
+    const reason = window.prompt(t('timeLogs.rejectReason'));
     if (reason === null) return; // User cancelled
 
     try {
@@ -70,7 +72,7 @@ export const AdminTimeLogsPage: React.FC = () => {
       // Retirer le log de la liste
       setPendingLogs(prev => prev.filter(log => log.id !== logId));
     } catch (err) {
-      setError('Failed to reject time log');
+      setError(t('timeLogs.errorReject'));
       console.error(err);
     } finally {
       setProcessingId(null);
@@ -97,10 +99,10 @@ export const AdminTimeLogsPage: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Pending Time Logs
+            {t('timeLogs.titleAdmin')}
           </h1>
           <p className="text-gray-600">
-            Review and approve time logs submitted by executors
+            {t('timeLogs.subtitleAdmin')}
           </p>
         </div>
 
@@ -115,23 +117,23 @@ export const AdminTimeLogsPage: React.FC = () => {
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="p-6">
-              <p className="text-sm text-gray-600 mb-1">Pending Logs</p>
+              <p className="text-sm text-gray-600 mb-1">{t('timeLogs.pendingLogs')}</p>
               <p className="text-3xl font-bold text-yellow-600">{stats.totalPendingCount}</p>
             </Card>
             <Card className="p-6">
-              <p className="text-sm text-gray-600 mb-1">Heures approuvées</p>
+              <p className="text-sm text-gray-600 mb-1">{t('timeLogs.approvedHours')}</p>
               <p className="text-3xl font-bold text-primary-600">
                 {stats.totalApprovedHours.toFixed(2)}h
               </p>
             </Card>
             <Card className="p-6">
-              <p className="text-sm text-gray-600 mb-1">Logs approuvés</p>
+              <p className="text-sm text-gray-600 mb-1">{t('timeLogs.approvedLogs')}</p>
               <p className="text-3xl font-bold text-green-600">
                 {stats.statuses.APPROVED.count}
               </p>
             </Card>
             <Card className="p-6">
-              <p className="text-sm text-gray-600 mb-1">Logs rejetés</p>
+              <p className="text-sm text-gray-600 mb-1">{t('timeLogs.rejectedLogs')}</p>
               <p className="text-3xl font-bold text-red-600">
                 {stats.statuses.REJECTED.count}
               </p>
@@ -143,7 +145,7 @@ export const AdminTimeLogsPage: React.FC = () => {
         {pendingLogs.length === 0 ? (
           <Card className="p-8 text-center">
             <p className="text-gray-600 text-lg">
-              ✅ No pending time logs to review
+              ✅ {t('timeLogs.noLogs')}
             </p>
           </Card>
         ) : (
@@ -160,25 +162,25 @@ export const AdminTimeLogsPage: React.FC = () => {
                     {/* Executor & Time */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                       <div>
-                        <p className="text-xs text-gray-600">Hours Worked</p>
+                        <p className="text-xs text-gray-600">{t('timeLogs.duration')}</p>
                         <p className="text-lg font-bold text-primary-600">
                           {log.hoursWorked.toFixed(2)}h
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">Start Time</p>
+                        <p className="text-xs text-gray-600">{t('timeLogs.startTime')}</p>
                         <p className="text-sm text-gray-900">
                           {formatDate(log.startTime)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">End Time</p>
+                        <p className="text-xs text-gray-600">{t('timeLogs.endTime')}</p>
                         <p className="text-sm text-gray-900">
                           {formatDate(log.endTime)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">Submitted</p>
+                        <p className="text-xs text-gray-600">{t('timeLogs.submitted')}</p>
                         <p className="text-sm text-gray-900">
                           {formatDate(log.createdAt)}
                         </p>
@@ -188,7 +190,7 @@ export const AdminTimeLogsPage: React.FC = () => {
                     {/* Notes */}
                     {log.notes && (
                       <div className="mb-3">
-                        <p className="text-xs text-gray-600 mb-1">Notes</p>
+                        <p className="text-xs text-gray-600 mb-1">{t('timeLogs.notes')}</p>
                         <p className="text-sm text-gray-700 bg-gray-50 p-2 rounded">
                           {log.notes}
                         </p>
@@ -197,7 +199,7 @@ export const AdminTimeLogsPage: React.FC = () => {
 
                     {/* Status Badge */}
                     <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                      {log.status}
+                      {t('timeLogs.pending')}
                     </span>
                   </div>
 
@@ -208,14 +210,14 @@ export const AdminTimeLogsPage: React.FC = () => {
                       disabled={processingId === log.id}
                       className="bg-green-600 hover:bg-green-700 text-white"
                     >
-                      {processingId === log.id ? '⏳' : '✅'} Approve
+                      {processingId === log.id ? '⏳' : '✅'} {t('timeLogs.approve')}
                     </Button>
                     <Button
                       onClick={() => handleReject(log.id)}
                       disabled={processingId === log.id}
                       className="bg-red-600 hover:bg-red-700 text-white"
                     >
-                      {processingId === log.id ? '⏳' : '❌'} Reject
+                      {processingId === log.id ? '⏳' : '❌'} {t('timeLogs.reject')}
                     </Button>
                   </div>
                 </div>

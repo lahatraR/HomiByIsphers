@@ -11,7 +11,14 @@
     "install:all": "npm run install:frontend && npm run install:backend",
     "build:frontend": "cd homi_frontend && npm run build"
   },
-  "keywords": ["homi", "tasks", "home-management"],
+  "keywords": [
+    "homi",
+    "tasks",
+    "home-management"
+  ],
   "author": "Homi Team",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "react-toastify": "^11.0.5"
+  }
 }
