@@ -94,7 +94,7 @@ class TaskService
         if (!in_array('ROLE_ADMIN', $user->getRoles())) {
             // Les utilisateurs non-admin voient seulement les tâches qui leur sont assignées ou de leurs domiciles
             $queryBuilder->leftJoin('t.domicile', 'd')
-                ->where('t.assignedTo = :user OR d.owner = :user')
+                ->where('t.assignedTo = :user OR d.createdBy = :user')
                 ->setParameter('user', $user);
         }
 
@@ -104,18 +104,17 @@ class TaskService
                 ->setParameter('domicileId', $domicileId);
         }
 
-        // Filtrer par statut si spécifié
-        if ($status !== null) {
-            $statusBool = $status === 'true' || $status === '1' || $status === 'DONE';
+        // Filtrer par statut si spécifié (string: TODO, IN_PROGRESS, COMPLETED)
+        if ($status !== null && in_array($status, [Task::STATUS_TODO, Task::STATUS_IN_PROGRESS, Task::STATUS_COMPLETED])) {
             $queryBuilder->andWhere('t.status = :status')
-                ->setParameter('status', $statusBool);
+                ->setParameter('status', $status);
         }
 
         // Pagination
         $offset = ($page - 1) * $limit;
         $queryBuilder->setFirstResult($offset)
             ->setMaxResults($limit)
-            ->orderBy('t.start_time', 'DESC');
+            ->orderBy('t.startTime', 'DESC');
 
         return $queryBuilder->getQuery()->getResult();
     }

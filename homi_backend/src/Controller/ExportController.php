@@ -117,12 +117,19 @@ class ExportController extends AbstractController
             return $this->json(['error' => 'Non authentifié'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $filename = $request->query->get('file');
+        $filename = basename($request->query->get('file', '')); // basename() prevents path traversal
         $dir = $this->getParameter('kernel.project_dir') . '/var/share/exports';
         $filepath = $dir . '/' . $filename;
 
         if (!$filename || !file_exists($filepath)) {
             return $this->json(['error' => 'Fichier non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Security: verify resolved path is within exports directory
+        $realPath = realpath($filepath);
+        $realDir = realpath($dir);
+        if (!$realPath || !$realDir || !str_starts_with($realPath, $realDir)) {
+            return $this->json(['error' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
         }
 
         // Security: check filename belongs to user

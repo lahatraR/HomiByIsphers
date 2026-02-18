@@ -12,6 +12,11 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class ExceptionListener implements EventSubscriberInterface
 {
+    public function __construct(private string $appEnv = 'prod')
+    {
+        $this->appEnv = $_ENV['APP_ENV'] ?? 'prod';
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -43,17 +48,20 @@ class ExceptionListener implements EventSubscriberInterface
             $message = $exception->getMessage();
         }
 
-        $response = new JsonResponse(
-            [
-                'error' => $message,
-                'type' => basename(str_replace('\\', '/', get_class($exception))),
-                'message' => $exception->getMessage(),
-                'file' => $exception->getFile(),
-                'line' => $exception->getLine(),
-                'trace' => explode("\n", $exception->getTraceAsString()),
-            ],
-            $statusCode
-        );
+        $payload = [
+            'error' => $message,
+            'type' => basename(str_replace('\\', '/', get_class($exception))),
+        ];
+
+        // Only expose debug info in dev environment
+        if ($this->appEnv === 'dev') {
+            $payload['message'] = $exception->getMessage();
+            $payload['file'] = $exception->getFile();
+            $payload['line'] = $exception->getLine();
+            $payload['trace'] = explode("\n", $exception->getTraceAsString());
+        }
+
+        $response = new JsonResponse($payload, $statusCode);
 
         $event->setResponse($response);
     }

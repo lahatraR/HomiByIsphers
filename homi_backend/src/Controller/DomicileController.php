@@ -258,6 +258,7 @@ class DomicileController extends AbstractController
      * Assigner un exécuteur à un domicile
      */
     #[Route('/{id}/executors', name: 'domicile_add_executor', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function addExecutor(int $id, Request $request): JsonResponse
     {
         try {
@@ -271,6 +272,11 @@ class DomicileController extends AbstractController
             $domicile = $this->domicileRepository->find($id);
             if (!$domicile) {
                 return $this->json(['error' => 'Domicile not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Vérifier que le domicile appartient à l'admin connecté
+            if ($domicile->getCreatedBy() !== $this->getUser()) {
+                return $this->json(['error' => 'Access denied'], Response::HTTP_FORBIDDEN);
             }
 
             $executor = $this->userRepository->find($executorId);
@@ -322,12 +328,18 @@ class DomicileController extends AbstractController
      * Obtenir les exécuteurs d'un domicile
      */
     #[Route('/{id}/executors/', name: 'domicile_get_executors', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function getExecutors(int $id): JsonResponse
     {
         try {
             $domicile = $this->domicileRepository->find($id);
             if (!$domicile) {
                 return $this->json(['error' => 'Domicile not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Vérifier que le domicile appartient à l'admin connecté
+            if ($domicile->getCreatedBy() !== $this->getUser()) {
+                return $this->json(['error' => 'Access denied'], Response::HTTP_FORBIDDEN);
             }
 
             $domicileExecutors = $this->entityManager->getRepository(DomicileExecutor::class)
@@ -353,12 +365,18 @@ class DomicileController extends AbstractController
      * Retirer un exécuteur d'un domicile
      */
     #[Route('/{id}/executors/{executorId}', name: 'domicile_remove_executor', methods: ['DELETE'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function removeExecutor(int $id, int $executorId): JsonResponse
     {
         try {
             $domicile = $this->domicileRepository->find($id);
             if (!$domicile) {
                 return $this->json(['error' => 'Domicile not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Vérifier que le domicile appartient à l'admin connecté
+            if ($domicile->getCreatedBy() !== $this->getUser()) {
+                return $this->json(['error' => 'Access denied'], Response::HTTP_FORBIDDEN);
             }
 
             $executor = $this->userRepository->find($executorId);

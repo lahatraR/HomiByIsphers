@@ -14,7 +14,7 @@ class CreateTaskRequest
     #[Assert\Length(max: 1000)]
     public ?string $description = null;
 
-    #[Assert\Choice(choices: ['TODO', 'IN_PROGRESS', 'DONE'])]
+    #[Assert\Choice(choices: ['TODO', 'IN_PROGRESS', 'COMPLETED'])]
     public string $status = 'TODO';
 
     #[Assert\NotBlank]

@@ -43,7 +43,7 @@ export const domicileService = {
         postalCode: string;
         description?: string;
     }): Promise<Domicile> => {
-        const response = await api.post<Domicile>('/domiciles/', data);
+        const response = await api.post<Domicile>('/domiciles', data);
         return response.data;
     },
 

@@ -41,9 +41,15 @@ export const authService = {
   },
 
   /**
-   * Logout user
+   * Logout user — call backend then clear local state
    */
   logout: (): void => {
+    // Fire-and-forget server-side logout
+    try {
+      api.post('/auth/logout', {}).catch(() => {});
+    } catch {
+      // Ignore errors — we're logging out regardless
+    }
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
     localStorage.removeItem('authTokenExpiresAt');

@@ -56,7 +56,7 @@ class AuthController extends AbstractController
             $registerRequest->password = $data['password'] ?? '';
             $registerRequest->firstName = $data['firstName'] ?? '';
             $registerRequest->lastName = $data['lastName'] ?? '';
-            $registerRequest->role = $data['role'] ?? 'ROLE_USER';
+            $registerRequest->role = 'ROLE_USER'; // Force ROLE_USER — never accept role from client
 
             // Trace l'entrée sans exposer le mot de passe
             $this->logger->info('Registration request received', [
@@ -124,7 +124,7 @@ class AuthController extends AbstractController
                 ]);
                 error_log('Registration error: ' . $e->getMessage());
                 return $this->json([
-                    'error' => 'Erreur serveur: ' . $e->getMessage()
+                    'error' => 'Erreur serveur lors de l\'inscription'
                 ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
@@ -140,7 +140,7 @@ class AuthController extends AbstractController
             ]);
             error_log('Registration exception: ' . $e->getMessage());
             return $this->json(
-                ['error' => 'Une erreur est survenue: ' . $e->getMessage()],
+                ['error' => 'Une erreur est survenue lors de l\'inscription'],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

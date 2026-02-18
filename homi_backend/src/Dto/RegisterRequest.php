@@ -11,7 +11,7 @@ class RegisterRequest
     public string $email = '';
 
     #[Assert\NotBlank(message: 'Password is required')]
-    #[Assert\Length(min: 6, minMessage: 'Password must be at least 6 characters')]
+    #[Assert\Length(min: 8, minMessage: 'Password must be at least 8 characters')]
     public string $password = '';
 
     #[Assert\NotBlank(message: 'First name is required')]
@@ -22,5 +22,6 @@ class RegisterRequest
     #[Assert\Length(max: 100, maxMessage: 'Last name cannot exceed 100 characters')]
     public string $lastName = '';
 
+    // Role is always set server-side, never from client input
     public string $role = 'ROLE_USER';
 }

@@ -5,8 +5,10 @@ use App\Entity\Task;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\Persistence\ManagerRegistry;
 #[Route('/api/task-history')]
+#[IsGranted('ROLE_USER')]
 class TaskHistoryController extends AbstractController
 {
     private $doctrine;

@@ -1,21 +1,4 @@
-import axios from 'axios';
-import { API_BASE_URL } from './api';
-
-const api = axios.create({
-  baseURL: `${API_BASE_URL}/invoices`,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
-
-// Ajouter le token à chaque requête
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+import { api } from './api';
 
 export interface Invoice {
   id: number;
@@ -57,17 +40,27 @@ export interface InvoiceStats {
  * Récupérer toutes les factures (Admin) ou ses propres factures (User)
  */
 export const getInvoices = async (status?: string): Promise<Invoice[]> => {
-  const params = status ? { status } : {};
-  const response = await api.get('/', { params });
-  return response.data;
+  try {
+    const url = status ? `/invoices/?status=${encodeURIComponent(status)}` : '/invoices/';
+    const response = await api.get<Invoice[]>(url);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch invoices:', error);
+    throw error;
+  }
 };
 
 /**
  * Récupérer une facture spécifique
  */
 export const getInvoice = async (id: number): Promise<Invoice> => {
-  const response = await api.get(`/${id}`);
-  return response.data;
+  try {
+    const response = await api.get<Invoice>(`/invoices/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch invoice:', error);
+    throw error;
+  }
 };
 
 /**
@@ -82,8 +75,13 @@ export const createInvoice = async (data: {
   taxRate?: number;
   notes?: string;
 }): Promise<Invoice> => {
-  const response = await api.post('/', data);
-  return response.data;
+  try {
+    const response = await api.post<Invoice>('/invoices', data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to create invoice:', error);
+    throw error;
+  }
 };
 
 /**
@@ -98,15 +96,25 @@ export const updateInvoice = async (
     paidDate: string;
   }>
 ): Promise<Invoice> => {
-  const response = await api.patch(`/${id}`, data);
-  return response.data;
+  try {
+    const response = await api.patch<Invoice>(`/invoices/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update invoice:', error);
+    throw error;
+  }
 };
 
 /**
  * Supprimer une facture (Admin only)
  */
 export const deleteInvoice = async (id: number): Promise<void> => {
-  await api.delete(`/${id}`);
+  try {
+    await api.delete(`/invoices/${id}`);
+  } catch (error) {
+    console.error('Failed to delete invoice:', error);
+    throw error;
+  }
 };
 
 /**
@@ -123,6 +131,11 @@ export const markInvoiceAsPaid = async (id: number): Promise<Invoice> => {
  * Récupérer les statistiques globales (Admin only)
  */
 export const getInvoiceStats = async (): Promise<InvoiceStats> => {
-  const response = await api.get('/stats/totals');
-  return response.data;
+  try {
+    const response = await api.get<InvoiceStats>('/invoices/stats/totals');
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch invoice stats:', error);
+    throw error;
+  }
 };

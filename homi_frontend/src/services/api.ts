@@ -12,8 +12,14 @@ const ENV_LABEL = import.meta.env.VITE_ENV_LABEL || 'UNKNOWN';
 
 console.log(`🔧 API [${ENV_LABEL}] → ${API_BASE_URL}`);
 
+// Retry configuration for Render cold starts
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 2000;
+const RETRYABLE_CODES = ['ECONNABORTED', 'ERR_NETWORK', 'ETIMEDOUT'];
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 // Create axios instance with default config
-// Note: Timeout increased to 60s for Render free tier cold starts
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -38,12 +44,36 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    console.error('🔴 API Error intercepted:', {
+    const config = error.config as any;
+
+    // Retry logic for network errors / timeouts (Render cold starts)
+    if (
+      config &&
+      !config._retryCount &&
+      (RETRYABLE_CODES.includes(error.code || '') ||
+        error.message.includes('timeout') ||
+        (error.response?.status && error.response.status >= 502 && error.response.status <= 504))
+    ) {
+      config._retryCount = config._retryCount || 0;
+    }
+
+    if (
+      config &&
+      config._retryCount !== undefined &&
+      config._retryCount < MAX_RETRIES &&
+      (RETRYABLE_CODES.includes(error.code || '') ||
+        error.message.includes('timeout') ||
+        (error.response?.status && error.response.status >= 502 && error.response.status <= 504))
+    ) {
+      config._retryCount += 1;
+      console.warn(`🔄 Retry ${config._retryCount}/${MAX_RETRIES} for ${config.url}`);
+      await sleep(RETRY_DELAY_MS * config._retryCount);
+      return apiClient(config);
+    }
+
+    console.error('🔴 API Error:', {
       url: error.config?.url,
-      method: error.config?.method,
       status: error.response?.status,
-      statusText: error.response?.statusText,
-      data: error.response?.data,
       message: error.message,
     });
 
@@ -55,7 +85,7 @@ apiClient.interceptors.response.use(
     // Handle timeout errors
     if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
       apiError.message = 'Le serveur met trop de temps à répondre. Veuillez réessayer dans quelques instants.';
-      apiError.status = 408; // Request Timeout
+      apiError.status = 408;
     }
 
     if (error.response?.data) {
@@ -66,14 +96,13 @@ apiClient.interceptors.response.use(
 
     // Handle 401 Unauthorized - redirect to login
     if (error.response?.status === 401) {
-      // Ne pas rediriger si on est déjà sur une page publique (login/register)
       const currentPath = window.location.pathname;
       const isPublicPage = currentPath.includes('/login') || currentPath.includes('/register');
       
       if (!isPublicPage) {
-        // Clear auth and redirect to login
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
+        localStorage.removeItem('authTokenExpiresAt');
         window.location.href = '/HomiByIsphers/login';
       }
     }

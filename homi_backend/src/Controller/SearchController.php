@@ -28,19 +28,27 @@ class SearchController extends AbstractController
         $q = trim($request->query->get('q', ''));
         $type = $request->query->get('type', ''); // filter by type: task, user, domicile
         $results = [];
+        $user = $this->getUser();
+        $isAdmin = $user && in_array('ROLE_ADMIN', $user->getRoles());
 
         if (strlen($q) < 2) {
             return $this->json(['results' => [], 'total' => 0]);
         }
 
-        // Recherche dans les tâches
+        // Recherche dans les tâches — scoped by role
         if (!$type || $type === 'task') {
-            $tasks = $this->taskRepository->createQueryBuilder('t')
+            $qb = $this->taskRepository->createQueryBuilder('t')
                 ->where('LOWER(t.title) LIKE LOWER(:q) OR LOWER(t.description) LIKE LOWER(:q)')
-                ->setParameter('q', "%$q%")
+                ->setParameter('q', '%' . $q . '%')
                 ->orderBy('t.createdAt', 'DESC')
-                ->setMaxResults(10)
-                ->getQuery()->getResult();
+                ->setMaxResults(10);
+            
+            // Non-admin users only see their assigned tasks
+            if (!$isAdmin) {
+                $qb->andWhere('t.assignedTo = :user')->setParameter('user', $user);
+            }
+            
+            $tasks = $qb->getQuery()->getResult();
             foreach ($tasks as $task) {
                 $results[] = [
                     'id' => $task->getId(),
@@ -53,31 +61,33 @@ class SearchController extends AbstractController
             }
         }
 
-        // Recherche dans les utilisateurs (firstName, lastName, email)
-        if (!$type || $type === 'user') {
+        // Recherche dans les utilisateurs — admin only
+        if ($isAdmin && (!$type || $type === 'user')) {
             $users = $this->userRepository->createQueryBuilder('u')
                 ->where('LOWER(u.firstName) LIKE LOWER(:q) OR LOWER(u.lastName) LIKE LOWER(:q) OR LOWER(u.email) LIKE LOWER(:q)')
-                ->setParameter('q', "%$q%")
+                ->setParameter('q', '%' . $q . '%')
                 ->setMaxResults(10)
                 ->getQuery()->getResult();
-            foreach ($users as $user) {
-                $fullName = trim(($user->getFirstName() ?? '') . ' ' . ($user->getLastName() ?? ''));
+            foreach ($users as $u) {
+                $fullName = trim(($u->getFirstName() ?? '') . ' ' . ($u->getLastName() ?? ''));
                 $results[] = [
-                    'id' => $user->getId(),
+                    'id' => $u->getId(),
                     'type' => 'user',
-                    'title' => $fullName ?: $user->getEmail(),
-                    'snippet' => $user->getEmail(),
-                    'status' => $user->getRole(),
+                    'title' => $fullName ?: $u->getEmail(),
+                    'snippet' => $u->getEmail(),
+                    'status' => $u->getRole(),
                     'url' => '/admin/users',
                 ];
             }
         }
 
-        // Recherche dans les domiciles
-        if (!$type || $type === 'domicile') {
+        // Recherche dans les domiciles — admin only (scoped to own domiciles)
+        if ($isAdmin && (!$type || $type === 'domicile')) {
             $domiciles = $this->domicileRepository->createQueryBuilder('d')
-                ->where('LOWER(d.name) LIKE LOWER(:q) OR LOWER(d.address) LIKE LOWER(:q)')
-                ->setParameter('q', "%$q%")
+                ->where('(LOWER(d.name) LIKE LOWER(:q) OR LOWER(d.address) LIKE LOWER(:q))')
+                ->andWhere('d.createdBy = :user')
+                ->setParameter('q', '%' . $q . '%')
+                ->setParameter('user', $user)
                 ->setMaxResults(10)
                 ->getQuery()->getResult();
             foreach ($domiciles as $domicile) {

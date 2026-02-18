@@ -1,44 +1,60 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import { 
   LoginPage, 
-  DashboardPage, 
-  CreateTaskPage, 
-  TasksPage, 
-  CreateDomicilePage, 
-  DomicilesPage, 
-  TaskTimerPage, 
   RegisterPage,
   VerifyEmailPage,
   ResendVerificationPage,
-  AdminTimeLogsPage,
-  MyTimeLogsPage,
-  AdminInvoicesPage,
-  MyInvoicesPage,
-  CreateInvoicePage,
-  ManualTimeLogPage,
-  ProfilePage,
-  NotificationsPage,
-  SupportPage,
-  SettingsPage,
-  FavoritesPage,
-  ActivityPage,
-  AdminUsersPage,
-  AdminLogsPage,
-  AdminContentPage,
-  AdminStatsPage,
-  OnboardingPage,
-  ExportDataPage,
-  TwoFAPage,
-  SearchPage,
-  BadgesPage,
+  DashboardPage,
   Error404
 } from './pages';
 import { PrivateRoute, PublicRoute, AdminRoute } from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
+
+// Lazy-loaded pages for code splitting (wrap named exports for React.lazy)
+const CreateTaskPage = lazy(() => import('./pages/CreateTaskPage').then(m => ({ default: m.CreateTaskPage })));
+const TasksPage = lazy(() => import('./pages/TasksPage').then(m => ({ default: m.TasksPage })));
+const CreateDomicilePage = lazy(() => import('./pages/CreateDomicilePage').then(m => ({ default: m.CreateDomicilePage })));
+const DomicilesPage = lazy(() => import('./pages/DomicilesPage').then(m => ({ default: m.DomicilesPage })));
+const TaskTimerPage = lazy(() => import('./pages/TaskTimerPage').then(m => ({ default: m.TaskTimerPage })));
+const AdminTimeLogsPage = lazy(() => import('./pages/AdminTimeLogsPage').then(m => ({ default: m.AdminTimeLogsPage })));
+const MyTimeLogsPage = lazy(() => import('./pages/MyTimeLogsPage').then(m => ({ default: m.MyTimeLogsPage })));
+const AdminInvoicesPage = lazy(() => import('./pages/AdminInvoicesPage').then(m => ({ default: m.AdminInvoicesPage })));
+const MyInvoicesPage = lazy(() => import('./pages/MyInvoicesPage').then(m => ({ default: m.MyInvoicesPage })));
+const CreateInvoicePage = lazy(() => import('./pages/CreateInvoicePage').then(m => ({ default: m.CreateInvoicePage })));
+const ManualTimeLogPage = lazy(() => import('./pages/ManualTimeLogPage').then(m => ({ default: m.ManualTimeLogPage })));
+const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const NotificationsPage = lazy(() => import('./pages/NotificationsPage').then(m => ({ default: m.NotificationsPage })));
+const SupportPage = lazy(() => import('./pages/SupportPage').then(m => ({ default: m.SupportPage })));
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage').then(m => ({ default: m.FavoritesPage })));
+const ActivityPage = lazy(() => import('./pages/ActivityPage').then(m => ({ default: m.ActivityPage })));
+const AdminUsersPage = lazy(() => import('./pages/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
+const AdminLogsPage = lazy(() => import('./pages/AdminLogsPage').then(m => ({ default: m.AdminLogsPage })));
+const AdminContentPage = lazy(() => import('./pages/AdminContentPage').then(m => ({ default: m.AdminContentPage })));
+const AdminStatsPage = lazy(() => import('./pages/AdminStatsPage').then(m => ({ default: m.AdminStatsPage })));
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then(m => ({ default: m.OnboardingPage })));
+const ExportDataPage = lazy(() => import('./pages/ExportDataPage').then(m => ({ default: m.ExportDataPage })));
+const TwoFAPage = lazy(() => import('./pages/TwoFAPage').then(m => ({ default: m.TwoFAPage })));
+const SearchPage = lazy(() => import('./pages/SearchPage').then(m => ({ default: m.SearchPage })));
+const BadgesPage = lazy(() => import('./pages/BadgesPage').then(m => ({ default: m.BadgesPage })));
+
+// Loading spinner for lazy-loaded routes
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="flex flex-col items-center gap-3">
+      <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+      <span className="text-sm text-gray-500">Chargement...</span>
+    </div>
+  </div>
+);
 
 function App() {
   return (
-    <BrowserRouter basename="/HomiByIsphers">
-      <Routes>
+    <ErrorBoundary>
+      <BrowserRouter basename="/HomiByIsphers">
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
@@ -87,8 +103,10 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         {/* 404 Route */}
         <Route path="*" element={<Error404 />} />
-      </Routes>
-    </BrowserRouter>
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

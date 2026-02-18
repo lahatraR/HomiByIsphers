@@ -21,7 +21,7 @@ class SettingsController extends AbstractController
         private EntityManagerInterface $em
     ) {}
 
-    #[Route('/', name: 'api_settings_get', methods: ['GET'])]
+    #[Route('', name: 'api_settings_get', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function getSettings(): JsonResponse
     {
@@ -45,7 +45,7 @@ class SettingsController extends AbstractController
         ]);
     }
 
-    #[Route('/', name: 'api_settings_update', methods: ['PUT'])]
+    #[Route('', name: 'api_settings_update', methods: ['PUT'])]
     #[IsGranted('ROLE_USER')]
     public function updateSettings(Request $request): JsonResponse
     {
