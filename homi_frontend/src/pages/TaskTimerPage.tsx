@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, Button, LoadingSpinner } from '../components/common';
@@ -6,6 +6,17 @@ import { useTaskStore } from '../stores/taskStore';
 import { useAuthStore } from '../stores/authStore';
 import { submitTimeLog } from '../services/timeTracking.service';
 import { useTranslation } from 'react-i18next';
+import {
+  getPersistedTimer,
+  startPersistedTimer,
+  restorePersistedTimerFromServer,
+  resumePersistedTimer,
+  pausePersistedTimer,
+  freezePersistedTimer,
+  tickPersistedTimer,
+  clearPersistedTimer,
+  computeElapsedSeconds,
+} from '../services/timerPersistence.service';
 
 export const TaskTimerPage: React.FC = () => {
   const { taskId } = useParams<{ taskId: string }>();
@@ -15,60 +26,164 @@ export const TaskTimerPage: React.FC = () => {
   const { t } = useTranslation();
 
   const [timerSeconds, setTimerSeconds] = useState(0);
-  const [isTimerRunning, setIsTimerRunning] = useState(true);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [taskStarted, setTaskStarted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [wasFrozen, setWasFrozen] = useState(false);
+  const initDone = useRef(false);
 
   const task = tasks.find(t => t.id === Number(taskId));
 
-  // Empêcher les utilisateurs de quitter la page avec la navigation
+  // ─── 1. Restaurer le timer persisté au montage ────────────────────────
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isTimerRunning || taskStarted) {
-        e.preventDefault();
-        e.returnValue = '';
-        return '';
+    const persisted = getPersistedTimer(user?.id);
+    if (persisted && persisted.taskId === Number(taskId)) {
+      const elapsed = computeElapsedSeconds(persisted);
+      setTimerSeconds(elapsed);
+
+      if (persisted.isFrozen) {
+        // Le timer avait été figé (perte réseau / onglet fermé)
+        setWasFrozen(true);
+        setIsTimerRunning(false);
+      } else if (persisted.isPaused) {
+        setIsTimerRunning(false);
+      } else {
+        setIsTimerRunning(true);
       }
-    };
+      setTaskStarted(true);
+      initDone.current = true;
+    }
+  }, [taskId]);
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [isTimerRunning, taskStarted]);
-
-  // Vérifier que l'utilisateur accède bien à sa tâche
+  // ─── 2. Charger les tâches si nécessaire ──────────────────────────────
   useEffect(() => {
     if (!task && !isLoading) {
       fetchTasks();
     }
   }, [task, isLoading, fetchTasks]);
 
-  // Timer principal
+  // ─── 3. Démarrer la tâche côté API + créer le timer persisté ─────────
+  useEffect(() => {
+    if (initDone.current) return; // Déjà restauré depuis le localStorage
+
+    const initializeTask = async () => {
+      if (!task) return;
+
+      if (task.status === 'TODO') {
+        try {
+          await startTask(task.id);
+          startPersistedTimer(task.id, user!.id);
+          setTaskStarted(true);
+          setIsTimerRunning(true);
+          initDone.current = true;
+        } catch (error: any) {
+          setSubmitError(error?.message || t('timer.errorStart'));
+        }
+      } else if (task.status === 'IN_PROGRESS') {
+        // La tâche est déjà démarrée côté serveur
+        const persisted = getPersistedTimer(user?.id);
+        if (!persisted || persisted.taskId !== task.id) {
+          // Pas de timer local → restaurer depuis actualStartTime serveur
+          if (task.actualStartTime) {
+            restorePersistedTimerFromServer(task.id, user!.id, task.actualStartTime);
+            const restored = getPersistedTimer(user?.id);
+            if (restored) {
+              setTimerSeconds(computeElapsedSeconds(restored));
+            }
+          } else {
+            startPersistedTimer(task.id, user!.id);
+          }
+        }
+        setTaskStarted(true);
+        setIsTimerRunning(true);
+        initDone.current = true;
+      }
+    };
+
+    initializeTask();
+  }, [task, startTask, t]);
+
+  // ─── 4. Tick du timer (1 s) ───────────────────────────────────────────
   useEffect(() => {
     if (!isTimerRunning) return;
 
     const interval = setInterval(() => {
-      setTimerSeconds(prev => prev + 1);
+      const persisted = getPersistedTimer();
+      if (persisted) {
+        setTimerSeconds(computeElapsedSeconds(persisted));
+      } else {
+        setTimerSeconds(prev => prev + 1);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
   }, [isTimerRunning]);
 
-  // Démarrer la tâche
+  // ─── 5. Heartbeat : sauvegarder toutes les 10 s ──────────────────────
   useEffect(() => {
-    const initializeTask = async () => {
-      if (task && !taskStarted && task.status === 'TODO') {
-        try {
-          await startTask(task.id);
-          setTaskStarted(true);
-        } catch (error: any) {
-          setSubmitError(error?.message || t('timer.errorStart'));
+    if (!isTimerRunning) return;
+    const hb = setInterval(() => tickPersistedTimer(), 10_000);
+    return () => clearInterval(hb);
+  }, [isTimerRunning]);
+
+  // ─── 6. Visibility change → freeze / unfreeze ────────────────────────
+  useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === 'hidden') {
+        freezePersistedTimer();
+      } else {
+        // L'utilisateur revient sur l'onglet
+        const persisted = getPersistedTimer();
+        if (persisted && persisted.isFrozen) {
+          setTimerSeconds(computeElapsedSeconds(persisted));
+          setWasFrozen(true);
+          setIsTimerRunning(false);
         }
       }
     };
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, []);
 
-    initializeTask();
-  }, [task, taskStarted, startTask]);
+  // ─── 7. Perte de réseau → freeze ─────────────────────────────────────
+  useEffect(() => {
+    const offlineHandler = () => {
+      freezePersistedTimer();
+      setIsTimerRunning(false);
+      setWasFrozen(true);
+    };
+    const onlineHandler = () => {
+      // Ne pas reprendre automatiquement — l'utilisateur doit cliquer "Reprendre"
+      const persisted = getPersistedTimer();
+      if (persisted) {
+        setTimerSeconds(computeElapsedSeconds(persisted));
+      }
+    };
+    window.addEventListener('offline', offlineHandler);
+    window.addEventListener('online', onlineHandler);
+    return () => {
+      window.removeEventListener('offline', offlineHandler);
+      window.removeEventListener('online', onlineHandler);
+    };
+  }, []);
+
+  // ─── 8. beforeunload → freeze le timer ────────────────────────────────
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isTimerRunning || taskStarted) {
+        // Figer le timer dans le localStorage avant de quitter
+        freezePersistedTimer();
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isTimerRunning, taskStarted]);
+
+  // ─── Helpers ──────────────────────────────────────────────────────────
 
   const formatTime = (seconds: number): string => {
     const hours = Math.floor(seconds / 3600);
@@ -77,15 +192,38 @@ export const TaskTimerPage: React.FC = () => {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
+  // ─── Actions ──────────────────────────────────────────────────────────
+
+  const handleToggleTimer = useCallback(() => {
+    if (isTimerRunning) {
+      pausePersistedTimer();
+      setIsTimerRunning(false);
+    } else {
+      resumePersistedTimer();
+      setIsTimerRunning(true);
+      setWasFrozen(false);
+    }
+  }, [isTimerRunning]);
+
+  const handleResumeAfterFreeze = useCallback(() => {
+    resumePersistedTimer();
+    setIsTimerRunning(true);
+    setWasFrozen(false);
+  }, []);
+
   const handleCompleteTask = async () => {
     if (window.confirm(t('timer.confirmSave'))) {
       try {
         setIsSubmitting(true);
         setSubmitError(null);
 
+        // Calculer le temps total depuis le timer persisté
+        const persisted = getPersistedTimer();
+        const totalSeconds = persisted ? computeElapsedSeconds(persisted) : timerSeconds;
+
         // Créer les timestamps pour le log de temps
-        const taskStartDate = new Date();
-        const taskEndDate = new Date(taskStartDate.getTime() + (timerSeconds * 1000));
+        const taskEndDate = new Date();
+        const taskStartDate = new Date(taskEndDate.getTime() - (totalSeconds * 1000));
 
         // Soumettre le log de temps
         await submitTimeLog(task!.id, taskStartDate, taskEndDate);
@@ -94,10 +232,11 @@ export const TaskTimerPage: React.FC = () => {
         await completeTask(task!.id);
         setIsTimerRunning(false);
 
-        // Afficher un message de succès et rediriger
-        setTimeout(() => {
-          navigate('/tasks');
-        }, 2000);
+        // Nettoyer le timer persisté
+        clearPersistedTimer();
+
+        // Rediriger vers les tâches
+        setTimeout(() => navigate('/tasks'), 1500);
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : t('timer.errorSubmit');
         setSubmitError(errorMessage);
@@ -111,13 +250,12 @@ export const TaskTimerPage: React.FC = () => {
   const handleCancelTask = () => {
     if (window.confirm(t('timer.confirmDiscard'))) {
       setIsTimerRunning(false);
+      clearPersistedTimer();
       navigate('/tasks');
     }
   };
 
-  const handleToggleTimer = () => {
-    setIsTimerRunning(!isTimerRunning);
-  };
+  // ─── Rendu ────────────────────────────────────────────────────────────
 
   if (isLoading || !task) {
     return (
@@ -153,6 +291,24 @@ export const TaskTimerPage: React.FC = () => {
           <p className="text-gray-600">{task.description}</p>
         </Card>
 
+        {/* Frozen banner — shown when returning after leaving */}
+        {wasFrozen && (
+          <Card className="p-4 mb-6 bg-blue-50 border border-blue-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-blue-800 font-medium">⏸️ {t('timer.frozenTitle')}</p>
+                <p className="text-blue-600 text-sm">{t('timer.frozenDesc')}</p>
+              </div>
+              <Button
+                onClick={handleResumeAfterFreeze}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                ▶️ {t('timer.resume')}
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {/* Error Message */}
         {submitError && (
           <Card className="p-4 mb-6 bg-red-50 border border-red-200">
@@ -164,7 +320,9 @@ export const TaskTimerPage: React.FC = () => {
         <Card className="p-12 mb-6 text-center">
           <p className="text-gray-600 text-lg mb-4">{t('timer.elapsed')}</p>
           <div className="mb-8">
-            <p className="text-7xl font-bold text-primary-600 font-mono">
+            <p className={`text-7xl font-bold font-mono ${
+              wasFrozen ? 'text-blue-500' : isTimerRunning ? 'text-primary-600' : 'text-yellow-600'
+            }`}>
               {formatTime(timerSeconds)}
             </p>
           </div>
@@ -172,30 +330,38 @@ export const TaskTimerPage: React.FC = () => {
           {/* Timer Status */}
           <div className="mb-8">
             <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
-              isTimerRunning
-                ? 'bg-green-100 text-green-800'
-                : 'bg-yellow-100 text-yellow-800'
+              wasFrozen
+                ? 'bg-blue-100 text-blue-800'
+                : isTimerRunning
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-yellow-100 text-yellow-800'
             }`}>
-              {isTimerRunning ? `⏱️ ${t('timer.running')}` : `⏸️ ${t('timer.paused')}`}
+              {wasFrozen
+                ? `❄️ ${t('timer.frozen')}`
+                : isTimerRunning
+                  ? `⏱️ ${t('timer.running')}`
+                  : `⏸️ ${t('timer.paused')}`}
             </span>
           </div>
 
           {/* Controls */}
           <div className="flex gap-3 justify-center flex-wrap">
-            <Button
-              onClick={handleToggleTimer}
-              className={`${
-                isTimerRunning
-                  ? 'bg-yellow-500 hover:bg-yellow-600'
-                  : 'bg-green-500 hover:bg-green-600'
-              } text-white`}
-            >
-              {isTimerRunning ? `⏸️ ${t('timer.pause')}` : `▶️ ${t('timer.resume')}`}
-            </Button>
+            {!wasFrozen && (
+              <Button
+                onClick={handleToggleTimer}
+                className={`${
+                  isTimerRunning
+                    ? 'bg-yellow-500 hover:bg-yellow-600'
+                    : 'bg-green-500 hover:bg-green-600'
+                } text-white`}
+              >
+                {isTimerRunning ? `⏸️ ${t('timer.pause')}` : `▶️ ${t('timer.resume')}`}
+              </Button>
+            )}
 
             <Button
               onClick={handleCompleteTask}
-              disabled={!isTimerRunning && timerSeconds === 0 || isSubmitting}
+              disabled={timerSeconds === 0 || isSubmitting}
               className="bg-success-600 hover:bg-success-700 text-white"
             >
               {isSubmitting ? `⏳ ${t('timer.saving')}` : `✅ ${t('timer.save')}`}
@@ -248,15 +414,6 @@ export const TaskTimerPage: React.FC = () => {
           <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-800">
               ⚠️ {t('timer.warningLeave')}
-            </p>
-          </div>
-        )}
-
-        {/* Error Message */}
-        {submitError && (
-          <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-800">
-              ❌ Error: {submitError}
             </p>
           </div>
         )}

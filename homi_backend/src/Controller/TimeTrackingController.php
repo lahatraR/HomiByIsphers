@@ -93,6 +93,40 @@ class TimeTrackingController extends AbstractController
                 'createdAt' => $timeLog->getCreatedAt()->format('c')
             ], Response::HTTP_CREATED);
 
+        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+            // Auto-fix sequence if it's out of sync, then retry once
+            try {
+                $conn = $this->entityManager->getConnection();
+                $conn->executeStatement("SELECT setval('task_time_log_id_seq', (SELECT COALESCE(MAX(id), 0) FROM task_time_log) + 1, false)");
+
+                // Reset EntityManager and retry
+                if (!$this->entityManager->isOpen()) {
+                    $this->entityManager = $this->entityManager->create(
+                        $this->entityManager->getConnection(),
+                        $this->entityManager->getConfiguration()
+                    );
+                }
+
+                $task = $this->taskRepository->find($data['taskId']);
+                $user = $this->getUser();
+                $timeLog = $this->timeTrackingService->createTimeLog(
+                    $task, $user, $startTime, $endTime, $data['notes'] ?? null
+                );
+
+                return $this->json([
+                    'id' => $timeLog->getId(),
+                    'taskId' => $timeLog->getTask()->getId(),
+                    'hoursWorked' => $timeLog->getHoursWorked(),
+                    'status' => $timeLog->getStatus(),
+                    'startTime' => $timeLog->getStartTime()->format('c'),
+                    'endTime' => $timeLog->getEndTime()->format('c'),
+                    'createdAt' => $timeLog->getCreatedAt()->format('c')
+                ], Response::HTTP_CREATED);
+            } catch (\Exception $retryError) {
+                return $this->json([
+                    'error' => 'Database sequence error. Please try again.'
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
         } catch (\Exception $e) {
             return $this->json([
                 'error' => $e->getMessage()

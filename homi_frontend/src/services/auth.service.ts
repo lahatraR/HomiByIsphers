@@ -55,6 +55,7 @@ export const authService = {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
     localStorage.removeItem('authTokenExpiresAt');
+    // NE PAS effacer le timer — il doit survivre au logout/login
   },
 
   /**

@@ -56,7 +56,12 @@ class AuthController extends AbstractController
             $registerRequest->password = $data['password'] ?? '';
             $registerRequest->firstName = $data['firstName'] ?? '';
             $registerRequest->lastName = $data['lastName'] ?? '';
-            $registerRequest->role = 'ROLE_USER'; // Force ROLE_USER — never accept role from client
+
+            // Accepter ROLE_ADMIN (propriétaire) ou ROLE_USER (exécutant) depuis le client
+            $requestedRole = $data['role'] ?? 'ROLE_USER';
+            $registerRequest->role = in_array($requestedRole, ['ROLE_ADMIN', 'ROLE_USER'], true)
+                ? $requestedRole
+                : 'ROLE_USER';
 
             // Trace l'entrée sans exposer le mot de passe
             $this->logger->info('Registration request received', [

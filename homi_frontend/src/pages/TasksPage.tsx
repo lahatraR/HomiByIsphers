@@ -6,7 +6,6 @@ import { useAuthStore } from '../stores/authStore';
 import { Card, LoadingSpinner, Button } from '../components/common';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserRoles } from '../types';
-import api from '../services/api';
 
 export const TasksPage: React.FC = () => {
   const { tasks, isLoading, fetchTasks } = useTaskStore();
@@ -26,13 +25,8 @@ export const TasksPage: React.FC = () => {
   const handleStartTimer = async (task: any) => {
     setError(null);
     try {
-      // Vérifier que l'utilisateur est un exécuteur autorisé
-      const response = await api.get(`/domiciles/${task.domicile.id}/executors`);
-      const executors = response.data;
-     
-      const isAuthorized = executors.some((executor: any) => executor.id === user?.id);
-   
-      if (!isAuthorized) {
+      // Si l'utilisateur est assigné à la tâche, il est autorisé
+      if (task.assignedTo?.id !== user?.id) {
         setError(t('tasks.notAuthorized'));
         return;
       }
