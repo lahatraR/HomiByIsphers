@@ -601,5 +601,18 @@
     "backToLoginLink": "← Back to Login",
     "allRightsReserved": "Homi © 2026 - All rights reserved",
     "missingToken": "Missing token. Please use the verification link sent by email."
+  },
+  "spellcheck": {
+    "errorsFound": "{{count}} suggestion(s) found",
+    "correctAll": "Fix all",
+    "applySuggestion": "Apply suggestion",
+    "dismiss": "Dismiss",
+    "more": "more",
+    "category": {
+      "spelling": "Spelling",
+      "grammar": "Grammar",
+      "style": "Style",
+      "typographical": "Typography"
+    }
   }
 }

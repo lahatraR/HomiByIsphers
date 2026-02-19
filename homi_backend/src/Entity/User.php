@@ -65,10 +65,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Domicile::class)]
     private Collection $domiciles;
 
+    #[ORM\OneToMany(mappedBy: 'executor', targetEntity: TaskHistory::class)]
+    private Collection $taskHistories;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
         $this->domiciles = new ArrayCollection();
+        $this->taskHistories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -215,6 +219,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->domiciles->contains($domicile)) {
             $this->domiciles->add($domicile);
             $domicile->setCreatedBy($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TaskHistory>
+     */
+    public function getTaskHistories(): Collection
+    {
+        return $this->taskHistories;
+    }
+
+    public function addTaskHistory(TaskHistory $taskHistory): static
+    {
+        if (!$this->taskHistories->contains($taskHistory)) {
+            $this->taskHistories->add($taskHistory);
+            $taskHistory->setExecutor($this);
+        }
+        return $this;
+    }
+
+    public function removeTaskHistory(TaskHistory $taskHistory): static
+    {
+        if ($this->taskHistories->removeElement($taskHistory)) {
+            if ($taskHistory->getExecutor() === $this) {
+                $taskHistory->setExecutor(null);
+            }
         }
         return $this;
     }

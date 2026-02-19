@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -81,6 +83,14 @@ class Task
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['task:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: TaskHistory::class)]
+    private Collection $taskHistories;
+
+    public function __construct()
+    {
+        $this->taskHistories = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
@@ -250,5 +260,32 @@ class Task
     public function isTodo(): bool
     {
         return $this->status === self::STATUS_TODO;
+    }
+
+    /**
+     * @return Collection<int, TaskHistory>
+     */
+    public function getTaskHistories(): Collection
+    {
+        return $this->taskHistories;
+    }
+
+    public function addTaskHistory(TaskHistory $taskHistory): static
+    {
+        if (!$this->taskHistories->contains($taskHistory)) {
+            $this->taskHistories->add($taskHistory);
+            $taskHistory->setTask($this);
+        }
+        return $this;
+    }
+
+    public function removeTaskHistory(TaskHistory $taskHistory): static
+    {
+        if ($this->taskHistories->removeElement($taskHistory)) {
+            if ($taskHistory->getTask() === $this) {
+                $taskHistory->setTask(null);
+            }
+        }
+        return $this;
     }
 }

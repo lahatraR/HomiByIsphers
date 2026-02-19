@@ -299,6 +299,7 @@ class DomicileController extends AbstractController
             $domicileExecutor = new DomicileExecutor();
             $domicileExecutor->setDomicile($domicile);
             $domicileExecutor->setExecutor($executor);
+            $domicileExecutor->setCreatedAt(new \DateTimeImmutable());
 
             $this->entityManager->persist($domicileExecutor);
             $this->entityManager->flush();

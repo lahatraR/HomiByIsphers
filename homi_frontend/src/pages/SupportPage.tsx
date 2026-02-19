@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner, Button } from '../components/common';
+import { Card, LoadingSpinner, Button, SpellCheckInput, SpellCheckTextarea } from '../components/common';
 import { api } from '../services/api';
 import { useTranslation } from 'react-i18next';
 
@@ -89,12 +89,12 @@ export const SupportPage: React.FC = () => {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('support.subject')}</label>
-                <input type="text" value={form.subject} onChange={e => setForm(p => ({ ...p, subject: e.target.value }))} placeholder={t('support.subjectPlaceholder')}
+                <SpellCheckInput type="text" value={form.subject} onValueChange={val => setForm(p => ({ ...p, subject: val }))} placeholder={t('support.subjectPlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('support.message')}</label>
-                <textarea value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} rows={5} placeholder={t('support.messagePlaceholder')}
+                <SpellCheckTextarea value={form.message} onValueChange={val => setForm(p => ({ ...p, message: val }))} rows={5} placeholder={t('support.messagePlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
               </div>
               <Button onClick={handleSubmit} disabled={sending || !form.subject.trim() || !form.message.trim()}>

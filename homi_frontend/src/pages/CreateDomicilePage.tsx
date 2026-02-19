@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, Input } from '../components/common';
+import { Card, Button, Input, SpellCheckTextarea, SpellCheckInput } from '../components/common';
 import { LoadingSpinner } from '../components/common';
 import api from '../services/api';
 import { useTranslation } from 'react-i18next';
@@ -59,11 +59,11 @@ export const CreateDomicilePage: React.FC = () => {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 {t('createDomicile.name')} *
                             </label>
-                            <Input
+                            <SpellCheckInput
                                 type="text"
                                 name="name"
                                 value={formData.name}
-                                onChange={handleChange}
+                                onValueChange={(val) => setFormData(prev => ({ ...prev, name: val }))}
                                 required
                                 placeholder={t('createDomicile.namePlaceholder')}
                             />
@@ -73,11 +73,11 @@ export const CreateDomicilePage: React.FC = () => {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 {t('createDomicile.address')} *
                             </label>
-                            <Input
+                            <SpellCheckInput
                                 type="text"
                                 name="address"
                                 value={formData.address}
-                                onChange={handleChange}
+                                onValueChange={(val) => setFormData(prev => ({ ...prev, address: val }))}
                                 required
                                 placeholder={t('createDomicile.addressPlaceholder')}
                             />
@@ -88,11 +88,11 @@ export const CreateDomicilePage: React.FC = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     {t('createDomicile.city')} *
                                 </label>
-                                <Input
+                                <SpellCheckInput
                                     type="text"
                                     name="city"
                                     value={formData.city}
-                                    onChange={handleChange}
+                                    onValueChange={(val) => setFormData(prev => ({ ...prev, city: val }))}
                                     required
                                     placeholder={t('createDomicile.cityPlaceholder')}
                                 />
@@ -116,10 +116,10 @@ export const CreateDomicilePage: React.FC = () => {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 {t('createDomicile.description')}
                             </label>
-                            <textarea
+                            <SpellCheckTextarea
                                 name="description"
                                 value={formData.description}
-                                onChange={handleChange}
+                                onValueChange={(val) => setFormData(prev => ({ ...prev, description: val }))}
                                 placeholder={t('createDomicile.descriptionPlaceholder')}
                                 rows={4}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"

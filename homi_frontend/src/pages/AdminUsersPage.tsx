@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner, Button } from '../components/common';
+import { Card, LoadingSpinner, Button, SpellCheckInput } from '../components/common';
 import { userService } from '../services/user.service';
 import { api } from '../services/api';
 import type { User } from '../types';
@@ -121,9 +121,9 @@ export const AdminUsersPage: React.FC = () => {
               <h2 className="text-xl font-bold text-gray-900 mb-4">{t('admin.users.editUser')}</h2>
               <div className="space-y-4">
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.users.firstName')}</label>
-                  <input type="text" value={editForm.firstName} onChange={e => setEditForm(p => ({ ...p, firstName: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" /></div>
+                  <SpellCheckInput type="text" value={editForm.firstName} onValueChange={val => setEditForm(p => ({ ...p, firstName: val }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.users.lastName')}</label>
-                  <input type="text" value={editForm.lastName} onChange={e => setEditForm(p => ({ ...p, lastName: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" /></div>
+                  <SpellCheckInput type="text" value={editForm.lastName} onValueChange={val => setEditForm(p => ({ ...p, lastName: val }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.users.role')}</label>
                   <select value={editForm.role} onChange={e => setEditForm(p => ({ ...p, role: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     <option value="ROLE_USER">{t('admin.users.filterExecutor')}</option><option value="ROLE_ADMIN">{t('admin.users.filterAdmin')}</option>

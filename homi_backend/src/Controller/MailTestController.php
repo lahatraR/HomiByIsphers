@@ -21,10 +21,11 @@ class MailTestController extends AbstractController
             return $this->json(['error' => 'Endpoint disabled in production'], Response::HTTP_FORBIDDEN);
         }
 
-        $toEmail = $request->request->get('toEmail', 'destinataire@example.com');
-        $toName = $request->request->get('toName', 'Destinataire');
-        $subject = $request->request->get('subject', 'Test Mailjet');
-        $htmlContent = $request->request->get('html', '<h1>Ceci est un test Mailjet</h1>');
+        $data = json_decode($request->getContent(), true) ?? [];
+        $toEmail = $data['toEmail'] ?? 'destinataire@example.com';
+        $toName = $data['toName'] ?? 'Destinataire';
+        $subject = $data['subject'] ?? 'Test Mailjet';
+        $htmlContent = $data['html'] ?? '<h1>Ceci est un test Mailjet</h1>';
 
         $success = $mailjetService->sendEmail($toEmail, $toName, $subject, $htmlContent);
 

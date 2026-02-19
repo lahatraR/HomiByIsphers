@@ -38,6 +38,9 @@ const ExportDataPage = lazy(() => import('./pages/ExportDataPage').then(m => ({ 
 const TwoFAPage = lazy(() => import('./pages/TwoFAPage').then(m => ({ default: m.TwoFAPage })));
 const SearchPage = lazy(() => import('./pages/SearchPage').then(m => ({ default: m.SearchPage })));
 const BadgesPage = lazy(() => import('./pages/BadgesPage').then(m => ({ default: m.BadgesPage })));
+const PerformancePage = lazy(() => import('./pages/PerformancePage').then(m => ({ default: m.PerformancePage })));
+const RecurringTasksPage = lazy(() => import('./pages/RecurringTasksPage').then(m => ({ default: m.RecurringTasksPage })));
+const BudgetPage = lazy(() => import('./pages/BudgetPage').then(m => ({ default: m.BudgetPage })));
 
 // Loading spinner for lazy-loaded routes
 const PageLoader = () => (
@@ -82,6 +85,7 @@ function App() {
           <Route path="/twofa" element={<TwoFAPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/badges" element={<BadgesPage />} />
+          <Route path="/performance" element={<PerformancePage />} />
           {/* Onboarding always accessible for logged-in users */}
           <Route path="/onboarding" element={<OnboardingPage />} />
           {/* Admin features (Propriétaire) */}
@@ -96,6 +100,8 @@ function App() {
             <Route path="/admin/time-logs" element={<AdminTimeLogsPage />} />
             <Route path="/admin/invoices" element={<AdminInvoicesPage />} />
             <Route path="/admin/invoices/create" element={<CreateInvoicePage />} />
+            <Route path="/recurring-tasks" element={<RecurringTasksPage />} />
+            <Route path="/budgets" element={<BudgetPage />} />
           </Route>
         </Route>
 

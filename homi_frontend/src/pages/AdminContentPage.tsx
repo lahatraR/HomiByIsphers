@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner, Button } from '../components/common';
+import { Card, LoadingSpinner, Button, SpellCheckInput, SpellCheckTextarea } from '../components/common';
 import { api } from '../services/api';
 import { useTranslation } from 'react-i18next';
 
@@ -139,13 +139,13 @@ export const AdminContentPage: React.FC = () => {
               <h2 className="text-xl font-bold text-gray-900 mb-4">{editingItem ? t('admin.content.editContent') : t('admin.content.newContentTitle')}</h2>
               <div className="space-y-4">
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.content.contentTitle')}</label>
-                  <input type="text" value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" /></div>
+                  <SpellCheckInput type="text" value={form.title} onValueChange={val => setForm(p => ({ ...p, title: val }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.content.contentType')}</label>
                   <select value={form.type} onChange={e => setForm(p => ({ ...p, type: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     <option value="article">{t('admin.content.typeArticle')}</option><option value="announcement">{t('admin.content.typeAnnouncement')}</option><option value="faq">{t('admin.content.typeFaq')}</option><option value="guide">{t('admin.content.typeGuide')}</option>
                   </select></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.content.contentBody')}</label>
-                  <textarea value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} rows={6} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" /></div>
+                  <SpellCheckTextarea value={form.body} onValueChange={val => setForm(p => ({ ...p, body: val }))} rows={6} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" /></div>
                 <label className="flex items-center gap-2">
                   <input type="checkbox" checked={form.published} onChange={e => setForm(p => ({ ...p, published: e.target.checked }))} className="rounded text-blue-600 focus:ring-blue-500" />
                   <span className="text-sm text-gray-700">{t('admin.content.publishNow')}</span>

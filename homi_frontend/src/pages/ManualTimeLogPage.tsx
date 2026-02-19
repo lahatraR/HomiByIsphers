@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, LoadingSpinner } from '../components/common';
+import { Card, Button, LoadingSpinner, SpellCheckTextarea } from '../components/common';
 import { taskService, type Task } from '../services/task.service';
 import { submitTimeLog } from '../services/timeTracking.service';
 import { useNavigate } from 'react-router-dom';
@@ -206,9 +206,9 @@ export const ManualTimeLogPage: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t('timeLogs.notes')}
                 </label>
-                <textarea
+                <SpellCheckTextarea
                   value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
+                  onValueChange={(val) => setNotes(val)}
                   rows={4}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   placeholder={t('timeLogs.notesPlaceholder')}

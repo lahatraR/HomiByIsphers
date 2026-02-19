@@ -17,6 +17,7 @@ import {
   clearPersistedTimer,
   computeElapsedSeconds,
 } from '../services/timerPersistence.service';
+import { smartEstimateService, type SmartEstimateResult } from '../services/smartEstimate.service';
 
 export const TaskTimerPage: React.FC = () => {
   const { taskId } = useParams<{ taskId: string }>();
@@ -32,6 +33,11 @@ export const TaskTimerPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [wasFrozen, setWasFrozen] = useState(false);
   const initDone = useRef(false);
+
+  // SmartEstimate state
+  const [estimate, setEstimate] = useState<SmartEstimateResult | null>(null);
+  const [overrunWarning, setOverrunWarning] = useState(false);
+  const [overrunPercent, setOverrunPercent] = useState(0);
 
   const task = tasks.find(t => t.id === Number(taskId));
 
@@ -183,6 +189,32 @@ export const TaskTimerPage: React.FC = () => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isTimerRunning, taskStarted]);
 
+  // ─── 9. SmartEstimate — charger l'estimation au montage ─────────────
+  useEffect(() => {
+    if (!task) return;
+    smartEstimateService
+      .getEstimate({ domicileId: task.domicile?.id, executorId: task.assignedTo?.id })
+      .then(setEstimate)
+      .catch(() => {}); // silently ignore
+  }, [task]);
+
+  // ─── 10. Overrun check — toutes les 60 s ──────────────────────────────
+  useEffect(() => {
+    if (!isTimerRunning || !task) return;
+    const check = () => {
+      smartEstimateService
+        .checkOverrun(task.id, timerSeconds)
+        .then(res => {
+          setOverrunWarning(res.overrun);
+          setOverrunPercent(res.percentOver ?? 0);
+        })
+        .catch(() => {});
+    };
+    check(); // initial
+    const iv = setInterval(check, 60_000);
+    return () => clearInterval(iv);
+  }, [isTimerRunning, task, timerSeconds]);
+
   // ─── Helpers ──────────────────────────────────────────────────────────
 
   const formatTime = (seconds: number): string => {
@@ -290,6 +322,45 @@ export const TaskTimerPage: React.FC = () => {
           <h1 className="text-4xl font-bold text-gray-900 mb-2">{task.title}</h1>
           <p className="text-gray-600">{task.description}</p>
         </Card>
+
+        {/* SmartEstimate Banner */}
+        {estimate && estimate.confidence !== 'none' && (
+          <Card className="p-4 mb-6 bg-indigo-50 border border-indigo-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-indigo-800 font-medium">🧠 Estimation intelligente</p>
+                <p className="text-indigo-600 text-sm">
+                  ~{estimate.estimatedHours !== null ? Math.round(estimate.estimatedHours * 60) : '?'} min en moyenne
+                  {estimate.medianHours !== undefined && ` (médiane ${Math.round(estimate.medianHours * 60)} min)`} — basé sur {estimate.basedOn} tâch{estimate.basedOn > 1 ? 'es' : 'e'}
+                </p>
+              </div>
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                estimate.confidence === 'high' ? 'bg-green-100 text-green-700' :
+                estimate.confidence === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                'bg-gray-100 text-gray-600'
+              }`}>
+                {estimate.confidence === 'high' ? '✅ Confiance élevée' :
+                 estimate.confidence === 'medium' ? '🟡 Confiance moyenne' : '🔵 Peu de données'}
+              </span>
+            </div>
+          </Card>
+        )}
+
+        {/* Overrun Warning */}
+        {overrunWarning && (
+          <Card className="p-4 mb-6 bg-red-50 border border-red-300 animate-pulse">
+            <div className="flex items-center">
+              <span className="text-2xl mr-3">⚠️</span>
+              <div>
+                <p className="text-red-800 font-bold">Dépassement détecté !</p>
+                <p className="text-red-600 text-sm">
+                  Le temps écoulé dépasse de {overrunPercent}% la durée moyenne habituelle.
+                  Pensez à vérifier la progression de la tâche.
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Frozen banner — shown when returning after leaving */}
         {wasFrozen && (

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, LoadingSpinner } from '../components/common';
+import { Card, Button, LoadingSpinner, SpellCheckTextarea } from '../components/common';
 import { domicileService, type Domicile } from '../services/domicile.service';
 import { userService } from '../services/user.service';
 import { createInvoice } from '../services/invoice.service';
@@ -210,9 +210,9 @@ export const CreateInvoicePage: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('invoices.notes')}</label>
-                <textarea
+                <SpellCheckTextarea
                   value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
+                  onValueChange={(val) => setNotes(val)}
                   rows={3}
                   className="w-full rounded border border-gray-300 px-3 py-2"
                   placeholder={t('common.optional')}

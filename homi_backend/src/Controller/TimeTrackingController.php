@@ -9,6 +9,7 @@ use App\Repository\TaskTimeLogRepository;
 use App\Repository\TaskRepository;
 use App\Service\TimeTrackingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,8 @@ class TimeTrackingController extends AbstractController
         private TaskTimeLogRepository $timeLogRepository,
         private TaskRepository $taskRepository,
         private EntityManagerInterface $entityManager,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private ManagerRegistry $managerRegistry
     ) {
     }
 
@@ -58,7 +60,7 @@ class TimeTrackingController extends AbstractController
             }
 
             // Vérifier que l'utilisateur est assigné à cette tâche
-            if ($task->getAssignedTo()->getId() !== $user->getId()) {
+            if (!$task->getAssignedTo() || $task->getAssignedTo()->getId() !== $user->getId()) {
                 return $this->json([
                     'error' => 'You are not assigned to this task'
                 ], Response::HTTP_FORBIDDEN);
@@ -99,12 +101,10 @@ class TimeTrackingController extends AbstractController
                 $conn = $this->entityManager->getConnection();
                 $conn->executeStatement("SELECT setval('task_time_log_id_seq', (SELECT COALESCE(MAX(id), 0) FROM task_time_log) + 1, false)");
 
-                // Reset EntityManager and retry
+                // Reset EntityManager if closed after exception
                 if (!$this->entityManager->isOpen()) {
-                    $this->entityManager = $this->entityManager->create(
-                        $this->entityManager->getConnection(),
-                        $this->entityManager->getConfiguration()
-                    );
+                    $this->managerRegistry->resetManager();
+                    $this->entityManager = $this->managerRegistry->getManager();
                 }
 
                 $task = $this->taskRepository->find($data['taskId']);

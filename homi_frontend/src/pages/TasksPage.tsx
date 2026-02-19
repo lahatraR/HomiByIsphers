@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { MainLayout } from '../layouts/MainLayout';
 import { useTaskStore } from '../stores/taskStore';
 import { useAuthStore } from '../stores/authStore';
-import { Card, LoadingSpinner, Button } from '../components/common';
+import { Card, LoadingSpinner, Button, SpellCheckTextarea } from '../components/common';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserRoles } from '../types';
+import { taskReviewService } from '../services/taskReview.service';
 
 export const TasksPage: React.FC = () => {
   const { tasks, isLoading, fetchTasks } = useTaskStore();
@@ -15,9 +16,47 @@ export const TasksPage: React.FC = () => {
   const isAdmin = user?.role === UserRoles.ADMIN;
   const [error, setError] = useState<string | null>(null);
 
+  // Review state
+  const [reviewingTaskId, setReviewingTaskId] = useState<number | null>(null);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewedTasks, setReviewedTasks] = useState<Record<number, number>>({}); // taskId → rating
+
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  // Load existing reviews for completed tasks
+  useEffect(() => {
+    if (!isAdmin || tasks.length === 0) return;
+    const completedTasks = tasks.filter(t => t.status === 'COMPLETED');
+    completedTasks.forEach(async (task) => {
+      try {
+        const review = await taskReviewService.getByTask(task.id);
+        if (review) {
+          setReviewedTasks(prev => ({ ...prev, [task.id]: review.rating }));
+        }
+      } catch {
+        // no review exists, that's ok
+      }
+    });
+  }, [tasks, isAdmin]);
+
+  const handleSubmitReview = async (taskId: number) => {
+    setReviewSubmitting(true);
+    try {
+      await taskReviewService.create({ taskId, rating: reviewRating, comment: reviewComment || undefined });
+      setReviewedTasks(prev => ({ ...prev, [taskId]: reviewRating }));
+      setReviewingTaskId(null);
+      setReviewRating(5);
+      setReviewComment('');
+    } catch (e: any) {
+      setError(e.message || 'Erreur lors de la notation');
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
 
   const myTasks = tasks.filter(task => task.assignedTo?.id === user?.id);
   const displayTasks = isAdmin ? tasks : myTasks;
@@ -187,8 +226,65 @@ export const TasksPage: React.FC = () => {
                   {isAdmin && (
                     <span className="text-xs text-gray-500">Executor: {task.assignedTo?.email ?? 'N/A'}</span>
                   )}
+                  {/* Review button for admin on completed tasks */}
+                  {isAdmin && task.status === 'COMPLETED' && !reviewedTasks[task.id] && (
+                    <Button
+                      size="sm"
+                      onClick={() => { setReviewingTaskId(task.id); setReviewRating(5); setReviewComment(''); }}
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs"
+                    >
+                      ⭐ Noter
+                    </Button>
+                  )}
+                  {/* Show existing rating */}
+                  {reviewedTasks[task.id] && (
+                    <span className="text-yellow-500 font-medium text-sm">
+                      {'★'.repeat(reviewedTasks[task.id])}{'☆'.repeat(5 - reviewedTasks[task.id])}
+                    </span>
+                  )}
                 </div>
               </div>
+              {/* Inline review form */}
+              {reviewingTaskId === task.id && (
+                <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Notez cette tâche</p>
+                  <div className="flex items-center gap-1 mb-2">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <button
+                        key={star}
+                        onClick={() => setReviewRating(star)}
+                        className={`text-2xl ${star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'} hover:scale-110 transition-transform`}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                  <SpellCheckTextarea
+                    value={reviewComment}
+                    onValueChange={val => setReviewComment(val)}
+                    placeholder="Commentaire (optionnel)..."
+                    className="text-sm"
+                    rows={2}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => handleSubmitReview(task.id)}
+                      disabled={reviewSubmitting}
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs"
+                    >
+                      {reviewSubmitting ? '⏳...' : '✅ Enregistrer'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => setReviewingTaskId(null)}
+                      className="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs"
+                    >
+                      Annuler
+                    </Button>
+                  </div>
+                </div>
+              )}
             </Card>
           ))}
         </div>

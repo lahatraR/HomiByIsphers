@@ -588,5 +588,18 @@
     "backToLoginLink": "← Volver al inicio de sesión",
     "allRightsReserved": "Homi © 2026 - Todos los derechos reservados",
     "missingToken": "Token faltante. Por favor usa el enlace de verificación enviado por email."
+  },
+  "spellcheck": {
+    "errorsFound": "{{count}} sugerencia(s) encontrada(s)",
+    "correctAll": "Corregir todo",
+    "applySuggestion": "Aplicar sugerencia",
+    "dismiss": "Ignorar",
+    "more": "más",
+    "category": {
+      "spelling": "Ortografía",
+      "grammar": "Gramática",
+      "style": "Estilo",
+      "typographical": "Tipografía"
+    }
   }
 }

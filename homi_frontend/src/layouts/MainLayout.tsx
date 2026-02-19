@@ -113,6 +113,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <Link to="/tasks" className={navLinkClass('/tasks')}>
                 {t('nav.myTasks')}
               </Link>
+              <Link to="/performance" className={navLinkClass('/performance')}>
+                📊 Performance
+              </Link>
 
               {/* User (Exécutant) nav */}
               {!isAdmin && (
@@ -140,6 +143,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </Link>
                   <Link to="/admin/stats" className={navLinkClass('/admin/stats')}>
                     {t('nav.adminStats')}
+                  </Link>
+                  <Link to="/recurring-tasks" className={navLinkClass('/recurring-tasks')}>
+                    🔄 Récurrences
+                  </Link>
+                  <Link to="/budgets" className={navLinkClass('/budgets')}>
+                    💰 Budget
                   </Link>
                 </>
               )}
@@ -360,6 +369,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <Link to="/tasks" className={mobileNavLinkClass('/tasks')}>
                 {t('nav.myTasks')}
               </Link>
+              <Link to="/performance" className={mobileNavLinkClass('/performance')}>
+                📊 Performance
+              </Link>
 
               {/* User-specific mobile nav */}
               {!isAdmin && (
@@ -408,6 +420,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   </Link>
                   <Link to="/admin/content" className={mobileNavLinkClass('/admin/content')}>
                     {t('nav.adminContent')}
+                  </Link>
+                  <Link to="/recurring-tasks" className={mobileNavLinkClass('/recurring-tasks')}>
+                    🔄 Tâches récurrentes
+                  </Link>
+                  <Link to="/budgets" className={mobileNavLinkClass('/budgets')}>
+                    💰 Budget & Coûts
                   </Link>
                 </>
               )}

@@ -50,6 +50,9 @@ class Domicile
     #[ORM\OneToMany(mappedBy: 'domicile', targetEntity: Task::class)]
     private Collection $tasks;
 
+    #[ORM\OneToMany(mappedBy: 'domicile', targetEntity: DomicileExecutor::class)]
+    private Collection $domicileExecutors;
+
     #[ORM\Column(type: 'datetime')]
     #[Groups(['domicile:read'])]
     private ?\DateTimeInterface $createdAt = null;
@@ -61,6 +64,7 @@ class Domicile
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->domicileExecutors = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -160,6 +164,33 @@ class Domicile
         if ($this->tasks->removeElement($task)) {
             if ($task->getDomicile() === $this) {
                 $task->setDomicile(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DomicileExecutor>
+     */
+    public function getDomicileExecutors(): Collection
+    {
+        return $this->domicileExecutors;
+    }
+
+    public function addDomicileExecutor(DomicileExecutor $domicileExecutor): static
+    {
+        if (!$this->domicileExecutors->contains($domicileExecutor)) {
+            $this->domicileExecutors->add($domicileExecutor);
+            $domicileExecutor->setDomicile($this);
+        }
+        return $this;
+    }
+
+    public function removeDomicileExecutor(DomicileExecutor $domicileExecutor): static
+    {
+        if ($this->domicileExecutors->removeElement($domicileExecutor)) {
+            if ($domicileExecutor->getDomicile() === $this) {
+                $domicileExecutor->setDomicile(null);
             }
         }
         return $this;

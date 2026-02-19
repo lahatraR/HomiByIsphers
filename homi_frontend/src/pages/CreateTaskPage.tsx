@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
-import { Button, Input, Card } from '../components/common';
+import { Button, Input, Card, SpellCheckTextarea, SpellCheckInput } from '../components/common';
 import { useTaskStore } from '../stores/taskStore';
 import { useAuthStore } from '../stores/authStore';
 import { useDomicileStore } from '../stores/domicileStore';
@@ -112,30 +112,25 @@ export const CreateTaskPage: React.FC = () => {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Task Information</h2>
             
             <div className="space-y-4">
-              <Input
+              <SpellCheckInput
                 label={t('createTask.taskTitle')}
                 type="text"
                 name="title"
                 value={formData.title}
-                onChange={handleChange}
+                onValueChange={(val) => setFormData(prev => ({ ...prev, title: val }))}
                 placeholder={t('createTask.taskTitlePlaceholder')}
                 required
               />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('createTask.description')} <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder={t('createTask.descriptionPlaceholder')}
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  required
-                />
-              </div>
+              <SpellCheckTextarea
+                label={t('createTask.description')}
+                name="description"
+                value={formData.description}
+                onValueChange={(val) => setFormData(prev => ({ ...prev, description: val }))}
+                placeholder={t('createTask.descriptionPlaceholder')}
+                rows={4}
+                required
+              />
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">

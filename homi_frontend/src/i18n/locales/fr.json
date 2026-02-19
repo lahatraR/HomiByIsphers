@@ -601,5 +601,18 @@
     "backToLoginLink": "← Retour à la connexion",
     "allRightsReserved": "Homi © 2026 - Tous droits réservés",
     "missingToken": "Token manquant. Veuillez utiliser le lien de vérification envoyé par email."
+  },
+  "spellcheck": {
+    "errorsFound": "{{count}} correction(s) suggérée(s)",
+    "correctAll": "Tout corriger",
+    "applySuggestion": "Appliquer la suggestion",
+    "dismiss": "Ignorer",
+    "more": "de plus",
+    "category": {
+      "spelling": "Orthographe",
+      "grammar": "Grammaire",
+      "style": "Style",
+      "typographical": "Typographie"
+    }
   }
 }

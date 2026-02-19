@@ -30,4 +30,7 @@ export { ExportDataPage } from './ExportDataPage';
 export { TwoFAPage } from './TwoFAPage';
 export { SearchPage } from './SearchPage';
 export { BadgesPage } from './BadgesPage';
+export { PerformancePage } from './PerformancePage';
+export { RecurringTasksPage } from './RecurringTasksPage';
+export { BudgetPage } from './BudgetPage';
 export { Error404 } from './Error404';

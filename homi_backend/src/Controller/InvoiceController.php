@@ -134,7 +134,7 @@ class InvoiceController extends AbstractController
      * Récupérer une facture spécifique
      * GET /api/invoices/{id}
      */
-    #[Route('/{id}', name: 'api_invoices_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'api_invoices_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Invoice $invoice): JsonResponse
     {
@@ -152,7 +152,7 @@ class InvoiceController extends AbstractController
      * Mettre à jour une facture
      * PATCH /api/invoices/{id}
      */
-    #[Route('/{id}', name: 'api_invoices_update', methods: ['PATCH'])]
+    #[Route('/{id}', name: 'api_invoices_update', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function update(Invoice $invoice, Request $request): JsonResponse
     {
@@ -276,7 +276,7 @@ class InvoiceController extends AbstractController
      * Supprimer une facture
      * DELETE /api/invoices/{id}
      */
-    #[Route('/{id}', name: 'api_invoices_delete', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'api_invoices_delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Invoice $invoice): JsonResponse
     {
@@ -356,18 +356,18 @@ class InvoiceController extends AbstractController
             'id' => $invoice->getId(),
             'invoiceNumber' => $invoice->getInvoiceNumber(),
             'domicile' => [
-                'id' => $invoice->getDomicile()->getId(),
-                'name' => $invoice->getDomicile()->getName(),
-                'address' => $invoice->getDomicile()->getAddress()
+                'id' => $invoice->getDomicile()?->getId(),
+                'name' => $invoice->getDomicile()?->getName(),
+                'address' => $invoice->getDomicile()?->getAddress()
             ],
             'executor' => [
-                'id' => $invoice->getExecutor()->getId(),
-                'firstName' => $invoice->getExecutor()->getFirstName(),
-                'lastName' => $invoice->getExecutor()->getLastName(),
-                'email' => $invoice->getExecutor()->getEmail()
+                'id' => $invoice->getExecutor()?->getId(),
+                'firstName' => $invoice->getExecutor()?->getFirstName(),
+                'lastName' => $invoice->getExecutor()?->getLastName(),
+                'email' => $invoice->getExecutor()?->getEmail()
             ],
-            'periodStart' => $invoice->getPeriodStart()->format('Y-m-d'),
-            'periodEnd' => $invoice->getPeriodEnd()->format('Y-m-d'),
+            'periodStart' => $invoice->getPeriodStart()?->format('Y-m-d'),
+            'periodEnd' => $invoice->getPeriodEnd()?->format('Y-m-d'),
             'totalHours' => $invoice->getTotalHours(),
             'hourlyRate' => $invoice->getHourlyRate(),
             'subtotal' => $invoice->getSubtotal(),
@@ -379,7 +379,7 @@ class InvoiceController extends AbstractController
             'paidDate' => $invoice->getPaidDate()?->format('Y-m-d'),
             'notes' => $invoice->getNotes(),
             'isOverdue' => $invoice->isOverdue(),
-            'createdAt' => $invoice->getCreatedAt()->format('Y-m-d H:i:s')
+            'createdAt' => $invoice->getCreatedAt()?->format('Y-m-d H:i:s')
         ];
     }
 }

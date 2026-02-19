@@ -588,5 +588,18 @@
     "backToLoginLink": "← 返回登录",
     "allRightsReserved": "Homi © 2026 - 版权所有",
     "missingToken": "缺少令牌。请使用邮件中发送的验证链接。"
+  },
+  "spellcheck": {
+    "errorsFound": "发现 {{count}} 条建议",
+    "correctAll": "全部修正",
+    "applySuggestion": "应用建议",
+    "dismiss": "忽略",
+    "more": "更多",
+    "category": {
+      "spelling": "拼写",
+      "grammar": "语法",
+      "style": "风格",
+      "typographical": "排版"
+    }
   }
 }

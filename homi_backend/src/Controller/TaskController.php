@@ -6,7 +6,6 @@ use App\Entity\Task;
 use App\Entity\User;
 use App\Entity\Domicile;
 use App\Entity\DomicileExecutor;
-use App\Enum\TaskStatus;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use App\Repository\DomicileRepository;
@@ -353,7 +352,7 @@ class TaskController extends AbstractController
 
         // Marquer la tâche comme terminée
         $task->setStatus(Task::STATUS_COMPLETED);
-        $task->setEndTime(new \DateTimeImmutable());
+        $task->setActualEndTime(new \DateTimeImmutable());
 
         $this->entityManager->flush();
 
@@ -436,6 +435,12 @@ class TaskController extends AbstractController
                 return $this->json(['error' => 'Task not found'], Response::HTTP_NOT_FOUND);
             }
 
+            // Vérifier que l'utilisateur est assigné à cette tâche
+            $user = $this->getUser();
+            if (!$this->isGranted('ROLE_ADMIN') && (!$task->getAssignedTo() || $task->getAssignedTo() !== $user)) {
+                return $this->json(['error' => 'You are not assigned to this task'], Response::HTTP_FORBIDDEN);
+            }
+
             if ($task->getStatus() !== Task::STATUS_TODO) {
                 return $this->json(['error' => 'Task must be in TODO status'], Response::HTTP_BAD_REQUEST);
             }
@@ -464,6 +469,12 @@ class TaskController extends AbstractController
             
             if (!$task) {
                 return $this->json(['error' => 'Task not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Vérifier que l'utilisateur est assigné à cette tâche
+            $user = $this->getUser();
+            if (!$this->isGranted('ROLE_ADMIN') && (!$task->getAssignedTo() || $task->getAssignedTo() !== $user)) {
+                return $this->json(['error' => 'You are not assigned to this task'], Response::HTTP_FORBIDDEN);
             }
 
             if ($task->getStatus() !== Task::STATUS_IN_PROGRESS) {
