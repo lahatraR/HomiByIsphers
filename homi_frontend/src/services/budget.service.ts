@@ -1,40 +1,8 @@
 import { api } from './api';
+import type { BudgetOverview, TodayCost, MonthlyBudgetData } from '../types/budget';
 
-export interface BudgetOverview {
-  year: number;
-  month: number;
-  totalBudget: number;
-  totalSpent: number;
-  totalProjected: number;
-  percentUsed: number | null;
-  domiciles: DomicileBudget[];
-}
-
-export interface DomicileBudget {
-  domicileId: number;
-  domicileName: string;
-  budget: number | null;
-  spent: number;
-  hoursWorked: number;
-  projected: number;
-  percentUsed: number | null;
-  status: 'ok' | 'warning' | 'over';
-}
-
-export interface TodayCost {
-  todayCost: number;
-  todayHours: number;
-  tasksCount: number;
-}
-
-export interface MonthlyBudgetData {
-  id: number;
-  domicileId: number;
-  domicileName: string;
-  year: number;
-  month: number;
-  budgetAmount: number;
-}
+// Re-export for backward compatibility
+export type { BudgetOverview, TodayCost, MonthlyBudgetData };
 
 export const budgetService = {
   getOverview: async (year?: number, month?: number): Promise<BudgetOverview> => {

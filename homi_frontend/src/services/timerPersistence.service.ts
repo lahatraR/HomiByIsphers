@@ -11,26 +11,12 @@
  *   accumulatedSeconds                            [si le timer est en pause / figé]
  */
 
-const STORAGE_KEY = 'homi_active_timer';
+import type { PersistedTimer } from '../types/timeTracking';
 
-export interface PersistedTimer {
-  /** ID de l'utilisateur propriétaire du timer */
-  userId: number;
-  /** ID de la tâche en cours */
-  taskId: number;
-  /** Timestamp ISO du démarrage initial */
-  startedAt: string;
-  /** Secondes accumulées (figées) avant la dernière reprise */
-  accumulatedSeconds: number;
-  /** Timestamp ISO de la dernière reprise (quand le timer est actif) */
-  lastResumedAt: string | null;
-  /** Le timer est-il en pause volontaire ? */
-  isPaused: boolean;
-  /** Le timer a-t-il été figé automatiquement (perte réseau, tab hidden…) ? */
-  isFrozen: boolean;
-  /** Timestamp ISO de la dernière sauvegarde (pour diagnostic) */
-  savedAt: string;
-}
+// Re-export for backward compatibility
+export type { PersistedTimer };
+
+const STORAGE_KEY = 'homi_active_timer';
 
 // ─── Lecture / écriture ────────────────────────────────────────────────
 

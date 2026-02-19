@@ -1,40 +1,9 @@
 import { api } from './api';
+import type { Invoice, InvoiceStats } from '../types/invoice';
 
-export interface Invoice {
-  id: number;
-  invoiceNumber: string;
-  domicile: {
-    id: number;
-    name: string;
-  };
-  executor: {
-    id: number;
-    firstName: string;
-    lastName: string;
-  };
-  periodStart: string;
-  periodEnd: string;
-  totalHours: number;
-  hourlyRate: number;
-  subtotal: number;
-  taxRate: number;
-  taxAmount: number;
-  total: number;
-  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED';
-  dueDate: string;
-  paidDate?: string;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// Re-export for backward compatibility
+export type { Invoice, InvoiceStats };
 
-export interface InvoiceStats {
-  totalInvoices: number;
-  totalAmount: number;
-  paidAmount: number;
-  unpaidAmount: number;
-  overdueAmount: number;
-}
 
 /**
  * Récupérer toutes les factures (Admin) ou ses propres factures (User)

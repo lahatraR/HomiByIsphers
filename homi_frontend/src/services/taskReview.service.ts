@@ -1,21 +1,8 @@
 import { api } from './api';
+import type { TaskReviewData, ExecutorReviewStats } from '../types/taskReview';
 
-export interface TaskReviewData {
-  id: number;
-  taskId: number;
-  taskTitle: string;
-  rating: number;
-  comment: string | null;
-  reviewedBy: { id: number; firstName: string; lastName: string };
-  executor: { id: number; firstName: string; lastName: string };
-  createdAt: string;
-}
-
-export interface ExecutorReviewStats {
-  averageRating: number;
-  totalReviews: number;
-  recentReviews: TaskReviewData[];
-}
+// Re-export for backward compatibility
+export type { TaskReviewData, ExecutorReviewStats };
 
 export const taskReviewService = {
   create: async (data: { taskId: number; rating: number; comment?: string }): Promise<TaskReviewData> => {

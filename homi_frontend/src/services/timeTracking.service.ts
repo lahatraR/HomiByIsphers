@@ -1,38 +1,9 @@
 import { api } from './api';
+import type { TimeLog, AdminTimeLogStats } from '../types/timeTracking';
 
-export interface TimeLog {
-  id: number;
-  taskId: number;
-  taskTitle: string;
-  hoursWorked: number;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  notes?: string;
-  startTime: string;
-  endTime: string;
-  createdAt: string;
-}
+// Re-export for backward compatibility
+export type { TimeLog, AdminTimeLogStats };
 
-export interface AdminTimeLogStats {
-  statuses: {
-    PENDING: { count: number; hours: number };
-    APPROVED: { count: number; hours: number };
-    REJECTED: { count: number; hours: number };
-  };
-  hoursByExecutor: Array<{
-    executorId: number;
-    firstName: string | null;
-    lastName: string | null;
-    totalHours: number;
-  }>;
-  pendingByExecutor: Array<{
-    executorId: number;
-    firstName: string | null;
-    lastName: string | null;
-    pendingCount: number;
-  }>;
-  totalApprovedHours: number;
-  totalPendingCount: number;
-}
 
 /**
  * Soumettre un log de temps pour une tâche

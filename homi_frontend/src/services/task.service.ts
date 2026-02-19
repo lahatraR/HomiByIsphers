@@ -1,44 +1,9 @@
 import { api } from './api';
+import type { Task, TaskStats } from '../types/task';
 
-export interface Domicile {
-    id: number;
-    name: string;
-    address: string;
-    city?: string;
-    postalCode?: string;
-    description?: string;
-}
+// Re-export types for backward compatibility (stores import from here)
+export type { Task, TaskStats };
 
-export interface User {
-    id: number;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    role?: string;
-}
-
-export interface Task {
-    id: number;
-    title: string;
-    description: string;
-    status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED';
-    domicile: Domicile;
-    assignedTo: User;
-    createdBy: User;
-    startTime?: string;
-    endTime?: string;
-    actualStartTime?: string;
-    actualEndTime?: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface TaskStats {
-    totalTasks: number;
-    completedTasks: number;
-    inProgressTasks: number;
-    pendingTasks: number;
-}
 
 export const taskService = {
     /**

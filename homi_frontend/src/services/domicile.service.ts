@@ -1,20 +1,9 @@
 import { api } from './api';
+import type { Domicile } from '../types/domicile';
 
-export interface Domicile {
-    id: number;
-    name: string;
-    address: string;
-    city: string;
-    postalCode: string;
-    description?: string;
-    createdAt: string;
-    createdBy: {
-        id: number;
-        email: string;
-        firstName: string;
-        lastName: string;
-    };
-}
+// Re-export for backward compatibility
+export type { Domicile };
+
 
 export const domicileService = {
     /**

@@ -1,23 +1,8 @@
 import { api } from './api';
+import type { SmartEstimateResult, OverrunCheck } from '../types/smartEstimate';
 
-export interface SmartEstimateResult {
-  estimatedHours: number | null;
-  estimatedSeconds: number | null;
-  medianHours?: number;
-  minHours?: number;
-  maxHours?: number;
-  confidence: 'high' | 'medium' | 'low' | 'none';
-  basedOn: number;
-  message?: string;
-}
-
-export interface OverrunCheck {
-  overrun: boolean;
-  estimatedSeconds: number;
-  currentSeconds: number;
-  percentOver: number;
-  message: string | null;
-}
+// Re-export for backward compatibility
+export type { SmartEstimateResult, OverrunCheck };
 
 export const smartEstimateService = {
   /**
