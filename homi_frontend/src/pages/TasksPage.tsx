@@ -224,7 +224,7 @@ export const TasksPage: React.FC = () => {
                     </Button>
                   )}
                   {isAdmin && (
-                    <span className="text-xs text-gray-500">Executor: {task.assignedTo?.email ?? 'N/A'}</span>
+                    <span className="text-xs text-gray-500">{t('dashboard.executor', 'Exécuteur')}: {task.assignedTo?.firstName && task.assignedTo?.lastName ? `${task.assignedTo.firstName} ${task.assignedTo.lastName}` : (task.assignedTo?.firstName || 'N/A')}</span>
                   )}
                   {/* Review button for admin on completed tasks */}
                   {isAdmin && task.status === 'COMPLETED' && !reviewedTasks[task.id] && (

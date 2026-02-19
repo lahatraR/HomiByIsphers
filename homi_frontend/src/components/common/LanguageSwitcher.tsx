@@ -28,13 +28,13 @@ export const LanguageSwitcher: React.FC = () => {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center space-x-1 p-2 text-gray-600 hover:text-primary-600 transition-colors rounded-lg hover:bg-gray-100"
+        className="flex items-center space-x-1 p-2 text-surface-500 hover:text-primary-600 transition-colors duration-150 rounded-lg hover:bg-surface-100"
         aria-label="Change language"
         title={currentLang.label}
       >
         <span className="text-xl leading-none">{currentLang.flag}</span>
         <svg
-          className={`w-3 h-3 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-3 h-3 transition-transform duration-200 ease-smooth ${open ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -44,15 +44,15 @@ export const LanguageSwitcher: React.FC = () => {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+        <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl border border-surface-200/60 py-1 z-50 animate-scale-in origin-top-right shadow-float">
           {languages.map((lang) => (
             <button
               key={lang.code}
               onClick={() => changeLanguage(lang.code)}
-              className={`w-full flex items-center space-x-3 px-4 py-2.5 text-sm transition-colors ${
+              className={`w-full flex items-center space-x-3 px-4 py-2.5 text-sm transition-colors duration-150 ${
                 i18n.language === lang.code
                   ? 'bg-primary-50 text-primary-700 font-medium'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  : 'text-surface-700 hover:bg-surface-50'
               }`}
             >
               <span className="text-lg">{lang.flag}</span>

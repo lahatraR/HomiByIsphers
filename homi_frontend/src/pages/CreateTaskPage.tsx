@@ -173,7 +173,7 @@ export const CreateTaskPage: React.FC = () => {
                   </option>
                   {executors.map((exec) => (
                     <option key={exec.id} value={exec.id}>
-                      {exec.email} ({exec.role})
+                      {exec.firstName && exec.lastName ? `${exec.firstName} ${exec.lastName}` : (exec.firstName || `#${exec.id}`)}
                     </option>
                   ))}
                 </select>

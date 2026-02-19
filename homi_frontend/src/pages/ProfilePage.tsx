@@ -99,7 +99,8 @@ export const ProfilePage: React.FC = () => {
 
   const getInitials = () => {
     if (profile.firstName && profile.lastName) return `${profile.firstName[0]}${profile.lastName[0]}`.toUpperCase();
-    return (profile.email?.substring(0, 2) || '??').toUpperCase();
+    if (profile.firstName) return profile.firstName.substring(0, 2).toUpperCase();
+    return '??';
   };
 
   if (isLoading) return <MainLayout><div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div></MainLayout>;
@@ -121,9 +122,8 @@ export const ProfilePage: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">
-                {profile.firstName && profile.lastName ? `${profile.firstName} ${profile.lastName}` : profile.email}
+                {profile.firstName && profile.lastName ? `${profile.firstName} ${profile.lastName}` : (profile.firstName || t('profile.title'))}
               </h2>
-              <p className="text-sm text-gray-500">{profile.email}</p>
               <span className={`inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full ${profile.role === 'ROLE_ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}`}>
                 {profile.role === 'ROLE_ADMIN' ? t('profile.roleAdmin') : t('profile.roleUser')}
               </span>
@@ -140,10 +140,6 @@ export const ProfilePage: React.FC = () => {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t('profile.lastName')}</div>
                   <div className="text-gray-900 font-medium">{profile.lastName || '\u2014'}</div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t('profile.email')}</div>
-                  <div className="text-gray-900 font-medium">{profile.email}</div>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t('profile.memberSince')}</div>

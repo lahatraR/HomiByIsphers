@@ -155,7 +155,7 @@ export const CreateInvoicePage: React.FC = () => {
                   <option value="">{t('invoices.selectExecutor')}</option>
                   {executors.map((u) => (
                     <option key={u.id} value={u.id}>
-                      {u.firstName} {u.lastName} ({u.email})
+                      {u.firstName} {u.lastName}
                     </option>
                   ))}
                 </select>

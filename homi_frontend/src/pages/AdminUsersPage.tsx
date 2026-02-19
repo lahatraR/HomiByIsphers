@@ -159,14 +159,14 @@ export const AdminUsersPage: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white font-semibold text-sm">
-                          {(user.firstName?.[0] || user.email[0]).toUpperCase()}{(user.lastName?.[0] || '').toUpperCase()}
+                          {(user.firstName?.[0] || '?').toUpperCase()}{(user.lastName?.[0] || '').toUpperCase()}
                         </div>
                         <div className="ml-4 text-sm font-medium text-gray-900">
                           {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : '\u2014'}
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.firstName} {user.lastName}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.role === 'ROLE_ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}`}>
                         {user.role === 'ROLE_ADMIN' ? t('admin.users.filterAdmin') : t('admin.users.filterExecutor')}

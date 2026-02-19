@@ -49,9 +49,9 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-success-50 p-4">
+      <div className="w-full max-w-md animate-fade-in-up">
+        <div className="bg-white rounded-2xl border border-surface-200/60 p-8 sm:p-10 shadow-float">
           {/* Logo Section */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
@@ -91,14 +91,14 @@ export const LoginPage: React.FC = () => {
                 />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Homi</h1>
-            <p className="text-gray-600 mt-2">{t('auth.loginSubtitle')}</p>
+            <h1 className="text-3xl font-bold text-surface-900 tracking-tight">Homi</h1>
+            <p className="text-surface-500 mt-2">{t('auth.loginSubtitle')}</p>
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
-              <p className="text-red-700 text-sm">{error}</p>
+            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200/80">
+              <p className="text-red-700 text-sm font-medium">{error}</p>
               {error.includes('vérifier') && (
                 <p className="text-red-600 text-sm mt-2">
                   Pas reçu l'email?{' '}
@@ -112,15 +112,15 @@ export const LoginPage: React.FC = () => {
 
           {/* Loading Info Message */}
           {isLoading && showSlowMessage && (
-            <div className="mb-4 p-3 rounded-lg bg-blue-50 border border-blue-200 animate-pulse">
-              <p className="text-blue-700 text-sm">
+            <div className="mb-4 p-3 rounded-lg bg-primary-50 border border-primary-200/80 animate-pulse-subtle">
+              <p className="text-primary-700 text-sm">
                 ⏳ Initialisation du service, merci de patienter…
               </p>
             </div>
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <Input
               label={t('auth.email')}
               type="email"
@@ -146,9 +146,9 @@ export const LoginPage: React.FC = () => {
               <label className="flex items-center">
                 <input 
                   type="checkbox" 
-                  className="rounded border-gray-300 text-primary-600 focus:ring-primary-500" 
+                  className="rounded border-surface-300 text-primary-600 focus:ring-primary-500" 
                 />
-                <span className="ml-2 text-gray-600">{t('auth.rememberMe')}</span>
+                <span className="ml-2 text-surface-600">{t('auth.rememberMe')}</span>
               </label>
               <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
                 {t('auth.forgotPassword')}
@@ -167,16 +167,16 @@ export const LoginPage: React.FC = () => {
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center text-sm text-gray-600">
+          <div className="mt-8 text-center text-sm text-surface-500">
             {t('auth.noAccount')}{' '}
-            <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+            <Link to="/register" className="text-primary-600 hover:text-primary-700 font-semibold">
               {t('auth.createAccount')}
             </Link>
           </div>
         </div>
 
         {/* Version Info */}
-        <div className="text-center mt-4 text-sm text-gray-600">
+        <div className="text-center mt-6 text-xs text-surface-400">
           {t('auth.allRightsReserved')}
         </div>
       </div>

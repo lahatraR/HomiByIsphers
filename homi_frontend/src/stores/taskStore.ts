@@ -1,6 +1,16 @@
 import { create } from 'zustand';
 import { taskService, type Task, type TaskStats } from '../services/task.service';
 
+/** Compute stats from the tasks array — no backend endpoint needed */
+function computeStats(tasks: Task[]): TaskStats {
+    return {
+        totalTasks: tasks.length,
+        completedTasks: tasks.filter(t => t.status === 'COMPLETED').length,
+        inProgressTasks: tasks.filter(t => t.status === 'IN_PROGRESS').length,
+        pendingTasks: tasks.filter(t => t.status === 'TODO').length,
+    };
+}
+
 interface TaskState {
     tasks: Task[];
     stats: TaskStats | null;
@@ -24,7 +34,7 @@ export const useTaskStore = create<TaskState>((set) => ({
         set({ isLoading: true, error: null });
         try {
             const tasks = await taskService.getAllTasks();
-            set({ tasks, isLoading: false });
+            set({ tasks, stats: computeStats(tasks), isLoading: false });
         } catch (error: any) {
             const errorMsg = error.response?.data?.error || 'Failed to fetch tasks';
             set({ error: errorMsg, isLoading: false });
@@ -35,10 +45,10 @@ export const useTaskStore = create<TaskState>((set) => ({
         set({ isLoading: true, error: null });
         try {
             const newTask = await taskService.createTask(data);
-            set(state => ({
-                tasks: [...state.tasks, newTask],
-                isLoading: false,
-            }));
+            set(state => {
+                const tasks = [...state.tasks, newTask];
+                return { tasks, stats: computeStats(tasks), isLoading: false };
+            });
             return newTask;
         } catch (error: any) {
             const errorMsg = error.response?.data?.error || 'Failed to create task';
@@ -50,9 +60,10 @@ export const useTaskStore = create<TaskState>((set) => ({
     startTask: async (id: number) => {
         try {
             const updatedTask = await taskService.startTask(id);
-            set(state => ({
-                tasks: state.tasks.map(t => t.id === id ? updatedTask : t),
-            }));
+            set(state => {
+                const tasks = state.tasks.map(t => t.id === id ? updatedTask : t);
+                return { tasks, stats: computeStats(tasks) };
+            });
             return updatedTask;
         } catch (error: any) {
             const errorMsg = error.response?.data?.error || 'Failed to start task';
@@ -64,9 +75,10 @@ export const useTaskStore = create<TaskState>((set) => ({
     completeTask: async (id: number) => {
         try {
             const updatedTask = await taskService.completeTask(id);
-            set(state => ({
-                tasks: state.tasks.map(t => t.id === id ? updatedTask : t),
-            }));
+            set(state => {
+                const tasks = state.tasks.map(t => t.id === id ? updatedTask : t);
+                return { tasks, stats: computeStats(tasks) };
+            });
             return updatedTask;
         } catch (error: any) {
             const errorMsg = error.response?.data?.error || 'Failed to complete task';
@@ -78,9 +90,10 @@ export const useTaskStore = create<TaskState>((set) => ({
     updateTask: async (id: number, data: any) => {
         try {
             const updatedTask = await taskService.updateTask(id, data);
-            set(state => ({
-                tasks: state.tasks.map(t => t.id === id ? updatedTask : t),
-            }));
+            set(state => {
+                const tasks = state.tasks.map(t => t.id === id ? updatedTask : t);
+                return { tasks, stats: computeStats(tasks) };
+            });
             return updatedTask;
         } catch (error: any) {
             const errorMsg = error.response?.data?.error || 'Failed to update task';
@@ -92,9 +105,10 @@ export const useTaskStore = create<TaskState>((set) => ({
     deleteTask: async (id: number) => {
         try {
             await taskService.deleteTask(id);
-            set(state => ({
-                tasks: state.tasks.filter(t => t.id !== id),
-            }));
+            set(state => {
+                const tasks = state.tasks.filter(t => t.id !== id);
+                return { tasks, stats: computeStats(tasks) };
+            });
         } catch (error: any) {
             const errorMsg = error.response?.data?.error || 'Failed to delete task';
             set({ error: errorMsg });

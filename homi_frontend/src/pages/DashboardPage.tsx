@@ -49,9 +49,9 @@ export const DashboardPage: React.FC = () => {
         } else if (status === 'IN_PROGRESS' as TaskStatus) {
             return 'bg-primary-500';
         } else if (status === 'TODO' as TaskStatus) {
-            return 'bg-gray-400';
+            return 'bg-surface-400';
         }
-        return 'bg-gray-400';
+        return 'bg-surface-400';
     };
 
     return (
@@ -60,11 +60,11 @@ export const DashboardPage: React.FC = () => {
             <section className="mb-8">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-surface-900 tracking-tight mb-1">
                             {t('dashboard.welcomeBack', { name: user?.firstName })} 
                             
                         </h1>
-                        <p className="text-gray-600">
+                        <p className="text-surface-500">
                             {isAdmin ? t('dashboard.manageDomiciles') : t('dashboard.hereIsWhatsHappening')}
                         </p>
                     </div>
@@ -90,7 +90,7 @@ export const DashboardPage: React.FC = () => {
             </section>
 
             {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                <div className="mb-6 p-4 bg-red-50 border border-red-200/80 rounded-xl text-red-700 text-sm font-medium">
                     {error}
                 </div>
             )}
@@ -169,20 +169,20 @@ export const DashboardPage: React.FC = () => {
             )}
 
             {/* Recent Tasks */}
-            <Card className="p-6 mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
+            <Card className="p-5 sm:p-6 mb-8">
+                <h2 className="text-lg font-semibold text-surface-900 mb-4">
                     {isAdmin ? t('dashboard.allTasks') : t('dashboard.recentTasks')}
                 </h2>
 
                 {tasks.length === 0 ? (
                     <div className="text-center py-12">
-                        <div className="text-gray-400 mb-2">
-                            <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="text-surface-300 mb-3">
+                            <svg className="w-14 h-14 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                         </div>
-                        <p className="text-gray-600 font-medium">{t('dashboard.noTasksYet')}</p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-surface-700 font-medium">{t('dashboard.noTasksYet')}</p>
+                        <p className="text-sm text-surface-500 mt-1">
                             {isAdmin ? t('dashboard.createFirstTask') : t('dashboard.noTasksAssigned')}
                         </p>
                     </div>
@@ -191,18 +191,18 @@ export const DashboardPage: React.FC = () => {
                         {(isAdmin ? tasks : tasks.slice(0, 5)).map((task) => (
                             <div
                                 key={task.id}
-                                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                                className="flex items-center justify-between p-4 bg-surface-50 rounded-xl hover:bg-surface-100 transition-all duration-150 cursor-pointer group"
                             >
                                 <div className="flex items-center space-x-3">
                                     <div className={`w-2 h-2 rounded-full ${getStatusColor(task.status)}`}></div>
                                     <div>
-                                        <h3 className="font-medium text-gray-900">{task.title}</h3>
-                                        <p className="text-sm text-gray-600">{task.description.substring(0, 60)}...</p>
+                                        <h3 className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">{task.title}</h3>
+                                        <p className="text-sm text-surface-500">{task.description.substring(0, 60)}...</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center space-x-3 text-sm text-gray-600">
+                                <div className="flex items-center space-x-3 text-sm text-surface-500">
                                     <span>{task.status}</span>
-                                    <span className="text-xs text-gray-500">{t('dashboard.executor')}: {task.assignedTo?.email ?? 'N/A'}</span>
+                                    <span className="text-xs text-surface-400">{t('dashboard.executor')}: {task.assignedTo?.firstName && task.assignedTo?.lastName ? `${task.assignedTo.firstName} ${task.assignedTo.lastName}` : (task.assignedTo?.firstName || 'N/A')}</span>
                                 </div>
                             </div>
                         ))}
@@ -212,9 +212,9 @@ export const DashboardPage: React.FC = () => {
 
             {/* Domiciles Section (Admin Only) */}
             {isAdmin && (
-                <Card className="p-6">
+                <Card className="p-5 sm:p-6">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold text-gray-900">📍 {t('dashboard.recentDomiciles')}</h2>
+                        <h2 className="text-lg font-semibold text-surface-900">📍 {t('dashboard.recentDomiciles')}</h2>
                         <Button
                             onClick={() => navigate('/domiciles')}
                             className="text-primary-600 hover:text-primary-700 text-sm font-medium"
@@ -228,13 +228,13 @@ export const DashboardPage: React.FC = () => {
                             <LoadingSpinner size="sm" />
                         </div>
                     ) : domiciles.length === 0 ? (
-                        <div className="text-center py-12 bg-gray-50 rounded-lg">
-                            <div className="text-gray-400 mb-2">
+                        <div className="text-center py-12 bg-surface-50 rounded-xl">
+                            <div className="text-surface-300 mb-3">
                                 <svg className="w-12 h-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2.423 3.482A6.967 6.967 0 0012 18.75c5.523 0 10-4.477 10-10S17.523 2 12 2c-3.97 0-7.431 2.325-9.127 5.672M9 9h.008v.008H9V9m4 0h.008v.008H13V9m4 0h.008v.008H17V9" />
                                 </svg>
                             </div>
-                            <p className="text-gray-600 font-medium mb-2">{t('dashboard.noDomicilesYet')}</p>
+                            <p className="text-surface-700 font-medium mb-3">{t('dashboard.noDomicilesYet')}</p>
                             <Button
                                 onClick={() => navigate('/create-domicile')}
                                 className="bg-primary-600 hover:bg-primary-700 text-white text-sm mx-auto"
@@ -245,10 +245,10 @@ export const DashboardPage: React.FC = () => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {domiciles.slice(0, 3).map(domicile => (
-                                <div key={domicile.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                    <h3 className="font-semibold text-gray-900 mb-1">{domicile.name}</h3>
-                                    <p className="text-sm text-gray-600 mb-2">📍 {domicile.address}</p>
-                                    <p className="text-xs text-gray-500">{domicile.city}, {domicile.postalCode}</p>
+                                <div key={domicile.id} className="p-4 bg-surface-50 rounded-xl hover:bg-surface-100 transition-all duration-150 border border-transparent hover:border-surface-200">
+                                    <h3 className="font-semibold text-surface-900 mb-1">{domicile.name}</h3>
+                                    <p className="text-sm text-surface-600 mb-1">📍 {domicile.address}</p>
+                                    <p className="text-xs text-surface-400">{domicile.city}, {domicile.postalCode}</p>
                                 </div>
                             ))}
                         </div>

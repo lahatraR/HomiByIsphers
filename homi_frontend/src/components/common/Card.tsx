@@ -5,6 +5,7 @@ interface CardProps {
   className?: string;
   gradient?: boolean;
   hover?: boolean;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
 export const Card: React.FC<CardProps> = ({ 
@@ -12,13 +13,23 @@ export const Card: React.FC<CardProps> = ({
   className = '', 
   gradient = false,
   hover = false,
+  padding = 'none',
 }) => {
+  const paddingStyles = {
+    none: '',
+    sm: 'p-4',
+    md: 'p-5 sm:p-6',
+    lg: 'p-6 sm:p-8',
+  };
+
   return (
     <div
       className={`
-        bg-white rounded-xl shadow-md overflow-hidden
-        ${gradient ? 'bg-gradient-to-br from-white to-gray-50' : ''}
-        ${hover ? 'hover:shadow-xl transition-shadow duration-300' : ''}
+        bg-white rounded-xl border border-surface-200/60 overflow-hidden
+        shadow-card
+        ${gradient ? 'bg-gradient-to-br from-white to-surface-50' : ''}
+        ${hover ? 'hover:shadow-elevated hover:-translate-y-0.5 transition-all duration-250 ease-smooth cursor-pointer active:translate-y-0 active:shadow-card' : ''}
+        ${paddingStyles[padding]}
         ${className}
       `}
     >
