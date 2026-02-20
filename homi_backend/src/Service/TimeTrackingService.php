@@ -83,6 +83,31 @@ class TimeTrackingService
         $timeLog->setStatus(TaskTimeLog::STATUS_APPROVED);
         $timeLog->setValidatedBy($admin);
 
+        // Marquer la tâche associée comme terminée
+        $task = $timeLog->getTask();
+        if ($task && $task->getStatus() !== Task::STATUS_COMPLETED) {
+            $task->setStatus(Task::STATUS_COMPLETED);
+
+            // Remplir les timestamps réels à partir du time log
+            $startTime = $timeLog->getStartTime();
+            $endTime = $timeLog->getEndTime();
+
+            if (!$task->getActualStartTime() && $startTime) {
+                $task->setActualStartTime(
+                    $startTime instanceof \DateTimeImmutable
+                        ? $startTime
+                        : \DateTimeImmutable::createFromInterface($startTime)
+                );
+            }
+            if ($endTime) {
+                $task->setActualEndTime(
+                    $endTime instanceof \DateTimeImmutable
+                        ? $endTime
+                        : \DateTimeImmutable::createFromInterface($endTime)
+                );
+            }
+        }
+
         $this->entityManager->flush();
 
         return $timeLog;

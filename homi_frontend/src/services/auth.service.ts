@@ -55,6 +55,8 @@ export const authService = {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
     localStorage.removeItem('authTokenExpiresAt');
+    // Effacer aussi le cache Zustand persist pour éviter la réhydratation stale
+    localStorage.removeItem('auth-storage');
     // NE PAS effacer le timer — il doit survivre au logout/login
   },
 

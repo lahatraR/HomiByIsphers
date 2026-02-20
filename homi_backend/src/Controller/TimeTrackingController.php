@@ -59,8 +59,8 @@ class TimeTrackingController extends AbstractController
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            // Vérifier que l'utilisateur est assigné à cette tâche
-            if (!$task->getAssignedTo() || $task->getAssignedTo()->getId() !== $user->getId()) {
+            // Vérifier que l'utilisateur est assigné à cette tâche (admin bypass)
+            if (!$this->isGranted('ROLE_ADMIN') && (!$task->getAssignedTo() || $task->getAssignedTo()->getId() !== $user->getId())) {
                 return $this->json([
                     'error' => 'You are not assigned to this task'
                 ], Response::HTTP_FORBIDDEN);
@@ -281,6 +281,8 @@ class TimeTrackingController extends AbstractController
             return $this->json([
                 'id' => $timeLog->getId(),
                 'status' => $timeLog->getStatus(),
+                'taskId' => $timeLog->getTask()?->getId(),
+                'taskStatus' => $timeLog->getTask()?->getStatus(),
                 'message' => 'Time log approved successfully'
             ]);
 

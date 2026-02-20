@@ -151,7 +151,7 @@ export const DashboardPage: React.FC = () => {
                                 <div className="flex items-center space-x-3 text-sm text-surface-500">
                                     <span>{task.status}</span>
                                     <span className="text-xs text-surface-400">
-                                        {t('dashboard.executor')}: {getUserDisplayName(task.assignedTo ?? {}, 'N/A')}
+                                        {t('dashboard.executor')}: {getUserDisplayName(task.assignedTo ?? {}, t('tasks.notAssigned'))}
                                     </span>
                                 </div>
                             </div>

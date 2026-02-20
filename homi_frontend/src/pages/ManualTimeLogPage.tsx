@@ -142,7 +142,7 @@ export const ManualTimeLogPage: React.FC = () => {
                   <option value="">{t('timeLogs.selectTaskPlaceholder')}</option>
                   {tasks.map((task) => (
                     <option key={task.id} value={task.id}>
-                      {task.title} - {task.domicile.name} ({task.status})
+                      {task.title} - {task.domicile?.name || t('tasks.domicile')} ({task.status === 'TODO' ? t('tasks.statusTodo') : task.status === 'IN_PROGRESS' ? t('tasks.statusInProgress') : task.status === 'COMPLETED' ? t('tasks.statusCompleted') : task.status})
                     </option>
                   ))}
                 </select>

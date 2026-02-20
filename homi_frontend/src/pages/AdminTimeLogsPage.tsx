@@ -156,7 +156,7 @@ export const AdminTimeLogsPage: React.FC = () => {
                   <div className="flex-1">
                     {/* Task Info */}
                     <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      {log.taskTitle}
+                      {log.taskTitle || t('timeLogs.task')}
                     </h3>
                     
                     {/* Executor & Time */}

@@ -103,6 +103,7 @@ apiClient.interceptors.response.use(
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
         localStorage.removeItem('authTokenExpiresAt');
+        localStorage.removeItem('auth-storage');
         window.location.href = '/HomiByIsphers/login';
       }
     }

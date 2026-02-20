@@ -4,6 +4,7 @@ import type { User } from '../types';
 import { authService } from '../services/auth.service';
 
 // Vérification auto de l'expiration du token à chaque chargement
+// logout() efface aussi la clé 'auth-storage' pour éviter la réhydratation stale
 if (authService.isTokenExpired()) {
   authService.logout();
 }
@@ -111,6 +112,17 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        // Sécurité supplémentaire : si le state réhydraté dit "authenticated"
+        // mais que le token JWT est expiré, forcer la déconnexion
+        if (state && state.isAuthenticated && authService.isTokenExpired()) {
+          // Planifier le nettoyage après la création du store
+          queueMicrotask(() => {
+            authService.logout();
+            useAuthStore.setState({ user: null, isAuthenticated: false });
+          });
+        }
+      },
     }
   )
 );

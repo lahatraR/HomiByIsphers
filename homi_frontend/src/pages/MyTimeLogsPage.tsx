@@ -96,17 +96,19 @@ export const MyTimeLogsPage: React.FC = () => {
             <Card className="p-6">
               <p className="text-sm text-gray-600 mb-1">{t('timeLogs.totalApprovedHours')}</p>
               <p className="text-3xl font-bold text-green-600">
-                {stats.totalHours.toFixed(2)}h
+                {(stats.totalHours ?? 0).toFixed(2)}h
               </p>
             </Card>
             <Card className="p-6">
               <p className="text-sm text-gray-600 mb-1">{t('timeLogs.totalLogs')}</p>
-              <p className="text-3xl font-bold text-primary-600">{stats.logsCount}</p>
+              <p className="text-3xl font-bold text-primary-600">{stats.logsCount ?? 0}</p>
             </Card>
             <Card className="p-6">
               <p className="text-sm text-gray-600 mb-1">{t('timeLogs.executor')}</p>
               <p className="text-xl font-bold text-gray-900">
-                {stats.executor.firstName} {stats.executor.lastName}
+                {stats.executor?.firstName && stats.executor?.lastName 
+                  ? `${stats.executor.firstName} ${stats.executor.lastName}` 
+                  : (stats.executor?.firstName || t('tasks.notAssigned'))}
               </p>
             </Card>
           </div>
@@ -173,7 +175,7 @@ export const MyTimeLogsPage: React.FC = () => {
                   <div className="flex-1">
                     {/* Task Title */}
                     <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      {log.taskTitle}
+                      {log.taskTitle || t('timeLogs.task')}
                     </h3>
 
                     {/* Details Grid */}
