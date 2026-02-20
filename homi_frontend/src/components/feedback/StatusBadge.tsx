@@ -1,5 +1,4 @@
 import React from 'react';
-import type { TaskStatus as TStatus } from '../../types/task';
 
 // ─── StatusBadge ───────────────────────────────────────────────────
 // Consistent status badge rendering. Replaces inline conditionals

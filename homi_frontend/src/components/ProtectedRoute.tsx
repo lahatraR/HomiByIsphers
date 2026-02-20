@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useTaskStore } from '../stores/taskStore';
 import { UserRoles } from '../types';
-import { getActiveTimerTaskId, getPersistedTimer, restorePersistedTimerFromServer } from '../services/timerPersistence.service';
+import { getActiveTimerTaskId, restorePersistedTimerFromServer } from '../services/timerPersistence.service';
 
 export const PrivateRoute: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore();
