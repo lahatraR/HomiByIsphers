@@ -50,8 +50,8 @@ final class Version20260125AddIndexes extends AbstractMigration
         $this->addSql('CREATE INDEX IF NOT EXISTS idx_invoice_created_at ON invoice (created_at)');
         $this->addSql('CREATE INDEX IF NOT EXISTS idx_invoice_due_date ON invoice (due_date)');
 
-        // PendingEmail indexes
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_pending_email_status ON pending_email (status)');
+        // PendingEmail indexes (composite index matching the original EmailQueue migration)
+        $this->addSql('CREATE INDEX IF NOT EXISTS idx_pending_email_status ON pending_email (sent_at, failure_reason)');
 
         // ── Tables créées par des migrations ultérieures — conditionnel ──
         $this->conditionalIndex('activity', 'idx_activity_user', 'user_id');
