@@ -4,9 +4,24 @@ doctrine:
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
-        server_version: '16'
+        # Supabase utilise PostgreSQL 15
+        server_version: '15'
 
         profiling_collect_backtrace: '%kernel.debug%'
+        options:
+            # Timeout de connexion (10s) pour éviter les blocages
+            1006: 10
+
+        # Supabase a des types DB custom (auth, storage) — les mapper en string
+        mapping_types:
+            code_challenge_method: string
+            factor_status: string
+            factor_type: string
+            aal_level: string
+            key_status: string
+            key_type: string
+
+        schema_filter: ~^(?!auth\.|storage\.|realtime\.|extensions\.|supabase_)~
     orm:
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware

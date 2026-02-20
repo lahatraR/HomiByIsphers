@@ -12,10 +12,11 @@ services:
         value: "0"
       - key: APP_SECRET
         generateValue: true
+      # ── Supabase PostgreSQL (remplace la DB Render) ──
+      # Configurer dans Render Dashboard > Environment
+      # postgresql://postgres.qgfmdtkmmdrbtiulbamh:[PASSWORD_URL_ENCODED]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres?sslmode=require
       - key: DATABASE_URL
-        fromDatabase:
-          name: homi-postgres
-          property: connectionString
+        sync: false
       - key: JWT_EXPIRATION
         value: "3600"
       - key: EMAIL_VERIFICATION_TOKEN_EXPIRATION
@@ -33,8 +34,5 @@ services:
     healthCheckPath: /api/health
     autoDeploy: true
 
-databases:
-  - name: homi-postgres
-    plan: free
-    databaseName: homi_db
-    user: homi_user
+# Base de données Supabase (externe) — plus de DB Render
+# La DATABASE_URL est configurée manuellement dans le Dashboard Render

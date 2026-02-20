@@ -75,6 +75,8 @@ echo "=== Starting Homi Backend ==="\n\
 echo "Environment: APP_ENV=$APP_ENV APP_DEBUG=$APP_DEBUG"\n\
 echo "PHP Version:"\n\
 php -v\n\
+echo "Testing database connectivity (Supabase)..."\n\
+php -r "try { new PDO(str_replace(\"postgresql://\",\"pgsql://\",getenv(\"DATABASE_URL\"))); echo \"DB OK\\n\"; } catch(Exception \$e) { echo \"DB connection failed: \".\$e->getMessage().\"\\n\"; }" 2>&1 || echo "DB test skipped"\n\
 echo "Clearing cache before migrations..."\n\
 php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"\n\
 echo "Running database migrations..."\n\
