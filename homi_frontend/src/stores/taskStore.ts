@@ -20,6 +20,7 @@ interface TaskState {
     createTask: (data: any) => Promise<Task>;
     startTask: (id: number) => Promise<Task>;
     completeTask: (id: number) => Promise<Task>;
+    cancelTask: (id: number) => Promise<Task>;
     updateTask: (id: number, data: any) => Promise<Task>;
     deleteTask: (id: number) => Promise<void>;
 }
@@ -82,6 +83,21 @@ export const useTaskStore = create<TaskState>((set) => ({
             return updatedTask;
         } catch (error: any) {
             const errorMsg = error.response?.data?.error || 'Failed to complete task';
+            set({ error: errorMsg });
+            throw error;
+        }
+    },
+
+    cancelTask: async (id: number) => {
+        try {
+            const updatedTask = await taskService.cancelTask(id);
+            set(state => {
+                const tasks = state.tasks.map(t => t.id === id ? updatedTask : t);
+                return { tasks, stats: computeStats(tasks) };
+            });
+            return updatedTask;
+        } catch (error: any) {
+            const errorMsg = error.response?.data?.error || 'Failed to cancel task';
             set({ error: errorMsg });
             throw error;
         }

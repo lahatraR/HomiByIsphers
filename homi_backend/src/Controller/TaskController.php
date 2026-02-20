@@ -458,6 +458,41 @@ class TaskController extends AbstractController
     }
 
     /**
+     * Annuler une tâche en cours (retour à TODO)
+     */
+    #[Route('/{id}/cancel', name: 'task_cancel', methods: ['PATCH'])]
+    #[IsGranted('ROLE_USER')]
+    public function cancelTask(int $id): JsonResponse
+    {
+        try {
+            $task = $this->taskRepository->find($id);
+
+            if (!$task) {
+                return $this->json(['error' => 'Task not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            $user = $this->getUser();
+            if (!$this->isGranted('ROLE_ADMIN') && (!$task->getAssignedTo() || $task->getAssignedTo() !== $user)) {
+                return $this->json(['error' => 'You are not assigned to this task'], Response::HTTP_FORBIDDEN);
+            }
+
+            if ($task->getStatus() !== Task::STATUS_IN_PROGRESS) {
+                return $this->json(['error' => 'Task must be in progress to cancel'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $task->setStatus(Task::STATUS_TODO);
+            $task->setActualStartTime(null);
+            $task->setUpdatedAt(new \DateTimeImmutable());
+
+            $this->entityManager->flush();
+
+            return $this->json($task, Response::HTTP_OK, [], ['groups' => ['task:read']]);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'Failed to cancel task', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
      * Terminer une tâche (actualEndTime)
      */
     #[Route('/{id}/complete', name: 'task_complete', methods: ['PATCH'])]

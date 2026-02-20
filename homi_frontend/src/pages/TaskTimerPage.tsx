@@ -22,7 +22,7 @@ import { smartEstimateService, type SmartEstimateResult } from '../services/smar
 export const TaskTimerPage: React.FC = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const navigate = useNavigate();
-  const { tasks, isLoading, fetchTasks, startTask, completeTask } = useTaskStore();
+  const { tasks, isLoading, fetchTasks, startTask, completeTask, cancelTask } = useTaskStore();
   const { user } = useAuthStore();
   const { t } = useTranslation();
 
@@ -279,9 +279,15 @@ export const TaskTimerPage: React.FC = () => {
     }
   };
 
-  const handleCancelTask = () => {
+  const handleCancelTask = async () => {
     if (window.confirm(t('timer.confirmDiscard'))) {
       setIsTimerRunning(false);
+      try {
+        // Remettre la tâche en TODO sur le serveur
+        await cancelTask(task!.id);
+      } catch (error) {
+        console.error('Failed to cancel task on server', error);
+      }
       clearPersistedTimer();
       navigate('/tasks');
     }

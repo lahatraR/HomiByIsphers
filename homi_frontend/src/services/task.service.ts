@@ -57,6 +57,14 @@ export const taskService = {
     },
 
     /**
+     * Annuler une tâche en cours (retour à TODO)
+     */
+    cancelTask: async (id: number): Promise<Task> => {
+        const response = await api.patch<Task>(`/tasks/${id}/cancel`, {});
+        return response.data;
+    },
+
+    /**
      * Obtenir les statistiques
      */
     getStats: async (): Promise<TaskStats> => {
