@@ -1,171 +1,372 @@
-# 🏠 Homi - Application de Gestion de Tâches et Domiciles
+# API Homi Backend - Documentation
 
-## 📋 Description
+## Vue d'ensemble
 
-Homi est une application moderne de gestion de tâches et de domiciles, composée d'un frontend React et d'un backend Symfony.
+API REST pour la gestion des domiciles, des tâches et des utilisateurs.
 
-## 🎯 Statut du Projet
+## Configuration requise
 
-✅ **Frontend refactoré** - Architecture moderne React + TypeScript
-✅ **Backend Symfony** - API REST fonctionnelle
-⏳ **En attente d'intégration** - Fusion backend/frontend
-
-## 🏗️ Structure du Projet
-
-```
-HomiByIsphers/
-├── homi_frontend/           # Frontend React + TypeScript + Vite
-│   ├── src/
-│   ├── public/
-│   ├── package.json
-│   └── README.md
-├── homi_backend/            # Backend Symfony + PostgreSQL
-│   ├── src/
-│   ├── config/
-│   ├── composer.json
-│   └── README.md
-├── package.json             # Scripts racine
-└── FRONTEND_REFACTORING_COMPLETE.md
-```
-
-## 🚀 Installation Rapide
-
-### Prérequis
-
-- **Node.js 18+** et npm
-- **PHP 8.4+**
-- **PostgreSQL 16**
-- **Composer**
-
-### Installation Complète
-
-```bash
-# À la racine du projet
-npm run install:all
-
-# Ou installer séparément :
-npm run install:frontend
-npm run install:backend
-```
-
-## 🏃 Démarrage
-
-### Démarrer le Frontend
-
-```bash
-# Terminal 1
-npm run frontend
-# ou
-cd homi_frontend && npm run dev
-```
-
-Le frontend sera accessible sur **http://localhost:5173**
-
-### Démarrer le Backend
-
-```bash
-# Terminal 2
-npm run backend
-# ou
-cd homi_backend && php bin/console server:start
-```
-
-Le backend sera accessible sur **http://localhost:8000**
-
-## 📚 Documentation
-
-- **Frontend** : Voir [homi_frontend/README.md](homi_frontend/README.md)
-- **Backend** : Voir [homi_backend/README.md](homi_backend/README.md)
-- **Guide de Refactoring** : Voir [FRONTEND_REFACTORING_COMPLETE.md](FRONTEND_REFACTORING_COMPLETE.md)
-
-## 🛠️ Technologies
-
-### Frontend
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router v6
-- Zustand (state management)
-- Axios
-
-### Backend
-- Symfony 7.2
-- PHP 8.4
+- PHP 8.4+
 - PostgreSQL 16
-- API Platform
-- JWT Authentication
-- Doctrine ORM
+- Composer
 
-## 🔌 Configuration
+## Installation
 
-### Frontend (.env)
+### 1. Cloner et installer les dépendances
 
-```env
-VITE_API_BASE_URL=http://localhost:8000/api
+```bash
+composer install
 ```
 
-### Backend (.env.local)
+### 2. Configurer les variables d'environnement
+
+```bash
+cp .env.example .env.local
+```
+
+Éditer `.env.local` avec vos paramètres :
 
 ```env
 APP_ENV=dev
-DATABASE_URL="postgresql://user:password@localhost:5432/homi_db"
+APP_SECRET=GenerateAVerySecureSecretHere
+DATABASE_URL="postgresql://user:password@localhost:5432/homi_db?serverVersion=16"
 JWT_EXPIRATION=3600
 CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
 ```
 
-## 📦 Scripts Disponibles
+### 3. Créer la base de données et les tables
 
 ```bash
-# À la racine du projet
-npm run frontend         # Démarrer le frontend
-npm run backend          # Démarrer le backend
-npm run install:all      # Installer toutes les dépendances
-npm run build:frontend   # Build le frontend pour production
+# Créer la base
+php bin/console doctrine:database:create
+
+# Exécuter les migrations
+php bin/console doctrine:migrations:migrate
 ```
 
-## 🎨 Fonctionnalités
+### 4. Démarrer le serveur
 
-### Actuelles (Frontend Refactoré)
-- ✅ Page de connexion moderne
-- ✅ Dashboard avec statistiques
-- ✅ Création de tâches avec upload de fichiers
-- ✅ Liste et gestion des tâches
-- ✅ Authentification JWT
-- ✅ Design responsive
-- ✅ Architecture scalable
+```bash
+php bin/console server:start
+# ou
+symfony serve
+```
 
-### À Intégrer
-- ⏳ Timer de tâches
-- ⏳ Gestion des exécuteurs
-- ⏳ Notifications en temps réel
-- ⏳ Statistiques avancées
+## Authentification
 
-## 🔄 Prochaines Étapes
+L'API utilise **JWT (JSON Web Tokens)** pour l'authentification.
 
-1. **Tester le frontend refactoré** ✅
-2. **Configurer CORS dans le backend** ⏳
-3. **Adapter les endpoints API** ⏳
-4. **Tester l'intégration complète** ⏳
-5. **Déploiement** ⏳
+### Endpoints d'authentification
 
-## 🤝 Contribution
+#### Inscription
 
-Pour contribuer au projet :
+```http
+POST /api/auth/register
+Content-Type: application/json
 
-1. Créer une branche : `git checkout -b feature/ma-feature`
-2. Commiter : `git commit -m 'Add: ma feature'`
-3. Pusher : `git push origin feature/ma-feature`
-4. Créer une Pull Request
+{
+  "email": "user@example.com",
+  "password": "SecurePass123!",
+  "role": "ROLE_USER"
+}
+```
 
-## 📄 License
+**Réponse (201 Created):**
+```json
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "expiresIn": 3600,
+  "userId": 1,
+  "email": "user@example.com",
+  "role": "ROLE_USER"
+}
+```
 
-© 2026 Homi - Tous droits réservés
+#### Connexion
 
-## 📞 Support
+```http
+POST /api/auth/login
+Content-Type: application/json
 
-Pour toute question, consulter la documentation ou contacter l'équipe de développement.
+{
+  "email": "user@example.com",
+  "password": "SecurePass123!"
+}
+```
+
+### Utiliser le token
+
+Ajouter le header `Authorization` à toutes les requêtes :
+
+```http
+Authorization: Bearer {token}
+```
+
+## API Endpoints
+
+### Utilisateurs
+
+#### Récupérer mon profil
+
+```http
+GET /api/users/{id}
+Authorization: Bearer {token}
+```
+
+#### Mettre à jour mon profil
+
+```http
+PUT /api/users/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "email": "newemail@example.com"
+}
+```
+
+#### Lister tous les utilisateurs (admin only)
+
+```http
+GET /api/users
+Authorization: Bearer {token}
+```
+
+### Domiciles
+
+#### Créer un domicile
+
+```http
+POST /api/domiciles
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "name": "Mon appartement"
+}
+```
+
+#### Récupérer un domicile
+
+```http
+GET /api/domiciles/{id}
+Authorization: Bearer {token}
+```
+
+#### Mettre à jour un domicile
+
+```http
+PUT /api/domiciles/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "name": "Nouvel nom"
+}
+```
+
+#### Supprimer un domicile
+
+```http
+DELETE /api/domiciles/{id}
+Authorization: Bearer {token}
+```
+
+#### Ajouter un exécutant
+
+```http
+POST /api/domiciles/{id}/executors
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "user_id": 2
+}
+```
+
+#### Supprimer un exécutant
+
+```http
+DELETE /api/domiciles/{id}/executors/{user_id}
+Authorization: Bearer {token}
+```
+
+### Tâches
+
+#### Créer une tâche
+
+```http
+POST /api/tasks
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "title": "Nettoyer la cuisine",
+  "description": "Nettoyer à fond",
+  "domicile_id": 1,
+  "executor_id": 2,
+  "start_time": "2025-01-15T10:00:00"
+}
+```
+
+#### Récupérer une tâche
+
+```http
+GET /api/tasks/{id}
+Authorization: Bearer {token}
+```
+
+#### Terminer une tâche
+
+```http
+POST /api/tasks/{id}/finish
+Authorization: Bearer {token}
+```
+
+#### Reporter une tâche
+
+```http
+POST /api/tasks/{id}/postpone
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "new_start_time": "2025-01-20T10:00:00"
+}
+```
+
+#### Réassigner une tâche
+
+```http
+POST /api/tasks/{id}/reassign
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "new_executor_id": 3
+}
+```
+
+#### Supprimer une tâche
+
+```http
+DELETE /api/tasks/{id}
+Authorization: Bearer {token}
+```
+
+## Sécurité
+
+### Bonnes pratiques implémentées
+
+✅ **Authentification JWT** - Tokens sécurisés avec expiration
+✅ **Hash de mot de passe** - Argon2id (sécurisé par défaut)
+✅ **Validation d'entrée** - Tous les champs sont validés
+✅ **Contrôle d'accès** - Vérification des permissions par endpoint
+✅ **CORS configuré** - Limité aux domaines autorisés
+✅ **Gestion d'erreurs** - Messages cohérents, pas d'exposition d'infos
+✅ **Migrations versionnées** - Suivi des changements de DB
+✅ **Logs centralisés** - Monolog pour le monitoring
+
+### Configuration pour la production
+
+1. **Mettre à jour APP_SECRET**
+```bash
+php bin/console secrets:generate-keys --env=prod
+```
+
+2. **Configurer HTTPS**
+```yaml
+# config/packages/security.yaml
+framework:
+    session:
+        cookie_secure: true
+        cookie_httponly: true
+        cookie_samesite: 'Lax'
+```
+
+3. **Limiter CORS**
+```env
+CORS_ALLOW_ORIGIN='^https://yourdomain\.com$'
+```
+
+4. **Activer le mode prod**
+```env
+APP_ENV=prod
+APP_DEBUG=false
+```
+
+## Tests
+
+### Lancer les tests
+
+```bash
+php bin/phpunit
+```
+
+### Ajouter des tests
+
+```bash
+# Créer un test
+php bin/console make:test
+
+# Exécuter avec couverture
+php bin/phpunit --coverage-html=coverage
+```
+
+## Déploiement
+
+### Préparation
+
+```bash
+# Compiler l'environnement
+composer dump-env prod
+
+# Installer sans dev
+composer install --no-dev -o
+
+# Lancer les migrations
+php bin/console doctrine:migrations:migrate --env=prod
+
+# Vider le cache
+php bin/console cache:clear --env=prod
+```
+
+### Fichiers importants
+
+- `.env.example` - Variables d'environnement à configurer
+- `migrations/` - Historique des modifications DB
+- `config/` - Configuration Symfony
+- `src/` - Code applicatif
+
+## Troubleshooting
+
+### Erreur de connexion BD
+
+```bash
+# Vérifier la connexion
+php bin/console dbal:run-sql "SELECT 1"
+
+# Recréer la BD
+php bin/console doctrine:database:drop --force
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+```
+
+### Réinitialiser les clés JWT
+
+```bash
+php bin/console secrets:generate-keys --rotate --force
+```
+
+## Support
+
+Pour les questions ou bugs, ouvrir une issue.
+
+## Licence
+
+Propriétaire
 
 ---
 
-**Made with ❤️ by Homi Team**
+**Version:** 1.0.0  
+**Dernière mise à jour:** 12 Janvier 2025

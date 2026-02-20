@@ -50,26 +50,26 @@ final class Version20260125AddIndexes extends AbstractMigration
         $this->addSql('CREATE INDEX IF NOT EXISTS idx_invoice_created_at ON invoice (created_at)');
         $this->addSql('CREATE INDEX IF NOT EXISTS idx_invoice_due_date ON invoice (due_date)');
 
-        // Activity indexes
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_activity_user ON activity (user_id)');
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_activity_created_at ON activity (created_at)');
-
-        // Notification indexes
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_notification_user ON notification (user_id)');
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_notification_is_read ON notification (is_read)');
-
-        // RefreshToken indexes
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_refresh_token_expires_at ON refresh_token (expires_at)');
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_refresh_token_user ON refresh_token (user_id)');
-
-        // Favorite indexes
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_favorite_user ON favorite (user_id)');
-
         // PendingEmail indexes
         $this->addSql('CREATE INDEX IF NOT EXISTS idx_pending_email_status ON pending_email (status)');
 
-        // TaskHistory indexes
-        $this->addSql('CREATE INDEX IF NOT EXISTS idx_task_history_task ON task_history (task_id)');
+        // ── Tables créées par des migrations ultérieures — conditionnel ──
+        $this->conditionalIndex('activity', 'idx_activity_user', 'user_id');
+        $this->conditionalIndex('activity', 'idx_activity_created_at', 'created_at');
+        $this->conditionalIndex('notification', 'idx_notification_user', 'user_id');
+        $this->conditionalIndex('notification', 'idx_notification_is_read', 'is_read');
+        $this->conditionalIndex('refresh_token', 'idx_refresh_token_expires_at', 'expires_at');
+        $this->conditionalIndex('refresh_token', 'idx_refresh_token_user', 'user_id');
+        $this->conditionalIndex('favorite', 'idx_favorite_user', 'user_id');
+        $this->conditionalIndex('task_history', 'idx_task_history_task', 'task_id');
+    }
+
+    /**
+     * Crée un index uniquement si la table existe (safe pour fresh DB).
+     */
+    private function conditionalIndex(string $table, string $indexName, string $column): void
+    {
+        $this->addSql("DO \$\$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '{$table}') THEN CREATE INDEX IF NOT EXISTS {$indexName} ON {$table} ({$column}); END IF; END \$\$;");
     }
 
     public function down(Schema $schema): void
