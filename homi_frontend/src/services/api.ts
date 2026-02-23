@@ -90,8 +90,19 @@ apiClient.interceptors.response.use(
 
     if (error.response?.data) {
       const data = error.response.data as any;
-      apiError.message = data.message || data.error || 'An error occurred';
       apiError.errors = data.errors;
+
+      // Build human-readable message:
+      // 1. Use top-level message/error if present
+      // 2. Otherwise, concatenate structured field errors into a readable string
+      if (data.message || data.error) {
+        apiError.message = data.message || data.error;
+      } else if (data.errors && typeof data.errors === 'object') {
+        const messages = Object.values(data.errors).flat().filter(Boolean);
+        if (messages.length > 0) {
+          apiError.message = messages.join(' ');
+        }
+      }
     }
 
     // Handle 401 Unauthorized - redirect to login

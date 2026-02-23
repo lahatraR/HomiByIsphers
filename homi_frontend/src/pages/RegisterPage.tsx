@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const { register, isLoading, error } = useAuthStore();
+  const { register, isLoading, error, fieldErrors, clearError } = useAuthStore();
   const { t } = useTranslation();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number>(5);
@@ -23,6 +23,8 @@ export const RegisterPage: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear errors when user starts correcting
+    if (error || fieldErrors) clearError();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,9 +74,20 @@ export const RegisterPage: React.FC = () => {
             <p className="text-gray-600 mt-2">{t('auth.registerSubtitle')}</p>
           </div>
 
-          {error && (
+          {error && !fieldErrors && (
             <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
               {error}
+            </div>
+          )}
+
+          {fieldErrors && (
+            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm space-y-1">
+              <p className="font-medium">Veuillez corriger les erreurs suivantes :</p>
+              <ul className="list-disc list-inside">
+                {Object.values(fieldErrors).map((msg, i) => (
+                  <li key={i}>{msg}</li>
+                ))}
+              </ul>
             </div>
           )}
 
@@ -108,6 +121,7 @@ export const RegisterPage: React.FC = () => {
                 placeholder="John"
                 required
                 autoComplete="given-name"
+                error={fieldErrors?.firstName}
               />
 
               <Input
@@ -119,6 +133,7 @@ export const RegisterPage: React.FC = () => {
                 placeholder="Doe"
                 required
                 autoComplete="family-name"
+                error={fieldErrors?.lastName}
               />
             </div>
 
@@ -131,6 +146,7 @@ export const RegisterPage: React.FC = () => {
               placeholder="you@example.com"
               required
               autoComplete="email"
+              error={fieldErrors?.email}
             />
 
             <PasswordInput
@@ -141,6 +157,8 @@ export const RegisterPage: React.FC = () => {
               placeholder="••••••••"
               required
               autoComplete="new-password"
+              error={fieldErrors?.password}
+              helperText="Min. 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre"
             />
 
             <div>

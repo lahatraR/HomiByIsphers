@@ -14,6 +14,8 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  /** Structured field-level validation errors from the API (e.g. { password: "..." }) */
+  fieldErrors: Record<string, string> | null;
   
   // Actions
   setUser: (user: User | null) => void;
@@ -30,6 +32,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: authService.isAuthenticated(),
       isLoading: false,
       error: null,
+      fieldErrors: null,
 
       setUser: (user) => {
         // Si le token est expiré, forcer la déconnexion
@@ -64,7 +67,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       register: async (email, password, role ,firstName,lastName) => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, fieldErrors: null });
         try {
           
           const response = await authService.register({ email, password, role,firstName,lastName });
@@ -85,8 +88,15 @@ export const useAuthStore = create<AuthState>()(
             response: error.response,
             fullError: error
           });
+          // Extract field-level errors if available
+          const fieldErrors: Record<string, string> | null = error.errors
+            ? Object.fromEntries(
+                Object.entries(error.errors).map(([k, v]) => [k, Array.isArray(v) ? v.join(' ') : String(v)])
+              )
+            : null;
           set({
-            error: error.message || 'Registration failed',
+            error: error.message || 'L\'inscription a échoué.',
+            fieldErrors,
             isLoading: false,
             isAuthenticated: false,
             user: null,
@@ -104,7 +114,7 @@ export const useAuthStore = create<AuthState>()(
         });
       },
 
-      clearError: () => set({ error: null }),
+      clearError: () => set({ error: null, fieldErrors: null }),
     }),
     {
       name: 'auth-storage',
