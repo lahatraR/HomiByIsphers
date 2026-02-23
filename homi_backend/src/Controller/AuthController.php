@@ -418,5 +418,108 @@ class AuthController extends AbstractController
         }
     }
 
+    /**
+     * Réinitialiser le mot de passe sans email
+     * Vérifie l'email + le nom de famille comme question de sécurité
+     */
+    #[Route('/reset-password', name: 'reset_password', methods: ['POST'])]
+    public function resetPassword(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+
+            if ($data === null) {
+                return $this->json(['error' => 'Invalid JSON'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $email = trim($data['email'] ?? '');
+            $lastName = trim($data['lastName'] ?? '');
+            $newPassword = $data['newPassword'] ?? '';
+
+            if (!$email || !$lastName || !$newPassword) {
+                return $this->json(
+                    ['error' => 'Tous les champs sont requis (email, nom de famille, nouveau mot de passe)'],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Validation du nouveau mot de passe
+            if (strlen($newPassword) < 8) {
+                return $this->json(
+                    ['error' => 'Le mot de passe doit contenir au moins 8 caractères'],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            if (!preg_match('/[A-Z]/', $newPassword)) {
+                return $this->json(
+                    ['error' => 'Le mot de passe doit contenir au moins une lettre majuscule'],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            if (!preg_match('/[a-z]/', $newPassword)) {
+                return $this->json(
+                    ['error' => 'Le mot de passe doit contenir au moins une lettre minuscule'],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            if (!preg_match('/[0-9]/', $newPassword)) {
+                return $this->json(
+                    ['error' => 'Le mot de passe doit contenir au moins un chiffre'],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Chercher l'utilisateur par email
+            $user = $this->userRepository->findOneBy(['email' => $email]);
+
+            if (!$user) {
+                // Ne pas révéler si l'email existe — message générique mais délai
+                usleep(500000); // 500ms pour prévenir le timing attack
+                return $this->json(
+                    ['error' => 'Informations incorrectes. Vérifiez votre email et votre nom de famille.'],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Vérifier le nom de famille (insensible à la casse)
+            if (mb_strtolower($user->getLastName() ?? '') !== mb_strtolower($lastName)) {
+                usleep(500000); // 500ms pour prévenir le timing attack
+                $this->logger->warning('Password reset failed: last name mismatch', [
+                    'email' => $email,
+                ]);
+                return $this->json(
+                    ['error' => 'Informations incorrectes. Vérifiez votre email et votre nom de famille.'],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Mettre à jour le mot de passe
+            $user->setPassword(
+                $this->passwordHasher->hashPassword($user, $newPassword)
+            );
+            $this->em->flush();
+
+            $this->logger->info('✅ [ResetPassword] Password reset successfully', [
+                'userId' => $user->getId(),
+                'email' => $user->getEmail(),
+            ]);
+
+            return $this->json([
+                'message' => 'Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter.'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            $this->logger->error('ResetPassword exception', [
+                'message' => $e->getMessage(),
+            ]);
+            return $this->json(
+                ['error' => 'Une erreur est survenue'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
 
 }

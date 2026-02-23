@@ -66,9 +66,9 @@ export const RegisterPage: React.FC = () => {
   }, [successMessage, countdown, navigate]);
 
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 p-4 overflow-y-auto">
+    <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 dark:from-[#111113] dark:to-[#111113] p-4 overflow-y-auto">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white dark:bg-[#1c1c1e] rounded-2xl shadow-xl dark:shadow-[0_20px_40px_-4px_rgb(0_0_0/0.6)] dark:border dark:border-[#3a3a3c] p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">{t('auth.register')}</h1>
             <p className="text-gray-600 mt-2">{t('auth.registerSubtitle')}</p>

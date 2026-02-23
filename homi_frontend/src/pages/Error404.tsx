@@ -6,9 +6,9 @@ export const Error404: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-[100dvh] bg-gray-50 flex items-center justify-center px-4 overflow-y-auto">
+    <div className="min-h-[100dvh] bg-gray-50 dark:bg-[#111113] flex items-center justify-center px-4 overflow-y-auto">
       <div className="max-w-md w-full text-center">
-        <div className="text-8xl font-bold text-gray-200 mb-4">404</div>
+        <div className="text-8xl font-bold text-gray-200 dark:text-[#3a3a3c] mb-4">404</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('error404.title')}</h1>
         <p className="text-gray-600 mb-8">
           {t('error404.description')}

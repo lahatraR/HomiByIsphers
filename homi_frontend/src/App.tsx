@@ -5,6 +5,7 @@ import {
   RegisterPage,
   VerifyEmailPage,
   ResendVerificationPage,
+  ForgotPasswordPage,
   DashboardPage,
   Error404
 } from './pages';
@@ -64,6 +65,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
           <Route path="/resend-verification" element={<ResendVerificationPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         </Route>
 
         {/* Private Routes */}

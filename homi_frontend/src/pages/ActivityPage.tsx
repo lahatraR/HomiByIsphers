@@ -84,12 +84,12 @@ export const ActivityPage: React.FC = () => {
           <div className="flex gap-2 flex-wrap">
             <button onClick={() => setFilterType('all')}
               className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${filterType === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
-              Tout ({activities.length})
+              {t('common.all')} ({activities.length})
             </button>
-            {types.map(t => (
-              <button key={t} onClick={() => setFilterType(t)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${filterType === t ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
-                {t.replace(/_/g, ' ')}
+            {types.map(tp => (
+              <button key={tp} onClick={() => setFilterType(tp)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${filterType === tp ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                {tp.replace(/_/g, ' ')}
               </button>
             ))}
           </div>
@@ -97,7 +97,7 @@ export const ActivityPage: React.FC = () => {
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex justify-between items-center">
-            <span>{error}</span><button onClick={load} className="text-sm font-medium underline">Reessayer</button>
+            <span>{error}</span><button onClick={load} className="text-sm font-medium underline">{t('common.retry')}</button>
           </div>
         )}
 

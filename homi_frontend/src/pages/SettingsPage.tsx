@@ -24,7 +24,31 @@ export const SettingsPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // Apply theme to DOM whenever settings.theme changes
+  useEffect(() => {
+    const applyTheme = (theme: string) => {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else if (theme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        // auto = follow OS preference
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', prefersDark);
+      }
+      localStorage.setItem('theme', theme);
+    };
+    applyTheme(settings.theme);
+  }, [settings.theme]);
+
+  // Sync language with i18n when settings.language changes
+  useEffect(() => {
+    if (settings.language && settings.language !== i18n.language) {
+      i18n.changeLanguage(settings.language);
+    }
+  }, [settings.language, i18n]);
 
   useEffect(() => {
     const load = async () => {
@@ -83,9 +107,9 @@ export const SettingsPage: React.FC = () => {
               <div className="flex gap-3">
                 {[{ value: 'light', label: t('settings.themeLight'), icon: <IconSun className="w-7 h-7 mx-auto text-yellow-500" /> }, { value: 'dark', label: t('settings.themeDark'), icon: <IconMoon className="w-7 h-7 mx-auto text-indigo-500" /> }, { value: 'auto', label: t('settings.themeAuto'), icon: <IconMonitor className="w-7 h-7 mx-auto text-gray-600" /> }].map(opt => (
                   <button key={opt.value} onClick={() => setSettings(s => ({ ...s, theme: opt.value }))}
-                    className={`flex-1 p-3 rounded-lg border-2 text-center transition-all ${settings.theme === opt.value ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    className={`flex-1 p-3 rounded-lg border-2 text-center transition-all ${settings.theme === opt.value ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/20' : 'border-gray-200 hover:border-gray-300 dark:border-[#3a3a3c] dark:hover:border-[#48484a]'}`}>
                     <div className="mb-1">{opt.icon}</div>
-                    <div className="text-sm font-medium text-gray-700">{opt.label}</div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-[#d4d4d4]">{opt.label}</div>
                   </button>
                 ))}
               </div>
@@ -94,7 +118,7 @@ export const SettingsPage: React.FC = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('settings.language')}</label>
               <select value={settings.language} onChange={e => setSettings(s => ({ ...s, language: e.target.value }))}
-                className="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                className="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-[#1c1c1e] dark:text-[#f5f5f5] dark:border-[#48484a]">
                 <option value="fr">Francais</option>
                 <option value="en">English</option>
               </select>
@@ -117,8 +141,8 @@ export const SettingsPage: React.FC = () => {
               <div className="relative">
                 <input type="checkbox" className="sr-only peer" checked={settings.emailNotifications}
                   onChange={e => setSettings(s => ({ ...s, emailNotifications: e.target.checked }))} />
-                <div className="w-11 h-6 bg-gray-300 peer-checked:bg-blue-600 rounded-full transition-colors"></div>
-                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${settings.emailNotifications ? 'translate-x-5' : ''}`}></div>
+                <div className="w-11 h-6 bg-gray-300 peer-checked:bg-blue-600 dark:bg-[#48484a] rounded-full transition-colors"></div>
+                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[#ffffff] rounded-full shadow transition-transform ${settings.emailNotifications ? 'translate-x-5' : ''}`}></div>
               </div>
             </label>
 
@@ -130,8 +154,8 @@ export const SettingsPage: React.FC = () => {
               <div className="relative">
                 <input type="checkbox" className="sr-only peer" checked={settings.pushNotifications}
                   onChange={e => setSettings(s => ({ ...s, pushNotifications: e.target.checked }))} />
-                <div className="w-11 h-6 bg-gray-300 peer-checked:bg-blue-600 rounded-full transition-colors"></div>
-                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${settings.pushNotifications ? 'translate-x-5' : ''}`}></div>
+                <div className="w-11 h-6 bg-gray-300 peer-checked:bg-blue-600 dark:bg-[#48484a] rounded-full transition-colors"></div>
+                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[#ffffff] rounded-full shadow transition-transform ${settings.pushNotifications ? 'translate-x-5' : ''}`}></div>
               </div>
             </label>
           </div>
@@ -151,8 +175,8 @@ export const SettingsPage: React.FC = () => {
             <div className="relative">
               <input type="checkbox" className="sr-only peer" checked={settings.twoFactorEnabled}
                 onChange={e => setSettings(s => ({ ...s, twoFactorEnabled: e.target.checked }))} />
-              <div className="w-11 h-6 bg-gray-300 peer-checked:bg-blue-600 rounded-full transition-colors"></div>
-              <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${settings.twoFactorEnabled ? 'translate-x-5' : ''}`}></div>
+              <div className="w-11 h-6 bg-gray-300 peer-checked:bg-blue-600 dark:bg-[#48484a] rounded-full transition-colors"></div>
+              <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[#ffffff] rounded-full shadow transition-transform ${settings.twoFactorEnabled ? 'translate-x-5' : ''}`}></div>
             </div>
           </label>
         </Card>

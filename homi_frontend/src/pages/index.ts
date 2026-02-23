@@ -2,6 +2,7 @@ export { LoginPage } from './LoginPage';
 export { RegisterPage } from './RegisterPage';
 export { VerifyEmailPage } from './VerifyEmailPage';
 export { ResendVerificationPage } from './ResendVerificationPage';
+export { ForgotPasswordPage } from './ForgotPasswordPage';
 export { DashboardPage } from './DashboardPage';
 export { CreateTaskPage } from './CreateTaskPage';
 export { CreateDomicilePage } from './CreateDomicilePage';

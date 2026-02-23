@@ -17,6 +17,11 @@
                 transform var(--duration-normal) var(--ease-smooth);
   }
 
+  html.dark .card-base {
+    @apply bg-[#1c1c1e] border-[#3a3a3c];
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4);
+  }
+
   .card-interactive {
     @apply card-base cursor-pointer;
   }
@@ -26,14 +31,19 @@
     transform: translateY(-1px);
   }
 
-  .card-interactive:active {
-    transform: translateY(0);
-    box-shadow: var(--shadow-sm);
+  html.dark .card-interactive:hover {
+    @apply bg-[#262628];
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4);
   }
 
   .card-elevated {
     @apply bg-white rounded-xl;
     box-shadow: var(--shadow-md);
+  }
+
+  html.dark .card-elevated {
+    @apply bg-[#1c1c1e];
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4);
   }
 
   /* ─── Button enhancements ────────────────────────────────────────────── */
@@ -58,6 +68,14 @@
     @apply border-primary-500 ring-2 ring-primary-500/10 outline-none;
   }
 
+  html.dark .input-base {
+    @apply bg-[#1c1c1e] border-[#48484a] text-[#f5f5f5] placeholder-[#71717a];
+  }
+
+  html.dark .input-base:focus {
+    @apply border-primary-400 ring-primary-400/20;
+  }
+
   .input-error {
     @apply border-red-400 ring-2 ring-red-500/10;
   }
@@ -66,6 +84,10 @@
 
   .skeleton {
     @apply relative overflow-hidden bg-surface-100 rounded-lg;
+  }
+
+  html.dark .skeleton {
+    @apply bg-[#2c2c2e];
   }
 
   .skeleton::after {
@@ -156,8 +178,16 @@
     @apply text-2xl sm:text-3xl font-bold text-surface-900 tracking-tight;
   }
 
+  html.dark .page-title {
+    @apply text-[#f5f5f5];
+  }
+
   .page-subtitle {
     @apply mt-1 text-surface-500 text-sm sm:text-base;
+  }
+
+  html.dark .page-subtitle {
+    @apply text-[#a1a1aa];
   }
 
   /* ─── Dropdown / Popover ─────────────────────────────────────────────── */
@@ -166,6 +196,11 @@
     @apply absolute right-0 mt-2 w-56 rounded-xl bg-white ring-1 ring-surface-200/60
            py-1 animate-scale-in origin-top-right;
     box-shadow: var(--shadow-lg);
+  }
+
+  html.dark .dropdown-menu {
+    @apply bg-[#1c1c1e] ring-[#3a3a3c];
+    box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.5);
   }
 
   .dropdown-item {
@@ -177,6 +212,13 @@
     @apply bg-surface-50 text-surface-900;
   }
 
+  html.dark .dropdown-item {
+    @apply text-[#d4d4d4];
+  }
+  html.dark .dropdown-item:hover {
+    @apply bg-[#262628] text-[#f5f5f5];
+  }
+
   /* ─── Tooltip ────────────────────────────────────────────────────────── */
 
   .tooltip {
@@ -184,6 +226,18 @@
            bg-surface-900 text-white rounded-lg
            animate-fade-in pointer-events-none whitespace-nowrap;
     box-shadow: var(--shadow-md);
+  }
+
+  html.dark .tooltip {
+    @apply bg-surface-100 text-surface-900;
+  }
+
+  .divider {
+    @apply border-t border-surface-200/80;
+  }
+
+  html.dark .divider {
+    @apply border-[#3a3a3c];
   }
 }
 

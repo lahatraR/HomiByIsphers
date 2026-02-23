@@ -13,8 +13,19 @@ export const LoginPage: React.FC = () => {
     email: '',
     password: '',
   });
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem('rememberEmail') ? true : false;
+  });
   const [showSlowMessage, setShowSlowMessage] = useState(false);
   const timerRef = useRef<number | null>(null);
+
+  // Pre-fill email from remembered value
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberEmail');
+    if (savedEmail) {
+      setFormData(prev => ({ ...prev, email: savedEmail }));
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +33,12 @@ export const LoginPage: React.FC = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = window.setTimeout(() => setShowSlowMessage(true), 2000);
     try {
+      // Save or clear remembered email
+      if (rememberMe) {
+        localStorage.setItem('rememberEmail', formData.email);
+      } else {
+        localStorage.removeItem('rememberEmail');
+      }
       await login(formData.email, formData.password);
       if (timerRef.current) clearTimeout(timerRef.current);
       setShowSlowMessage(false);
@@ -49,9 +66,9 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-success-50 p-4 overflow-y-auto">
+    <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-success-50 dark:from-[#111113] dark:via-[#111113] dark:to-[#111113] p-4 overflow-y-auto">
       <div className="w-full max-w-md animate-fade-in-up">
-        <div className="bg-white rounded-2xl border border-surface-200/60 p-8 sm:p-10 shadow-float">
+        <div className="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-surface-200/60 dark:border-[#3a3a3c] p-8 sm:p-10 shadow-float">
           {/* Logo Section */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
@@ -143,16 +160,18 @@ export const LoginPage: React.FC = () => {
             />
 
             <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center">
+              <label className="flex items-center cursor-pointer">
                 <input 
-                  type="checkbox" 
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="rounded border-surface-300 text-primary-600 focus:ring-primary-500" 
                 />
                 <span className="ml-2 text-surface-600">{t('auth.rememberMe')}</span>
               </label>
-              <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
+              <Link to="/forgot-password" className="text-primary-600 hover:text-primary-700 font-medium">
                 {t('auth.forgotPassword')}
-              </a>
+              </Link>
             </div>
 
             <Button

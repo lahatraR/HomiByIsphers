@@ -154,7 +154,7 @@ export const CreateTaskPage: React.FC = () => {
                 </select>
                 {domiciles.length === 0 && !domicilesLoading && (
                   <p className="text-sm text-red-600 mt-2">
-                    {t('createTask.noDomiciles')} <button type="button" onClick={() => navigate('/create-domicile')} className="text-primary-600 hover:text-primary-700 font-medium">Create one</button>
+                    {t('createTask.noDomiciles')} <button type="button" onClick={() => navigate('/create-domicile')} className="text-primary-600 hover:text-primary-700 font-medium">{t('common.create')}</button>
                   </p>
                 )}
               </div>

@@ -29,7 +29,7 @@ export const DashboardPage: React.FC = () => {
                 await fetchTasks();
                 if (isAdmin) await fetchDomiciles();
             } catch (err: any) {
-                setError(err?.message || 'Erreur de chargement des données');
+                setError(err?.message || t('common.error'));
             }
         };
         loadData();

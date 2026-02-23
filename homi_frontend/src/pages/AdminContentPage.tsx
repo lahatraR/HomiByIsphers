@@ -120,8 +120,8 @@ export const AdminContentPage: React.FC = () => {
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
             <div className="flex gap-2 flex-wrap">
               <button onClick={() => setTypeFilter('all')} className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${typeFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>{t('admin.users.filterAll')}</button>
-              {types.map(t => (
-                <button key={t} onClick={() => setTypeFilter(t)} className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${typeFilter === t ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>{t}</button>
+              {types.map(tp => (
+                <button key={tp} onClick={() => setTypeFilter(tp)} className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${typeFilter === tp ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>{tp}</button>
               ))}
             </div>
           </div>

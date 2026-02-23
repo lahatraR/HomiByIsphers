@@ -88,12 +88,19 @@ export const deleteInvoice = async (id: number): Promise<void> => {
 
 /**
  * Marquer une facture comme payée (Admin only)
+ * Uses the dedicated /pay endpoint
  */
 export const markInvoiceAsPaid = async (id: number): Promise<Invoice> => {
-  return updateInvoice(id, {
-    status: 'PAID',
-    paidDate: new Date().toISOString()
-  });
+  try {
+    await api.patch<{ message: string; status: string; paidDate: string }>(`/invoices/${id}/pay`, {
+      paidDate: new Date().toISOString()
+    });
+    // Re-fetch the full invoice to get complete data
+    return getInvoice(id);
+  } catch (error) {
+    console.error('Failed to mark invoice as paid:', error);
+    throw error;
+  }
 };
 
 /**

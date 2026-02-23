@@ -52,7 +52,7 @@ export const TasksPage: React.FC = () => {
       setReviewRating(5);
       setReviewComment('');
     } catch (e: any) {
-      setError(e.message || 'Erreur lors de la notation');
+      setError(e.message || t('common.error'));
     } finally {
       setReviewSubmitting(false);
     }
@@ -177,14 +177,14 @@ export const TasksPage: React.FC = () => {
                         {task.actualStartTime && (
                           <div className="flex items-center">
                             <IconCheck className="w-4 h-4 mr-1" />
-                            <span className="font-medium mr-1">Started:</span>
+                            <span className="font-medium mr-1">{t('tasks.planned')}:</span>
                             {new Date(task.actualStartTime).toLocaleString()}
                           </div>
                         )}
                         {task.actualEndTime && (
                           <div className="flex items-center">
                             <IconCheckCircle className="w-4 h-4 mr-1" />
-                            <span className="font-medium mr-1">Completed:</span>
+                            <span className="font-medium mr-1">{t('tasks.completeTask')}:</span>
                             {new Date(task.actualEndTime).toLocaleString()}
                           </div>
                         )}
@@ -221,7 +221,7 @@ export const TasksPage: React.FC = () => {
                       onClick={() => { setReviewingTaskId(task.id); setReviewRating(5); setReviewComment(''); }}
                       className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs"
                     >
-                      <IconStar className="w-4 h-4 inline" /> Noter
+                      <IconStar className="w-4 h-4 inline" /> {t('common.edit')}
                     </Button>
                   )}
                   {/* Show existing rating */}
@@ -235,7 +235,7 @@ export const TasksPage: React.FC = () => {
               {/* Inline review form */}
               {reviewingTaskId === task.id && (
                 <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Notez cette tâche</p>
+                  <p className="text-sm font-medium text-gray-700 mb-2">{t('tasks.completeTask')}</p>
                   <div className="flex items-center gap-1 mb-2">
                     {[1, 2, 3, 4, 5].map(star => (
                       <button
@@ -261,14 +261,14 @@ export const TasksPage: React.FC = () => {
                       disabled={reviewSubmitting}
                       className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs"
                     >
-                      {reviewSubmitting ? <><IconHourglass className="w-4 h-4 inline" />...</> : <><IconCheckCircle className="w-4 h-4 inline" /> Enregistrer</>}
+                      {reviewSubmitting ? <><IconHourglass className="w-4 h-4 inline" />...</> : <><IconCheckCircle className="w-4 h-4 inline" /> {t('common.save')}</>}
                     </Button>
                     <Button
                       size="sm"
                       onClick={() => setReviewingTaskId(null)}
                       className="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs"
                     >
-                      Annuler
+                      {t('common.cancel')}
                     </Button>
                   </div>
                 </div>

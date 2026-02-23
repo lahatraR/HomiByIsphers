@@ -32,6 +32,7 @@ export const TaskTimerPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [wasFrozen, setWasFrozen] = useState(false);
+  const [showConfirm, setShowConfirm] = useState<'save' | 'cancel' | null>(null);
   const initDone = useRef(false);
 
   // SmartEstimate state
@@ -243,54 +244,58 @@ export const TaskTimerPage: React.FC = () => {
     setWasFrozen(false);
   }, []);
 
+  /** Arrêter le chronomètre et afficher le panneau de confirmation */
+  const handleStopTimer = useCallback(() => {
+    pausePersistedTimer();
+    setIsTimerRunning(false);
+    setWasFrozen(false);
+    setShowConfirm('save');
+  }, []);
+
+  /** Reprendre après avoir annulé la confirmation */
+  const handleCancelConfirm = useCallback(() => {
+    setShowConfirm(null);
+    resumePersistedTimer();
+    setIsTimerRunning(true);
+  }, []);
+
   const handleCompleteTask = async () => {
-    if (window.confirm(t('timer.confirmSave'))) {
-      try {
-        setIsSubmitting(true);
-        setSubmitError(null);
+    try {
+      setIsSubmitting(true);
+      setSubmitError(null);
 
-        // Calculer le temps total depuis le timer persisté
-        const persisted = getPersistedTimer();
-        const totalSeconds = persisted ? computeElapsedSeconds(persisted) : timerSeconds;
+      const persisted = getPersistedTimer();
+      const totalSeconds = persisted ? computeElapsedSeconds(persisted) : timerSeconds;
 
-        // Créer les timestamps pour le log de temps
-        const taskEndDate = new Date();
-        const taskStartDate = new Date(taskEndDate.getTime() - (totalSeconds * 1000));
+      const taskEndDate = new Date();
+      const taskStartDate = new Date(taskEndDate.getTime() - (totalSeconds * 1000));
 
-        // Soumettre le log de temps
-        await submitTimeLog(task!.id, taskStartDate, taskEndDate);
+      await submitTimeLog(task!.id, taskStartDate, taskEndDate);
+      await completeTask(task!.id);
+      setIsTimerRunning(false);
+      clearPersistedTimer();
+      setShowConfirm(null);
 
-        // Marquer la tâche comme complétée
-        await completeTask(task!.id);
-        setIsTimerRunning(false);
-
-        // Nettoyer le timer persisté
-        clearPersistedTimer();
-
-        // Rediriger vers les tâches
-        setTimeout(() => navigate('/tasks'), 1500);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : t('timer.errorSubmit');
-        setSubmitError(errorMessage);
-        console.error('Failed to complete task', error);
-      } finally {
-        setIsSubmitting(false);
-      }
+      setTimeout(() => navigate('/tasks'), 1500);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : t('timer.errorSubmit');
+      setSubmitError(errorMessage);
+      console.error('Failed to complete task', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleCancelTask = async () => {
-    if (window.confirm(t('timer.confirmDiscard'))) {
-      setIsTimerRunning(false);
-      try {
-        // Remettre la tâche en TODO sur le serveur
-        await cancelTask(task!.id);
-      } catch (error) {
-        console.error('Failed to cancel task on server', error);
-      }
-      clearPersistedTimer();
-      navigate('/tasks');
+    setIsTimerRunning(false);
+    try {
+      await cancelTask(task!.id);
+    } catch (error) {
+      console.error('Failed to cancel task on server', error);
     }
+    clearPersistedTimer();
+    setShowConfirm(null);
+    navigate('/tasks');
   };
 
   // ─── Rendu ────────────────────────────────────────────────────────────
@@ -422,35 +427,116 @@ export const TaskTimerPage: React.FC = () => {
           </div>
 
           {/* Controls */}
-          <div className="flex gap-3 justify-center flex-wrap">
-            {!wasFrozen && (
-              <Button
-                onClick={handleToggleTimer}
-                className={`${
-                  isTimerRunning
-                    ? 'bg-yellow-500 hover:bg-yellow-600'
-                    : 'bg-green-500 hover:bg-green-600'
-                } text-white`}
-              >
-                {isTimerRunning ? <><IconPause className="w-4 h-4 inline" /> {t('timer.pause')}</> : <><IconPlay className="w-4 h-4 inline" /> {t('timer.resume')}</>}
-              </Button>
-            )}
+          {showConfirm ? (
+            /* ── Panneau de confirmation intégré (remplace window.confirm) ── */
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl bg-surface-50 border border-surface-200">
+                <p className="text-lg font-semibold text-gray-800 mb-1">
+                  {showConfirm === 'save' ? t('timer.confirmSave') : t('timer.confirmDiscard')}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {t('timer.elapsed')}: <span className="font-mono font-bold">{formatTime(timerSeconds)}</span>
+                </p>
+              </div>
 
-            <Button
-              onClick={handleCompleteTask}
-              disabled={timerSeconds === 0 || isSubmitting}
-              className="bg-success-600 hover:bg-success-700 text-white"
-            >
-              {isSubmitting ? <><IconHourglass className="w-4 h-4 inline" /> {t('timer.saving')}</> : <><IconCheckCircle className="w-4 h-4 inline" /> {t('timer.save')}</>}
-            </Button>
+              {showConfirm === 'save' ? (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Button
+                    onClick={handleCompleteTask}
+                    disabled={timerSeconds === 0 || isSubmitting}
+                    size="lg"
+                    className="bg-success-600 hover:bg-success-700 text-white min-h-[56px] text-base"
+                  >
+                    {isSubmitting
+                      ? <><IconHourglass className="w-5 h-5 inline" /> {t('timer.saving')}</>
+                      : <><IconCheckCircle className="w-5 h-5 inline" /> {t('timer.save')}</>}
+                  </Button>
+                  <Button
+                    onClick={handleCancelConfirm}
+                    size="lg"
+                    className="bg-surface-200 hover:bg-surface-300 text-gray-700 min-h-[56px] text-base"
+                  >
+                    <IconPlay className="w-5 h-5 inline" /> {t('timer.resume')}
+                  </Button>
+                  <Button
+                    onClick={() => { setShowConfirm('cancel'); }}
+                    size="lg"
+                    className="bg-red-100 hover:bg-red-200 text-red-700 min-h-[56px] text-base sm:col-span-2"
+                  >
+                    <IconXCircle className="w-5 h-5 inline" /> {t('timer.discard')}
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Button
+                    onClick={handleCancelTask}
+                    disabled={isSubmitting}
+                    size="lg"
+                    className="bg-red-600 hover:bg-red-700 text-white min-h-[56px] text-base"
+                  >
+                    <IconXCircle className="w-5 h-5 inline" /> {t('timer.confirmDiscardBtn')}
+                  </Button>
+                  <Button
+                    onClick={() => { setShowConfirm('save'); }}
+                    size="lg"
+                    className="bg-surface-200 hover:bg-surface-300 text-gray-700 min-h-[56px] text-base"
+                  >
+                    {t('common.cancel')}
+                  </Button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* ── Contrôles normaux du chronomètre ── */
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {!wasFrozen && (
+                <Button
+                  onClick={handleToggleTimer}
+                  size="lg"
+                  className={`${
+                    isTimerRunning
+                      ? 'bg-yellow-500 hover:bg-yellow-600'
+                      : 'bg-green-500 hover:bg-green-600'
+                  } text-white min-h-[56px] text-base`}
+                >
+                  {isTimerRunning
+                    ? <><IconPause className="w-5 h-5 inline" /> {t('timer.pause')}</>
+                    : <><IconPlay className="w-5 h-5 inline" /> {t('timer.resume')}</>}
+                </Button>
+              )}
 
-            <Button
-              onClick={handleCancelTask}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              <span className="inline-flex items-center gap-1"><IconXCircle className="w-4 h-4" /> {t('timer.discard')}</span>
-            </Button>
-          </div>
+              {isTimerRunning && (
+                <Button
+                  onClick={handleStopTimer}
+                  size="lg"
+                  disabled={timerSeconds === 0}
+                  className="bg-red-600 hover:bg-red-700 text-white min-h-[56px] text-base"
+                >
+                  <IconXCircle className="w-5 h-5 inline" /> {t('timer.stop')}
+                </Button>
+              )}
+
+              {!isTimerRunning && !wasFrozen && timerSeconds > 0 && (
+                <>
+                  <Button
+                    onClick={() => { setShowConfirm('save'); }}
+                    size="lg"
+                    disabled={timerSeconds === 0}
+                    className="bg-success-600 hover:bg-success-700 text-white min-h-[56px] text-base"
+                  >
+                    <IconCheckCircle className="w-5 h-5 inline" /> {t('timer.save')}
+                  </Button>
+                  <Button
+                    onClick={() => { setShowConfirm('cancel'); }}
+                    size="lg"
+                    className="bg-surface-200 hover:bg-surface-300 text-gray-700 min-h-[56px] text-base"
+                  >
+                    <IconXCircle className="w-5 h-5 inline" /> {t('timer.discard')}
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
         </Card>
 
         {/* Task Details */}

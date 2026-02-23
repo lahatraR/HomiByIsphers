@@ -29,7 +29,10 @@
     "publish": "Publier",
     "unpublish": "Dépublier",
     "published": "Publié",
-    "draft": "Brouillon"
+    "draft": "Brouillon",
+    "accessDenied": "Accès refusé",
+    "domicile": "Domicile",
+    "optional": "Optionnel"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -60,7 +63,17 @@
     "adminStats": "Statistiques",
     "administration": "Administration",
     "myAccount": "Mon compte",
-    "createDomicile": "Créer un domicile"
+    "createDomicile": "Créer un domicile",
+    "performance": "Performance",
+    "recurringTasks": "Tâches récurrentes",
+    "budgets": "Budget & Coûts",
+    "closeMenu": "Fermer le menu",
+    "openMenu": "Ouvrir le menu",
+    "user": "Utilisateur"
+  },
+  "roles": {
+    "owner": "Propriétaire",
+    "executor": "Exécutant"
   },
   "dashboard": {
     "welcomeBack": "Bon retour, {{name}} ! 👋",
@@ -245,7 +258,42 @@
     "descriptionPlaceholder": "Description de la facture...",
     "amountPlaceholder": "0.00",
     "creating": "Création en cours...",
-    "createSuccess": "Facture créée avec succès !"
+    "createSuccess": "Facture créée avec succès !",
+    "cancelled": "Annulée",
+    "sent": "Envoyée",
+    "draft": "Brouillon",
+    "totalInvoices": "Total des factures",
+    "amountPaid": "Montant payé",
+    "pendingAmount": "Montant en attente",
+    "totalAmount": "Montant total",
+    "paidAmount": "Montant encaissé",
+    "all": "Toutes",
+    "drafts": "Brouillons",
+    "sentPlural": "Envoyées",
+    "paidPlural": "Payées",
+    "confirmMarkPaid": "Êtes-vous sûr de vouloir marquer cette facture comme payée ?",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette facture ?",
+    "executor": "Exécutant",
+    "period": "Période",
+    "hours": "Heures",
+    "subtotal": "Sous-total",
+    "tax": "TVA",
+    "total": "Total",
+    "notes": "Notes",
+    "createDesc": "Générez une facture basée sur les heures de travail approuvées",
+    "periodHint": "Sélectionnez la période et l'exécutant pour calculer les heures",
+    "domicile": "Domicile",
+    "selectDomicile": "-- Sélectionner un domicile --",
+    "selectExecutor": "-- Sélectionner un exécutant --",
+    "periodStart": "Début de période",
+    "periodEnd": "Fin de période",
+    "hourlyRate": "Taux horaire (€/h)",
+    "hourlyRatePlaceholder": "Ex : 25.00",
+    "taxRate": "Taux de TVA (%)",
+    "validationError": "Veuillez remplir tous les champs obligatoires",
+    "paidOn": "Payée le",
+    "hoursWorked": "Heures travaillées",
+    "errorLoad": "Erreur lors du chargement des factures"
   },
   "timer": {
     "title": "Chronomètre de tâche",
@@ -266,6 +314,7 @@
     "discard": "Annuler",
     "confirmSave": "Voulez-vous enregistrer le temps et terminer cette tâche ?",
     "confirmDiscard": "Êtes-vous sûr de vouloir annuler ? Le temps non enregistré sera perdu.",
+    "confirmDiscardBtn": "Oui, annuler la tâche",
     "errorStart": "Impossible de démarrer la tâche.",
     "errorSubmit": "Erreur lors de l'enregistrement du temps.",
     "warningLeave": "Un chronomètre est actif. Si vous quittez, le temps sera figé et restauré à votre retour.",
@@ -295,7 +344,9 @@
     "profileUpdated": "Profil mis à jour avec succès",
     "changingPassword": "Modification...",
     "changePasswordBtn": "Modifier le mot de passe",
-    "errorLoading": "Erreur lors du chargement du profil"
+    "errorLoading": "Erreur lors du chargement du profil",
+    "errorUpdating": "Erreur lors de la mise à jour du profil",
+    "errorChangingPassword": "Erreur lors du changement de mot de passe"
   },
   "settings": {
     "title": "Paramètres",
@@ -356,7 +407,8 @@
     "statusInProgress": "En cours",
     "statusResolved": "Résolu",
     "statusClosed": "Fermé",
-    "errorLoading": "Erreur lors du chargement des tickets"
+    "errorLoading": "Erreur lors du chargement des tickets",
+    "statusUnknown": "Inconnu"
   },
   "activity": {
     "title": "Activité récente",
@@ -384,7 +436,8 @@
     "noResultsHint": "Essayez avec des termes différents",
     "startSearch": "Commencez votre recherche",
     "startSearchHint": "Tapez un terme et appuyez sur Entrée ou cliquez sur Rechercher",
-    "viewDetail": "Voir le détail →"
+    "viewDetail": "Voir le détail →",
+    "error": "Erreur lors de la recherche"
   },
   "favorites": {
     "title": "Mes Favoris",
@@ -397,7 +450,9 @@
     "domicile": "Domicile",
     "invoice": "Facture",
     "user": "Utilisateur",
-    "errorLoading": "Erreur lors du chargement des favoris"
+    "errorLoading": "Erreur lors du chargement des favoris",
+    "errorRemoving": "Erreur lors du retrait du favori",
+    "other": "Autre"
   },
   "badges": {
     "title": "Badges & Récompenses",
@@ -458,7 +513,9 @@
     "howItWorks": "Comment fonctionne le 2FA ?",
     "step1": "Activez le 2FA et scannez le QR code avec une application d'authentification",
     "step2": "Lors de chaque connexion, un code temporaire à 6 chiffres vous sera demandé",
-    "step3": "Ce code change toutes les 30 secondes, rendant votre compte beaucoup plus sûr"
+    "step3": "Ce code change toutes les 30 secondes, rendant votre compte beaucoup plus sûr",
+    "enableError": "Erreur lors de l'activation du 2FA",
+    "disableError": "Erreur lors de la désactivation du 2FA"
   },
   "onboarding": {
     "step": "Étape {{current}} sur {{total}}",
@@ -514,6 +571,7 @@
       "completedThisMonth": "terminées ce mois",
       "validatedLogs": "logs validés",
       "paidInvoices": "factures payées",
+      "errorLoading": "Erreur lors du chargement des statistiques",
       "taskDistribution": "Répartition des tâches",
       "team": "Équipe",
       "administrators": "Administrateurs",
@@ -546,7 +604,8 @@
       "confirmDelete": "Supprimer cet utilisateur ? Cette action est irréversible.",
       "errorLoading": "Erreur lors du chargement des utilisateurs",
       "errorDeleting": "Erreur lors de la suppression",
-      "errorEditing": "Erreur lors de la modification"
+      "errorEditing": "Erreur lors de la modification",
+      "user": "Utilisateur"
     },
     "logs": {
       "title": "Journaux système",
@@ -580,7 +639,8 @@
       "noContent": "Aucun contenu trouvé",
       "confirmDelete": "Supprimer ce contenu ?",
       "errorLoading": "Erreur lors du chargement du contenu",
-      "errorSaving": "Erreur lors de la sauvegarde"
+      "errorSaving": "Erreur lors de la sauvegarde",
+      "errorDeleting": "Erreur lors de la suppression du contenu"
     }
   },
   "auth": {
@@ -626,7 +686,22 @@
     "checkInbox": "Vérifiez votre boîte de réception.",
     "backToLoginLink": "← Retour à la connexion",
     "allRightsReserved": "Homi © 2026 - Tous droits réservés",
-    "missingToken": "Token manquant. Veuillez utiliser le lien de vérification envoyé par email."
+    "missingToken": "Token manquant. Veuillez utiliser le lien de vérification envoyé par email.",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "forgotPasswordTitle": "Réinitialiser le mot de passe",
+    "forgotPasswordSubtitle": "Entrez votre email et répondez à la question de sécurité",
+    "securityQuestion": "Question de sécurité",
+    "securityQuestionHint": "Entrez votre nom de famille tel que renseigné lors de l'inscription",
+    "lastNameVerification": "Nom de famille",
+    "newPassword": "Nouveau mot de passe",
+    "confirmNewPassword": "Confirmer le nouveau mot de passe",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "resetting": "Réinitialisation...",
+    "resetSuccess": "Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter.",
+    "resetError": "Impossible de réinitialiser le mot de passe. Vérifiez vos informations.",
+    "passwordsMismatch": "Les mots de passe ne correspondent pas",
+    "emailNotFound": "Aucun compte trouvé avec ces informations"
   },
   "spellcheck": {
     "errorsFound": "{{count}} correction(s) suggérée(s)",

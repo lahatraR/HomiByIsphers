@@ -68,15 +68,15 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   const navLinkClass = (path: string) =>
-    `relative font-medium text-sm transition-colors duration-150 inline-flex items-center gap-1.5 ${isActive(path) ? 'text-primary-600' : 'text-surface-600 hover:text-surface-900'}`;
+    `relative font-medium text-sm transition-colors duration-150 inline-flex items-center gap-1.5 ${isActive(path) ? 'text-primary-600 dark:text-primary-400' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white'}`;
 
   const mobileNavLinkClass = (path: string) =>
-    `flex items-center gap-2.5 px-3 py-2.5 rounded-lg font-medium text-sm transition-all duration-150 ${isActive(path) ? 'bg-primary-50 text-primary-600' : 'text-surface-700 hover:bg-surface-50 hover:text-surface-900'}`;
+    `flex items-center gap-2.5 px-3 py-2.5 rounded-lg font-medium text-sm transition-all duration-150 ${isActive(path) ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' : 'text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-[#262628] hover:text-surface-900 dark:hover:text-white'}`;
 
   return (
-    <div className="min-h-[100dvh] bg-surface-50">
+    <div className="min-h-[100dvh] bg-surface-50 dark:bg-[#111113]">
       {/* Header */}
-      <header className="glass-strong border-b border-surface-200/60 sticky top-0 z-50 shadow-xs">
+      <header className="glass-strong dark:!bg-[#1a1a1c]/95 border-b border-surface-200/60 dark:border-[#3a3a3c]/60 sticky top-0 z-50 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -105,7 +105,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   strokeLinejoin="round" 
                 />
               </svg>
-              <span className="text-xl font-bold text-surface-900 tracking-tight">Homi</span>
+              <span className="text-xl font-bold text-surface-900 dark:text-white tracking-tight">Homi</span>
               {showEnvBadge && (
                 <span className={`ml-2 px-2 py-0.5 text-[10px] font-bold uppercase rounded-full ${
                   ENV_LABEL === 'LOCAL' 
@@ -231,10 +231,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
                 {/* Dropdown menu */}
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl border border-surface-200/60 py-1.5 z-50 animate-scale-in origin-top-right shadow-float" role="menu">
+                  <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#1c1c1e] rounded-xl border border-surface-200/60 dark:border-[#3a3a3c] py-1.5 z-50 animate-scale-in origin-top-right shadow-float" role="menu">
                     {/* User info header */}
-                    <div className="px-4 py-3 border-b border-surface-100">
-                      <div className="text-sm font-semibold text-surface-900">
+                    <div className="px-4 py-3 border-b border-surface-100 dark:border-[#2c2c2e]">
+                      <div className="text-sm font-semibold text-surface-900 dark:text-white">
                         {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : (user?.firstName || t('nav.user', 'Utilisateur'))}
                       </div>
                       <div className="mt-1.5">
@@ -331,11 +331,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-surface-200/60 bg-white animate-fade-in-down max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
+          <div className="md:hidden border-t border-surface-200/60 dark:border-[#3a3a3c]/60 bg-white dark:bg-[#1a1a1c] animate-fade-in-down max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
             <div className="px-4 py-3 pb-6 space-y-0.5">
               {/* User info */}
-              <div className="pb-3 mb-3 border-b border-surface-100">
-                <div className="text-sm font-semibold text-surface-900">
+              <div className="pb-3 mb-3 border-b border-surface-100 dark:border-[#2c2c2e]">
+                <div className="text-sm font-semibold text-surface-900 dark:text-white">
                   {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : (user?.firstName || t('nav.user', 'Utilisateur'))}
                 </div>
                 <span className={`mt-1.5 inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full tracking-wide ${

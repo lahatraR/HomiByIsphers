@@ -29,7 +29,10 @@
     "publish": "Publish",
     "unpublish": "Unpublish",
     "published": "Published",
-    "draft": "Draft"
+    "draft": "Draft",
+    "accessDenied": "Access Denied",
+    "domicile": "Domicile",
+    "optional": "Optional"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -60,7 +63,17 @@
     "adminStats": "Statistics",
     "administration": "Administration",
     "myAccount": "My Account",
-    "createDomicile": "Create Domicile"
+    "createDomicile": "Create Domicile",
+    "performance": "Performance",
+    "recurringTasks": "Recurring Tasks",
+    "budgets": "Budgets & Costs",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "user": "User"
+  },
+  "roles": {
+    "owner": "Owner",
+    "executor": "Executor"
   },
   "dashboard": {
     "welcomeBack": "Welcome back, {{name}}! 👋",
@@ -245,7 +258,42 @@
     "descriptionPlaceholder": "Invoice description...",
     "amountPlaceholder": "0.00",
     "creating": "Creating...",
-    "createSuccess": "Invoice created successfully!"
+    "createSuccess": "Invoice created successfully!",
+    "cancelled": "Cancelled",
+    "sent": "Sent",
+    "draft": "Draft",
+    "totalInvoices": "Total Invoices",
+    "amountPaid": "Amount Paid",
+    "pendingAmount": "Pending Amount",
+    "totalAmount": "Total Amount",
+    "paidAmount": "Paid Amount",
+    "all": "All",
+    "drafts": "Drafts",
+    "sentPlural": "Sent",
+    "paidPlural": "Paid",
+    "confirmMarkPaid": "Are you sure you want to mark this invoice as paid?",
+    "confirmDelete": "Are you sure you want to delete this invoice?",
+    "executor": "Executor",
+    "period": "Period",
+    "hours": "Hours",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "total": "Total",
+    "notes": "Notes",
+    "createDesc": "Generate an invoice based on approved work hours",
+    "periodHint": "Select the period and executor to calculate hours",
+    "domicile": "Domicile",
+    "selectDomicile": "-- Select a domicile --",
+    "selectExecutor": "-- Select an executor --",
+    "periodStart": "Period Start",
+    "periodEnd": "Period End",
+    "hourlyRate": "Hourly Rate (€/h)",
+    "hourlyRatePlaceholder": "E.g.: 25.00",
+    "taxRate": "Tax Rate (%)",
+    "validationError": "Please fill in all required fields",
+    "paidOn": "Paid on",
+    "hoursWorked": "Hours Worked",
+    "errorLoad": "Error loading invoices"
   },
   "timer": {
     "title": "Task Timer",
@@ -266,6 +314,7 @@
     "discard": "Discard",
     "confirmSave": "Do you want to save the time and complete this task?",
     "confirmDiscard": "Are you sure you want to discard? Unsaved time will be lost.",
+    "confirmDiscardBtn": "Yes, discard task",
     "errorStart": "Unable to start the task.",
     "errorSubmit": "Error saving time log.",
     "warningLeave": "A timer is active. If you leave, the time will be frozen and restored when you return.",
@@ -295,7 +344,9 @@
     "profileUpdated": "Profile updated successfully",
     "changingPassword": "Changing...",
     "changePasswordBtn": "Change Password",
-    "errorLoading": "Error loading profile"
+    "errorLoading": "Error loading profile",
+    "errorUpdating": "Error updating profile",
+    "errorChangingPassword": "Error changing password"
   },
   "settings": {
     "title": "Settings",
@@ -356,7 +407,8 @@
     "statusInProgress": "In Progress",
     "statusResolved": "Resolved",
     "statusClosed": "Closed",
-    "errorLoading": "Error loading tickets"
+    "errorLoading": "Error loading tickets",
+    "statusUnknown": "Unknown"
   },
   "activity": {
     "title": "Recent Activity",
@@ -384,7 +436,8 @@
     "noResultsHint": "Try different search terms",
     "startSearch": "Start your search",
     "startSearchHint": "Type a term and press Enter or click Search",
-    "viewDetail": "View details →"
+    "viewDetail": "View details →",
+    "error": "Error searching"
   },
   "favorites": {
     "title": "My Favorites",
@@ -397,7 +450,9 @@
     "domicile": "Domicile",
     "invoice": "Invoice",
     "user": "User",
-    "errorLoading": "Error loading favorites"
+    "errorLoading": "Error loading favorites",
+    "errorRemoving": "Error removing favorite",
+    "other": "Other"
   },
   "badges": {
     "title": "Badges & Rewards",
@@ -458,7 +513,9 @@
     "howItWorks": "How does 2FA work?",
     "step1": "Enable 2FA and scan the QR code with an authenticator app",
     "step2": "Each time you sign in, a temporary 6-digit code will be required",
-    "step3": "This code changes every 30 seconds, making your account much more secure"
+    "step3": "This code changes every 30 seconds, making your account much more secure",
+    "enableError": "Error enabling 2FA",
+    "disableError": "Error disabling 2FA"
   },
   "onboarding": {
     "step": "Step {{current}} of {{total}}",
@@ -514,6 +571,7 @@
       "completedThisMonth": "completed this month",
       "validatedLogs": "validated logs",
       "paidInvoices": "paid invoices",
+      "errorLoading": "Error loading statistics",
       "taskDistribution": "Task Distribution",
       "team": "Team",
       "administrators": "Administrators",
@@ -546,7 +604,8 @@
       "confirmDelete": "Delete this user? This action is irreversible.",
       "errorLoading": "Error loading users",
       "errorDeleting": "Error deleting user",
-      "errorEditing": "Error editing user"
+      "errorEditing": "Error editing user",
+      "user": "User"
     },
     "logs": {
       "title": "System Logs",
@@ -580,7 +639,8 @@
       "noContent": "No content found",
       "confirmDelete": "Delete this content?",
       "errorLoading": "Error loading content",
-      "errorSaving": "Error saving content"
+      "errorSaving": "Error saving content",
+      "errorDeleting": "Error deleting content"
     }
   },
   "auth": {
@@ -626,7 +686,22 @@
     "checkInbox": "Check your inbox.",
     "backToLoginLink": "← Back to Login",
     "allRightsReserved": "Homi © 2026 - All rights reserved",
-    "missingToken": "Missing token. Please use the verification link sent by email."
+    "missingToken": "Missing token. Please use the verification link sent by email.",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordTitle": "Reset Password",
+    "forgotPasswordSubtitle": "Enter your email and answer the security question",
+    "securityQuestion": "Security Question",
+    "securityQuestionHint": "Enter your last name as provided during registration",
+    "lastNameVerification": "Last Name",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "resetPassword": "Reset Password",
+    "resetting": "Resetting...",
+    "resetSuccess": "Password reset successfully! You can now sign in.",
+    "resetError": "Unable to reset password. Check your information.",
+    "passwordsMismatch": "Passwords do not match",
+    "emailNotFound": "No account found with this information"
   },
   "spellcheck": {
     "errorsFound": "{{count}} suggestion(s) found",
