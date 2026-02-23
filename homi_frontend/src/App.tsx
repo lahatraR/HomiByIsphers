@@ -44,7 +44,7 @@ const BudgetPage = lazy(() => import('./pages/BudgetPage').then(m => ({ default:
 
 // Loading spinner for lazy-loaded routes
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-surface-50">
+  <div className="min-h-[100dvh] flex items-center justify-center bg-surface-50">
     <div className="flex flex-col items-center gap-3 animate-fade-in">
       <div className="w-10 h-10 border-[3px] border-primary-200 border-t-primary-600 rounded-full animate-spin" />
       <span className="text-sm text-surface-400 font-medium tracking-tight-sm">Chargement...</span>

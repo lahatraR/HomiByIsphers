@@ -63,7 +63,7 @@ export const VerifyEmailPage: React.FC = () => {
   }, [status, countdown, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 p-4">
+    <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-primary-50 to-success-50 p-4 overflow-y-auto">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Logo Section */}

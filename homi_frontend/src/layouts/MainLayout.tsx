@@ -63,7 +63,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     `block px-3 py-2.5 rounded-lg font-medium text-sm transition-all duration-150 ${isActive(path) ? 'bg-primary-50 text-primary-600' : 'text-surface-700 hover:bg-surface-50 hover:text-surface-900'}`;
 
   return (
-    <div className="min-h-screen bg-surface-50">
+    <div className="min-h-[100dvh] bg-surface-50">
       {/* Header */}
       <header className="glass-strong border-b border-surface-200/60 sticky top-0 z-50 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -345,8 +345,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-surface-200/60 bg-white animate-fade-in-down">
-            <div className="px-4 py-3 space-y-0.5">
+          <div className="md:hidden border-t border-surface-200/60 bg-white animate-fade-in-down max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
+            <div className="px-4 py-3 pb-6 space-y-0.5">
               {/* User info */}
               <div className="pb-3 mb-3 border-b border-surface-100">
                 <div className="text-sm font-semibold text-surface-900">

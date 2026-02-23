@@ -134,8 +134,8 @@ export const AdminContentPage: React.FC = () => {
         )}
 
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg max-h-[90dvh] overflow-y-auto">
               <h2 className="text-xl font-bold text-gray-900 mb-4">{editingItem ? t('admin.content.editContent') : t('admin.content.newContentTitle')}</h2>
               <div className="space-y-4">
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.content.contentTitle')}</label>

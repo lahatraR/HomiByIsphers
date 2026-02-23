@@ -116,8 +116,8 @@ export const AdminUsersPage: React.FC = () => {
         )}
 
         {editingUser && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md max-h-[90dvh] overflow-y-auto">
               <h2 className="text-xl font-bold text-gray-900 mb-4">{t('admin.users.editUser')}</h2>
               <div className="space-y-4">
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.users.firstName')}</label>
@@ -142,7 +142,7 @@ export const AdminUsersPage: React.FC = () => {
         ) : filteredUsers.length === 0 ? (
           <Card><div className="text-center py-12"><p className="text-gray-500 font-medium">{t('admin.users.noUsersFound')}</p></div></Card>
         ) : (
-          <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+          <div className="bg-white shadow-sm rounded-lg overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>

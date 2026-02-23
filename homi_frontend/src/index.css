@@ -96,6 +96,7 @@
 
   body {
     min-height: 100vh;
+    min-height: 100dvh;
     background-color: #fafafa;
     color: #171717;
     overflow-x: hidden;
@@ -237,5 +238,31 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+}
+
+/* ─── Mobile Viewport & Scroll Fixes ────────────────────────────────────── */
+
+@layer base {
+  /* Prevent iOS bounce/overscroll on fixed modals */
+  .modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+
+  /* Ensure touch scrolling works smoothly on iOS */
+  @supports (-webkit-touch-callout: none) {
+    .overflow-y-auto {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  /* Safe area insets for notched devices (iPhone X+) */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    body {
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
   }
 }
