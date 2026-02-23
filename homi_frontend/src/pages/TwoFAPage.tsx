@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner, Button } from '../components/common';
+import { Card, LoadingSpinner, Button, IconLock } from '../components/common';
 import { api } from '../services/api';
 import { useTranslation } from 'react-i18next';
 
@@ -105,9 +105,7 @@ export const TwoFAPage: React.FC = () => {
         <Card className="p-6">
           <div className="flex items-center gap-4 mb-6">
             <div className={`w-14 h-14 rounded-full flex items-center justify-center ${status.enabled ? 'bg-green-100' : 'bg-gray-100'}`}>
-              <svg width="28" height="28" fill="none" stroke={status.enabled ? '#16a34a' : '#9ca3af'} strokeWidth="2" viewBox="0 0 24 24">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-              </svg>
+              <IconLock className="w-7 h-7" style={{ color: status.enabled ? '#16a34a' : '#9ca3af' }} />
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900">

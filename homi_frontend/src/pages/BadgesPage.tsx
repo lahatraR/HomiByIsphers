@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner } from '../components/common';
+import { Card, LoadingSpinner, IconAward, IconCheckCircle } from '../components/common';
 import { useTranslation } from 'react-i18next';
 import { api } from '../services/api';
 
@@ -96,7 +96,7 @@ export const BadgesPage: React.FC = () => {
           <div className="flex justify-center py-12"><LoadingSpinner size="lg" /></div>
         ) : filtered.length === 0 ? (
           <Card className="p-12 text-center">
-            <div className="text-4xl mb-3">🏆</div>
+            <div className="text-4xl mb-3"><IconAward className="w-10 h-10 mx-auto text-yellow-500" /></div>
             <p className="text-gray-500 font-medium">{t('badges.noBadges')}</p>
             <p className="text-sm text-gray-400 mt-1">{t('badges.noBadgesDesc')}</p>
           </Card>
@@ -124,7 +124,7 @@ export const BadgesPage: React.FC = () => {
 
                   {earned && (
                     <div className="mt-3 flex items-center justify-center gap-1">
-                      <svg width="14" height="14" fill="none" stroke="#16a34a" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      <IconCheckCircle className="w-3.5 h-3.5 text-green-600" />
                       <span className="text-xs text-green-600 font-medium">
                         {t('badges.earnedOn', { date: new Date(badge.earnedAt!).toLocaleDateString('fr-FR') })}
                       </span>

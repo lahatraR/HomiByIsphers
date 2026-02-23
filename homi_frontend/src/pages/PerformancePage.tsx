@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner } from '../components/common';
+import { Card, LoadingSpinner, IconBarChart, IconFire, IconStar, IconZap, IconTrendingUp, IconCheckCircle, IconRefresh, IconClipboard, IconCalendar, IconHome } from '../components/common';
 import { performanceService, type PerformanceData } from '../services/performance.service';
 import { useAuthStore } from '../stores/authStore';
 import { useTranslation } from 'react-i18next';
@@ -61,7 +61,7 @@ export const PerformancePage: React.FC = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">📊 Ma Performance</h1>
+          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2"><IconBarChart className="w-8 h-8 text-primary-600" /> Ma Performance</h1>
           <p className="text-gray-500 mt-1">
             Analyse de vos résultats et progression
           </p>
@@ -82,7 +82,7 @@ export const PerformancePage: React.FC = () => {
             <p className="text-sm text-gray-500 mt-1">Dans les temps</p>
           </Card>
           <Card className="p-5 text-center">
-            <p className="text-3xl font-bold text-orange-500">🔥 {data.streak}</p>
+            <p className="text-3xl font-bold text-orange-500 flex items-center justify-center gap-1"><IconFire className="w-7 h-7" /> {data.streak}</p>
             <p className="text-sm text-gray-500 mt-1">Jours consécutifs</p>
           </Card>
         </div>
@@ -90,7 +90,7 @@ export const PerformancePage: React.FC = () => {
         {/* Rating + Speed */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">⭐ Note moyenne</h3>
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><IconStar className="w-5 h-5 text-yellow-500" /> Note moyenne</h3>
             <div className="flex items-center gap-3">
               {renderStars(data.rating.averageRating)}
               <span className="text-2xl font-bold">{data.rating.averageRating}/5</span>
@@ -99,7 +99,7 @@ export const PerformancePage: React.FC = () => {
           </Card>
 
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">⚡ Vitesse</h3>
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><IconZap className="w-5 h-5 text-yellow-500" /> Vitesse</h3>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-600">Moyenne par tâche</span>
@@ -119,7 +119,7 @@ export const PerformancePage: React.FC = () => {
 
         {/* Completion Rate Bar */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">📈 Taux de complétion</h3>
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><IconTrendingUp className="w-5 h-5 text-primary-600" /> Taux de complétion</h3>
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <div className="w-full bg-gray-200 rounded-full h-4">
@@ -132,16 +132,16 @@ export const PerformancePage: React.FC = () => {
             <span className="text-xl font-bold">{data.tasks.completionRate}%</span>
           </div>
           <div className="flex gap-6 mt-3 text-sm text-gray-500">
-            <span>✅ {data.tasks.completed} complétées</span>
-            <span>🔄 {data.tasks.inProgress} en cours</span>
-            <span>📋 {data.tasks.todo} à faire</span>
+            <span className="inline-flex items-center gap-1"><IconCheckCircle className="w-4 h-4 text-green-600" /> {data.tasks.completed} complétées</span>
+            <span className="inline-flex items-center gap-1"><IconRefresh className="w-4 h-4 text-blue-600" /> {data.tasks.inProgress} en cours</span>
+            <span className="inline-flex items-center gap-1"><IconClipboard className="w-4 h-4 text-gray-600" /> {data.tasks.todo} à faire</span>
           </div>
         </Card>
 
         {/* Weekly Activity Sparkline */}
         {data.weeklyActivity.length > 0 && (
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">📅 Activité par semaine</h3>
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><IconCalendar className="w-5 h-5 text-primary-600" /> Activité par semaine</h3>
             <div className="flex items-end gap-2 h-32">
               {data.weeklyActivity.map((week, i) => {
                 const maxTasks = Math.max(...data.weeklyActivity.map(w => w.tasksCompleted), 1);
@@ -167,7 +167,7 @@ export const PerformancePage: React.FC = () => {
         {/* Domicile Breakdown */}
         {data.domicileBreakdown.length > 0 && (
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">🏠 Répartition par domicile</h3>
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><IconHome className="w-5 h-5 text-primary-600" /> Répartition par domicile</h3>
             <div className="space-y-3">
               {data.domicileBreakdown.map((dom, i) => {
                 const maxTasks = Math.max(...data.domicileBreakdown.map(d => d.taskCount), 1);

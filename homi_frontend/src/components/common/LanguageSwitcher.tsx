@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '../../i18n';
+import { IconChevronDown, IconCheck } from './Icons';
 
 export const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
@@ -33,14 +34,7 @@ export const LanguageSwitcher: React.FC = () => {
         title={currentLang.label}
       >
         <span className="text-xl leading-none">{currentLang.flag}</span>
-        <svg
-          className={`w-3 h-3 transition-transform duration-200 ease-smooth ${open ? 'rotate-180' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        <IconChevronDown className={`w-3 h-3 transition-transform duration-200 ease-smooth ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
@@ -58,9 +52,7 @@ export const LanguageSwitcher: React.FC = () => {
               <span className="text-lg">{lang.flag}</span>
               <span>{lang.label}</span>
               {i18n.language === lang.code && (
-                <svg className="w-4 h-4 ml-auto text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+                <IconCheck className="w-4 h-4 ml-auto text-primary-600" />
               )}
             </button>
           ))}

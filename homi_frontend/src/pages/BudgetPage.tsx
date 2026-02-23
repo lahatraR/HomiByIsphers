@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, LoadingSpinner } from '../components/common';
+import { Card, Button, LoadingSpinner, IconDollar, IconSettings, IconXCircle, IconCoins, IconClock, IconCheckCircle, IconBarChart, IconHome } from '../components/common';
 import { budgetService, type BudgetOverview, type TodayCost } from '../services/budget.service';
 import { useDomicileStore } from '../stores/domicileStore';
 
@@ -99,7 +99,7 @@ export const BudgetPage: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">💰 Budget & Coûts</h1>
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2"><IconDollar className="w-8 h-8 text-primary-600" /> Budget & Coûts</h1>
             <p className="text-gray-500 mt-1">
               {MONTH_NAMES[month - 1]} {year} — Suivi en temps réel
             </p>
@@ -108,27 +108,27 @@ export const BudgetPage: React.FC = () => {
             onClick={() => setShowBudgetForm(!showBudgetForm)}
             className="bg-primary-600 hover:bg-primary-700 text-white"
           >
-            ⚙ Définir un budget
+            <IconSettings className="w-5 h-5 inline mr-1" /> Définir un budget
           </Button>
         </div>
 
         {error && (
-          <Card className="p-4 bg-red-50 border-red-200 text-red-700">❌ {error}</Card>
+          <Card className="p-4 bg-red-50 border-red-200 text-red-700 flex items-center gap-2"><IconXCircle className="w-5 h-5" /> {error}</Card>
         )}
 
         {/* Today Widget */}
         {today && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="p-5 text-center bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-              <p className="text-sm text-blue-600 mb-1">💶 Coût aujourd'hui</p>
+              <p className="text-sm text-blue-600 mb-1 flex items-center justify-center gap-1"><IconCoins className="w-4 h-4" /> Coût aujourd'hui</p>
               <p className="text-3xl font-bold text-blue-700">{today.todayCost.toFixed(2)}€</p>
             </Card>
             <Card className="p-5 text-center bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-              <p className="text-sm text-purple-600 mb-1">⏱ Heures aujourd'hui</p>
+              <p className="text-sm text-purple-600 mb-1 flex items-center justify-center gap-1"><IconClock className="w-4 h-4" /> Heures aujourd'hui</p>
               <p className="text-3xl font-bold text-purple-700">{today.todayHours}h</p>
             </Card>
             <Card className="p-5 text-center bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-              <p className="text-sm text-green-600 mb-1">✅ Tâches facturées</p>
+              <p className="text-sm text-green-600 mb-1 flex items-center justify-center gap-1"><IconCheckCircle className="w-4 h-4" /> Tâches facturées</p>
               <p className="text-3xl font-bold text-green-700">{today.tasksCount}</p>
             </Card>
           </div>
@@ -137,8 +137,8 @@ export const BudgetPage: React.FC = () => {
         {/* Monthly Summary */}
         {overview && (
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">
-              📊 Résumé mensuel — {MONTH_NAMES[overview.month - 1]}
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <IconBarChart className="w-5 h-5 text-primary-600" /> Résumé mensuel — {MONTH_NAMES[overview.month - 1]}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               <div className="text-center">
@@ -222,7 +222,7 @@ export const BudgetPage: React.FC = () => {
         {/* Per-Domicile Breakdown */}
         {overview && overview.domiciles.length > 0 && (
           <div className="grid gap-4">
-            <h3 className="text-lg font-semibold">🏠 Par domicile</h3>
+            <h3 className="text-lg font-semibold flex items-center gap-2"><IconHome className="w-5 h-5 text-primary-600" /> Par domicile</h3>
             {overview.domiciles.map(dom => (
               <Card key={dom.domicileId} className={`p-5 border-l-4 ${
                 dom.status === 'over' ? 'border-l-red-500' :
@@ -231,7 +231,7 @@ export const BudgetPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-gray-900">{dom.domicileName}</h4>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(dom.status)}`}>
-                    {dom.status === 'over' ? '🔴 Dépassé' : dom.status === 'warning' ? '🟠 Attention' : '🟢 OK'}
+                    {dom.status === 'over' ? <><span className="w-2 h-2 rounded-full bg-red-500 inline-block"></span> Dépassé</> : dom.status === 'warning' ? <><span className="w-2 h-2 rounded-full bg-orange-400 inline-block"></span> Attention</> : <><span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span> OK</>}
                   </span>
                 </div>
                 <div className="flex gap-6 text-sm text-gray-600 mb-2">

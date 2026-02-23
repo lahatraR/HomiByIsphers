@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
-import { Button, Input, PasswordInput } from '../components/common';
+import { Button, Input, PasswordInput, IconHourglass } from '../components/common';
 import { useTranslation } from 'react-i18next';
 
 export const LoginPage: React.FC = () => {
@@ -113,8 +113,8 @@ export const LoginPage: React.FC = () => {
           {/* Loading Info Message */}
           {isLoading && showSlowMessage && (
             <div className="mb-4 p-3 rounded-lg bg-primary-50 border border-primary-200/80 animate-pulse-subtle">
-              <p className="text-primary-700 text-sm">
-                ⏳ Initialisation du service, merci de patienter…
+              <p className="text-primary-700 text-sm flex items-center gap-1">
+                <IconHourglass className="w-4 h-4" /> Initialisation du service, merci de patienter…
               </p>
             </div>
           )}

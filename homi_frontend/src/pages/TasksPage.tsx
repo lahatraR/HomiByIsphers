@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { MainLayout } from '../layouts/MainLayout';
 import { useTaskStore } from '../stores/taskStore';
 import { useAuthStore } from '../stores/authStore';
-import { Card, LoadingSpinner, Button, SpellCheckTextarea } from '../components/common';
+import { Card, LoadingSpinner, Button, SpellCheckTextarea, IconMapPin, IconStar, IconHourglass, IconCheckCircle, IconXCircle, IconClipboard, IconCalendar, IconClock, IconCheck } from '../components/common';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserRoles } from '../types';
 import { taskReviewService } from '../services/taskReview.service';
@@ -112,9 +112,7 @@ export const TasksPage: React.FC = () => {
       {error && (
         <Card className="p-4 mb-6 bg-red-50 border border-red-200">
           <div className="flex items-center">
-            <svg className="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
+            <IconXCircle className="w-5 h-5 text-red-600 mr-2" />
             <p className="text-red-800 font-medium">{error}</p>
           </div>
         </Card>
@@ -124,9 +122,7 @@ export const TasksPage: React.FC = () => {
         <Card className="p-12">
           <div className="text-center">
             <div className="text-gray-400 mb-4">
-              <svg className="w-20 h-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
+              <IconClipboard className="w-20 h-20 mx-auto" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('tasks.noTasks')}</h3>
             <p className="text-gray-600 mb-4">
@@ -163,17 +159,13 @@ export const TasksPage: React.FC = () => {
                     {/* Dates prévues */}
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center">
-                        <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <IconCalendar className="w-4 h-4 mr-1" />
                         <span className="font-medium mr-1">{t('tasks.planned')}</span>
                         {task.startTime ? new Date(task.startTime).toLocaleString() : t('tasks.noStartDate')}
                       </div>
                       {task.endTime && (
                         <div className="flex items-center">
-                          <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
+                          <IconClock className="w-4 h-4 mr-1" />
                           {new Date(task.endTime).toLocaleString()}
                         </div>
                       )}
@@ -184,18 +176,14 @@ export const TasksPage: React.FC = () => {
                       <div className="flex items-center space-x-4 text-sm text-success-700">
                         {task.actualStartTime && (
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
+                            <IconCheck className="w-4 h-4 mr-1" />
                             <span className="font-medium mr-1">Started:</span>
                             {new Date(task.actualStartTime).toLocaleString()}
                           </div>
                         )}
                         {task.actualEndTime && (
                           <div className="flex items-center">
-                            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <IconCheckCircle className="w-4 h-4 mr-1" />
                             <span className="font-medium mr-1">Completed:</span>
                             {new Date(task.actualEndTime).toLocaleString()}
                           </div>
@@ -204,8 +192,8 @@ export const TasksPage: React.FC = () => {
                     )}
                   </div>
                   {task.domicile && (
-                    <div className="mt-2 text-sm text-gray-500">
-                      📍 {task.domicile.name} - {task.domicile.address}
+                    <div className="mt-2 text-sm text-gray-500 flex items-center gap-1">
+                      <IconMapPin className="w-4 h-4" /> {task.domicile.name} - {task.domicile.address}
                     </div>
                   )}
                 </div>
@@ -233,7 +221,7 @@ export const TasksPage: React.FC = () => {
                       onClick={() => { setReviewingTaskId(task.id); setReviewRating(5); setReviewComment(''); }}
                       className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs"
                     >
-                      ⭐ Noter
+                      <IconStar className="w-4 h-4 inline" /> Noter
                     </Button>
                   )}
                   {/* Show existing rating */}
@@ -273,7 +261,7 @@ export const TasksPage: React.FC = () => {
                       disabled={reviewSubmitting}
                       className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs"
                     >
-                      {reviewSubmitting ? '⏳...' : '✅ Enregistrer'}
+                      {reviewSubmitting ? <><IconHourglass className="w-4 h-4 inline" />...</> : <><IconCheckCircle className="w-4 h-4 inline" /> Enregistrer</>}
                     </Button>
                     <Button
                       size="sm"

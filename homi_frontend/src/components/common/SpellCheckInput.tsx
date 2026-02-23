@@ -2,6 +2,7 @@ import React, { type InputHTMLAttributes, useCallback, useEffect, useId, useStat
 import { useTranslation } from 'react-i18next';
 import { useSpellCheck } from '../../hooks/useSpellCheck';
 import type { SpellCorrection } from '../../utils/spellcheck';
+import { IconZap, IconInfo, IconX } from './Icons';
 
 interface SpellCheckInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -149,9 +150,7 @@ export const SpellCheckInput: React.FC<SpellCheckInputProps> = ({
             onClick={() => setShowSuggestions(!showSuggestions)}
             className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 bg-amber-100 text-amber-700 text-xs font-medium px-2 py-0.5 rounded-full hover:bg-amber-200 transition-colors"
           >
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <IconInfo className="w-3 h-3" />
             {errorCount}
           </button>
         )}
@@ -169,7 +168,7 @@ export const SpellCheckInput: React.FC<SpellCheckInputProps> = ({
               onClick={handleCorrectAll}
               className="text-xs font-semibold text-amber-700 hover:text-amber-900 bg-amber-100 hover:bg-amber-200 px-2 py-0.5 rounded transition-colors"
             >
-              ✨ {t('spellcheck.correctAll')}
+              <IconZap className="w-3.5 h-3.5 inline" /> {t('spellcheck.correctAll')}
             </button>
           </div>
           <div className="space-y-1.5">
@@ -212,12 +211,12 @@ export const SpellCheckInput: React.FC<SpellCheckInputProps> = ({
                       onClick={() => dismiss(correction)}
                       className="text-gray-400 hover:text-gray-600 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-xs"
                     >
-                      ✕
+                      <IconX className="w-3 h-3" />
                     </button>
                   </div>
                   {correction.message && (
                     <p className="text-[10px] text-gray-600 mt-0.5 leading-snug italic">
-                      💡 {correction.message}
+                      <IconInfo className="w-3 h-3 inline" /> {correction.message}
                     </p>
                   )}
                 </div>

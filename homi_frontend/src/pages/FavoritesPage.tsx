@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner } from '../components/common';
+import { Card, LoadingSpinner, IconClipboard, IconHome, IconDollar, IconUser, IconStar } from '../components/common';
 import { useTranslation } from 'react-i18next';
 import { api } from '../services/api';
 
@@ -45,11 +45,11 @@ export const FavoritesPage: React.FC = () => {
 
   const getTypeIcon = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'task': return { icon: '📋', bg: 'bg-blue-100', label: t('favorites.task') };
-      case 'domicile': return { icon: '🏠', bg: 'bg-orange-100', label: t('favorites.domicile') };
-      case 'invoice': return { icon: '💰', bg: 'bg-green-100', label: t('favorites.invoice') };
-      case 'user': return { icon: '👤', bg: 'bg-purple-100', label: t('favorites.user') };
-      default: return { icon: '⭐', bg: 'bg-yellow-100', label: type || t('favorites.other') };
+      case 'task': return { icon: <IconClipboard className="w-5 h-5 text-blue-600" />, bg: 'bg-blue-100', label: t('favorites.task') };
+      case 'domicile': return { icon: <IconHome className="w-5 h-5 text-orange-600" />, bg: 'bg-orange-100', label: t('favorites.domicile') };
+      case 'invoice': return { icon: <IconDollar className="w-5 h-5 text-green-600" />, bg: 'bg-green-100', label: t('favorites.invoice') };
+      case 'user': return { icon: <IconUser className="w-5 h-5 text-purple-600" />, bg: 'bg-purple-100', label: t('favorites.user') };
+      default: return { icon: <IconStar className="w-5 h-5 text-yellow-600" />, bg: 'bg-yellow-100', label: type || t('favorites.other') };
     }
   };
 
@@ -92,7 +92,7 @@ export const FavoritesPage: React.FC = () => {
           <div className="flex justify-center py-12"><LoadingSpinner size="lg" /></div>
         ) : filtered.length === 0 ? (
           <Card className="p-12 text-center">
-            <div className="text-4xl mb-3">⭐</div>
+            <div className="text-4xl mb-3"><IconStar className="w-10 h-10 mx-auto text-yellow-400" /></div>
             <p className="text-gray-500 font-medium">{t('favorites.noFavorites')}</p>
             <p className="text-sm text-gray-400 mt-1">{t('favorites.noFavoritesDesc')}</p>
           </Card>

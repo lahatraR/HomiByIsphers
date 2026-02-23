@@ -10,35 +10,8 @@ import { PageWrapper } from '../components/layout';
 import { EmptyState } from '../components/feedback';
 import { StatusDot } from '../components/feedback';
 import { StatsCard, StatsGrid } from '../components/data-display';
-import { Card, Button, LoadingSpinner } from '../components/common';
+import { Card, Button, LoadingSpinner, IconMapPin, IconHome, IconCheckCircle, IconEdit, IconClock, IconClipboard } from '../components/common';
 import { getUserDisplayName } from '../utils/format';
-
-// ── SVG Icons extracted for readability ──
-const CheckCircleIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" /><polyline points="8 12 11 15 16 9" />
-    </svg>
-);
-const EditIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-    </svg>
-);
-const CheckDoubleIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-    </svg>
-);
-const ClockIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12" />
-    </svg>
-);
-const ClipboardIcon = () => (
-    <svg className="w-14 h-14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-    </svg>
-);
 
 export const DashboardPage: React.FC = () => {
     const { user } = useAuthStore();
@@ -81,7 +54,7 @@ export const DashboardPage: React.FC = () => {
                                 + {t('dashboard.createTask')}
                             </Button>
                             <Button onClick={() => navigate('/domiciles')} className="bg-success-600 hover:bg-success-700 text-white">
-                                📍 {t('dashboard.manageDomiciles')}
+                                <span className="inline-flex items-center gap-1"><IconMapPin className="w-4 h-4" /> {t('dashboard.manageDomiciles')}</span>
                             </Button>
                         </div>
                     )}
@@ -94,28 +67,28 @@ export const DashboardPage: React.FC = () => {
                     <StatsCard
                         label={t('dashboard.totalTasks')}
                         value={stats?.totalTasks ?? 0}
-                        icon={<CheckCircleIcon />}
+                        icon={<IconCheckCircle />}
                         gradient="from-primary-500 to-primary-700"
                         subtitle={t('dashboard.acrossAllTasks')}
                     />
                     <StatsCard
                         label={t('dashboard.activeTasks')}
                         value={stats?.inProgressTasks || 0}
-                        icon={<EditIcon />}
+                        icon={<IconEdit />}
                         gradient="from-success-500 to-success-700"
                         subtitle={t('dashboard.inProgress')}
                     />
                     <StatsCard
                         label={t('dashboard.completed')}
                         value={stats?.completedTasks || 0}
-                        icon={<CheckDoubleIcon />}
+                        icon={<IconCheckCircle className="w-6 h-6" />}
                         gradient="from-purple-500 to-purple-700"
                         subtitle={t('dashboard.tasksDone')}
                     />
                     <StatsCard
                         label={t('dashboard.pending')}
                         value={stats?.pendingTasks || 0}
-                        icon={<ClockIcon />}
+                        icon={<IconClock />}
                         gradient="from-orange-500 to-orange-700"
                         subtitle={t('dashboard.awaitingAction')}
                     />
@@ -130,7 +103,7 @@ export const DashboardPage: React.FC = () => {
 
                 {tasks.length === 0 ? (
                     <EmptyState
-                        icon={<ClipboardIcon />}
+                        icon={<IconClipboard className="w-14 h-14" />}
                         title={t('dashboard.noTasksYet')}
                         description={isAdmin ? t('dashboard.createFirstTask') : t('dashboard.noTasksAssigned')}
                     />
@@ -164,7 +137,7 @@ export const DashboardPage: React.FC = () => {
             {isAdmin && (
                 <Card className="p-5 sm:p-6">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-lg font-semibold text-surface-900">📍 {t('dashboard.recentDomiciles')}</h2>
+                        <h2 className="text-lg font-semibold text-surface-900 flex items-center gap-2"><IconMapPin className="w-5 h-5 text-primary-600" /> {t('dashboard.recentDomiciles')}</h2>
                         <Button onClick={() => navigate('/domiciles')} className="text-primary-600 hover:text-primary-700 text-sm font-medium">
                             {t('dashboard.viewAll')} →
                         </Button>
@@ -174,7 +147,7 @@ export const DashboardPage: React.FC = () => {
                         <div className="flex items-center justify-center py-8"><LoadingSpinner size="sm" /></div>
                     ) : domiciles.length === 0 ? (
                         <EmptyState
-                            icon={<span className="text-4xl">🏠</span>}
+                            icon={<IconHome className="w-10 h-10 text-gray-400" />}
                             title={t('dashboard.noDomicilesYet')}
                             action={{ label: t('dashboard.createFirstDomicile'), onClick: () => navigate('/create-domicile') }}
                             className="bg-surface-50 rounded-xl"
@@ -184,7 +157,7 @@ export const DashboardPage: React.FC = () => {
                             {domiciles.slice(0, 3).map(domicile => (
                                 <div key={domicile.id} className="p-4 bg-surface-50 rounded-xl hover:bg-surface-100 transition-all duration-150 border border-transparent hover:border-surface-200">
                                     <h3 className="font-semibold text-surface-900 mb-1">{domicile.name}</h3>
-                                    <p className="text-sm text-surface-600 mb-1">📍 {domicile.address}</p>
+                                    <p className="text-sm text-surface-600 mb-1 flex items-center gap-1"><IconMapPin className="w-4 h-4" /> {domicile.address}</p>
                                     <p className="text-xs text-surface-400">{domicile.city}, {domicile.postalCode}</p>
                                 </div>
                             ))}

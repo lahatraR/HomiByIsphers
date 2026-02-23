@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, LoadingSpinner } from '../components/common';
+import { Card, Button, LoadingSpinner, IconMapPin } from '../components/common';
 import { useDomicileStore } from '../stores/domicileStore';
 import { useTranslation } from 'react-i18next';
 
@@ -80,8 +80,8 @@ export const DomicilesPage: React.FC = () => {
                             <div className="mb-4">
                                 <h3 className="text-xl font-bold text-gray-900 mb-2">{domicile.name}</h3>
                                 <div className="space-y-1 text-sm text-gray-600">
-                                    <p>📍 {domicile.address}</p>
-                                    <p>🏙️ {domicile.city}, {domicile.postalCode}</p>
+                                    <p className="flex items-center gap-1"><IconMapPin className="w-4 h-4" /> {domicile.address}</p>
+                                    <p className="flex items-center gap-1"><IconMapPin className="w-4 h-4" /> {domicile.city}, {domicile.postalCode}</p>
                                 </div>
                             </div>
 

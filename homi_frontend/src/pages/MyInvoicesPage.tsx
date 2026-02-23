@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner } from '../components/common';
+import { Card, LoadingSpinner, IconCheckCircle } from '../components/common';
 import { getInvoices, type Invoice } from '../services/invoice.service';
 import { useTranslation } from 'react-i18next';
 
@@ -218,8 +218,8 @@ export const MyInvoicesPage: React.FC = () => {
                     </div>
 
                     {invoice.paidDate && (
-                      <div className="mt-3 text-sm text-green-600">
-                        ✓ {t('invoices.paidOn')} {formatDate(invoice.paidDate)}
+                      <div className="mt-3 text-sm text-green-600 flex items-center gap-1">
+                        <IconCheckCircle className="w-4 h-4" /> {t('invoices.paidOn')} {formatDate(invoice.paidDate)}
                       </div>
                     )}
 

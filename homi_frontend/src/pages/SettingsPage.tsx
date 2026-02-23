@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner, Button } from '../components/common';
+import { Card, LoadingSpinner, Button, IconSun, IconMoon, IconMonitor, IconBell, IconLock } from '../components/common';
 import { api } from '../services/api';
 import { useTranslation } from 'react-i18next';
 
@@ -74,17 +74,17 @@ export const SettingsPage: React.FC = () => {
         {/* Apparence */}
         <Card className="p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <IconSun className="w-5 h-5" />
             {t('settings.appearance')}
           </h2>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.theme')}</label>
               <div className="flex gap-3">
-                {[{ value: 'light', label: t('settings.themeLight'), icon: '☀️' }, { value: 'dark', label: t('settings.themeDark'), icon: '🌙' }, { value: 'auto', label: t('settings.themeAuto'), icon: '💻' }].map(opt => (
+                {[{ value: 'light', label: t('settings.themeLight'), icon: <IconSun className="w-7 h-7 mx-auto text-yellow-500" /> }, { value: 'dark', label: t('settings.themeDark'), icon: <IconMoon className="w-7 h-7 mx-auto text-indigo-500" /> }, { value: 'auto', label: t('settings.themeAuto'), icon: <IconMonitor className="w-7 h-7 mx-auto text-gray-600" /> }].map(opt => (
                   <button key={opt.value} onClick={() => setSettings(s => ({ ...s, theme: opt.value }))}
                     className={`flex-1 p-3 rounded-lg border-2 text-center transition-all ${settings.theme === opt.value ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <div className="text-2xl mb-1">{opt.icon}</div>
+                    <div className="mb-1">{opt.icon}</div>
                     <div className="text-sm font-medium text-gray-700">{opt.label}</div>
                   </button>
                 ))}
@@ -105,7 +105,7 @@ export const SettingsPage: React.FC = () => {
         {/* Notifications */}
         <Card className="p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <IconBell className="w-5 h-5" />
             {t('settings.notifications')}
           </h2>
           <div className="space-y-4">
@@ -140,7 +140,7 @@ export const SettingsPage: React.FC = () => {
         {/* Security */}
         <Card className="p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <IconLock className="w-5 h-5" />
             {t('settings.security')}
           </h2>
           <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer">

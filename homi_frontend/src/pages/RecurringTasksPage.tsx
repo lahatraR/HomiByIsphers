@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, LoadingSpinner, SpellCheckInput, SpellCheckTextarea } from '../components/common';
+import { Card, Button, LoadingSpinner, SpellCheckInput, SpellCheckTextarea, IconRefresh, IconHourglass, IconPlay, IconCheckCircle, IconPause, IconXCircle, IconHome, IconUser, IconClock, IconCalendar, IconTrash } from '../components/common';
 import { recurringTaskService, type RecurringTaskTemplate, type CreateRecurringTaskForm } from '../services/recurringTask.service';
 import { useDomicileStore } from '../stores/domicileStore';
 import { useTranslation } from 'react-i18next';
@@ -142,7 +142,7 @@ export const RecurringTasksPage: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">🔄 Tâches Récurrentes</h1>
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2"><IconRefresh className="w-8 h-8 text-primary-600" /> Tâches Récurrentes</h1>
             <p className="text-gray-500 mt-1">
               Automatisez la création de tâches répétitives
             </p>
@@ -153,7 +153,7 @@ export const RecurringTasksPage: React.FC = () => {
               className="bg-green-600 hover:bg-green-700 text-white"
               disabled={generating}
             >
-              {generating ? '⏳ Génération...' : '▶ Générer aujourd\'hui'}
+              {generating ? <><IconHourglass className="w-4 h-4 inline" /> Génération...</> : <><IconPlay className="w-4 h-4 inline" /> Générer aujourd'hui</>}
             </Button>
             <Button
               onClick={() => setShowForm(!showForm)}
@@ -165,14 +165,14 @@ export const RecurringTasksPage: React.FC = () => {
         </div>
 
         {generateResult && (
-          <Card className="p-4 bg-green-50 border-green-200 text-green-700">
-            ✅ {generateResult}
+          <Card className="p-4 bg-green-50 border-green-200 text-green-700 flex items-center gap-2">
+            <IconCheckCircle className="w-5 h-5" /> {generateResult}
           </Card>
         )}
 
         {error && (
-          <Card className="p-4 bg-red-50 border-red-200 text-red-700">
-            ❌ {error}
+          <Card className="p-4 bg-red-50 border-red-200 text-red-700 flex items-center gap-2">
+            <IconXCircle className="w-5 h-5" /> {error}
           </Card>
         )}
 
@@ -317,7 +317,7 @@ export const RecurringTasksPage: React.FC = () => {
         {/* Templates List */}
         {templates.length === 0 ? (
           <Card className="p-8 text-center text-gray-500">
-            <p className="text-5xl mb-4">🔄</p>
+            <p className="text-5xl mb-4"><IconRefresh className="w-12 h-12 mx-auto text-gray-400" /></p>
             <p className="text-lg">Aucun template de tâche récurrente</p>
             <p className="text-sm mt-2">Créez votre premier template pour automatiser la planification</p>
           </Card>
@@ -335,7 +335,7 @@ export const RecurringTasksPage: React.FC = () => {
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                         tmpl.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
                       }`}>
-                        {tmpl.isActive ? '✅ Actif' : '⏸ Inactif'}
+                        {tmpl.isActive ? <><IconCheckCircle className="w-3.5 h-3.5 inline" /> Actif</> : <><IconPause className="w-3.5 h-3.5 inline" /> Inactif</>}
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700">
                         {FREQ_LABELS[tmpl.frequency] || tmpl.frequency}
@@ -343,13 +343,13 @@ export const RecurringTasksPage: React.FC = () => {
                     </div>
                     <p className="text-sm text-gray-600 mt-1">{tmpl.description}</p>
                     <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-500">
-                      <span>🏠 {tmpl.domicile.name}</span>
-                      <span>👤 {tmpl.assignedTo.firstName} {tmpl.assignedTo.lastName}</span>
-                      {tmpl.preferredStartTime && <span>🕐 {tmpl.preferredStartTime}</span>}
-                      {tmpl.estimatedDurationMinutes && <span>⏱ {tmpl.estimatedDurationMinutes} min</span>}
+                      <span className="inline-flex items-center gap-1"><IconHome className="w-4 h-4" /> {tmpl.domicile.name}</span>
+                      <span className="inline-flex items-center gap-1"><IconUser className="w-4 h-4" /> {tmpl.assignedTo.firstName} {tmpl.assignedTo.lastName}</span>
+                      {tmpl.preferredStartTime && <span className="inline-flex items-center gap-1"><IconClock className="w-4 h-4" /> {tmpl.preferredStartTime}</span>}
+                      {tmpl.estimatedDurationMinutes && <span className="inline-flex items-center gap-1"><IconHourglass className="w-4 h-4" /> {tmpl.estimatedDurationMinutes} min</span>}
                       {tmpl.daysOfWeek && (
-                        <span>
-                          📅 {tmpl.daysOfWeek.split(',').map(d => DAY_LABELS[Number(d)]).join(', ')}
+                        <span className="inline-flex items-center gap-1">
+                          <IconCalendar className="w-4 h-4" /> {tmpl.daysOfWeek.split(',').map(d => DAY_LABELS[Number(d)]).join(', ')}
                         </span>
                       )}
                     </div>
@@ -365,14 +365,14 @@ export const RecurringTasksPage: React.FC = () => {
                       className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
                       title={tmpl.isActive ? 'Désactiver' : 'Activer'}
                     >
-                      {tmpl.isActive ? '⏸' : '▶'}
+                      {tmpl.isActive ? <IconPause className="w-5 h-5" /> : <IconPlay className="w-5 h-5" />}
                     </button>
                     <button
                       onClick={() => handleDelete(tmpl.id)}
                       className="p-2 rounded-lg hover:bg-red-100 text-red-500"
                       title="Supprimer"
                     >
-                      🗑
+                      <IconTrash className="w-5 h-5" />
                     </button>
                   </div>
                 </div>

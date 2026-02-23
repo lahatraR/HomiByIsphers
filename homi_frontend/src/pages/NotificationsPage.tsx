@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner } from '../components/common';
+import { Card, LoadingSpinner, IconClipboard, IconDollar, IconAlertTriangle, IconSettings, IconBell, IconCheckCircle, IconTrash } from '../components/common';
 import { api } from '../services/api';
 import { useTranslation } from 'react-i18next';
 
@@ -63,11 +63,11 @@ export const NotificationsPage: React.FC = () => {
 
   const getTypeIcon = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'task': return { bg: 'bg-blue-100', text: 'text-blue-600', icon: '📋' };
-      case 'invoice': return { bg: 'bg-green-100', text: 'text-green-600', icon: '💰' };
-      case 'alert': return { bg: 'bg-red-100', text: 'text-red-600', icon: '⚠️' };
-      case 'system': return { bg: 'bg-purple-100', text: 'text-purple-600', icon: '⚙️' };
-      default: return { bg: 'bg-gray-100', text: 'text-gray-600', icon: '🔔' };
+      case 'task': return { bg: 'bg-blue-100', text: 'text-blue-600', icon: <IconClipboard className="w-5 h-5 text-blue-600" /> };
+      case 'invoice': return { bg: 'bg-green-100', text: 'text-green-600', icon: <IconDollar className="w-5 h-5 text-green-600" /> };
+      case 'alert': return { bg: 'bg-red-100', text: 'text-red-600', icon: <IconAlertTriangle className="w-5 h-5 text-red-600" /> };
+      case 'system': return { bg: 'bg-purple-100', text: 'text-purple-600', icon: <IconSettings className="w-5 h-5 text-purple-600" /> };
+      default: return { bg: 'bg-gray-100', text: 'text-gray-600', icon: <IconBell className="w-5 h-5 text-gray-600" /> };
     }
   };
 
@@ -114,7 +114,7 @@ export const NotificationsPage: React.FC = () => {
           <div className="flex justify-center py-12"><LoadingSpinner size="lg" /></div>
         ) : filtered.length === 0 ? (
           <Card className="p-12 text-center">
-            <div className="text-4xl mb-3">🔔</div>
+            <div className="text-4xl mb-3"><IconBell className="w-10 h-10 mx-auto text-gray-400" /></div>
             <p className="text-gray-500 font-medium">{t('notifications.noNotifications')}</p>
             <p className="text-sm text-gray-400 mt-1">{t('notifications.noNotificationsDesc')}</p>
           </Card>
@@ -139,12 +139,12 @@ export const NotificationsPage: React.FC = () => {
                     {!notif.isRead && (
                       <button onClick={() => markAsRead(notif.id)} title={t('notifications.markAsRead')}
                         className="p-1.5 text-gray-400 hover:text-blue-600 rounded">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <IconCheckCircle className="w-4 h-4" />
                       </button>
                     )}
                     <button onClick={() => handleDelete(notif.id)} title={t('common.delete')}
                       className="p-1.5 text-gray-400 hover:text-red-600 rounded">
-                      <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                      <IconTrash className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

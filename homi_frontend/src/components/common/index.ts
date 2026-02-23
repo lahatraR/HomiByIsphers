@@ -6,3 +6,4 @@ export { PasswordInput } from './PasswordInput';
 export { LanguageSwitcher } from './LanguageSwitcher';
 export { SpellCheckTextarea } from './SpellCheckTextarea';
 export { SpellCheckInput } from './SpellCheckInput';
+export * from './Icons';

@@ -138,10 +138,15 @@
     transition: color var(--duration-fast) var(--ease-smooth);
   }
 
-  /* Images */
-  img, svg {
+  /* Images — block; SVGs inline-block for flex alignment with text */
+  img {
     display: block;
     max-width: 100%;
+  }
+
+  svg {
+    max-width: 100%;
+    flex-shrink: 0;  /* Prevent icons from collapsing in flex containers */
   }
 
   /* Inputs inherit font */
@@ -238,6 +243,29 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  /* ─── Icon Utilities ─────────────────────────────────────────────────── */
+
+  /* Touch target: ensure minimum 44×44px tap area around small icons */
+  .icon-touch {
+    position: relative;
+    min-width: 2.75rem;   /* 44px */
+    min-height: 2.75rem;  /* 44px */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Icon transition — smooth color & transform changes */
+  .icon-interactive {
+    transition: color 150ms ease, transform 150ms ease, opacity 150ms ease;
+  }
+  .icon-interactive:hover {
+    opacity: 0.8;
+  }
+  .icon-interactive:active {
+    transform: scale(0.92);
   }
 }
 

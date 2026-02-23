@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, LoadingSpinner } from '../components/common';
+import { Card, Button, LoadingSpinner, IconXCircle, IconPlus } from '../components/common';
 import { getMyTimeLogs, getTimeLogStats, type TimeLog } from '../services/timeTracking.service';
 import { useTranslation } from 'react-i18next';
 
@@ -75,9 +75,7 @@ export const MyTimeLogsPage: React.FC = () => {
           </div>
           <Link to="/my-time-logs/manual">
             <Button>
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+              <IconPlus className="w-5 h-5 mr-2" />
               {t('timeLogs.addManually')}
             </Button>
           </Link>
@@ -86,7 +84,7 @@ export const MyTimeLogsPage: React.FC = () => {
         {/* Error Message */}
         {error && (
           <Card className="p-4 mb-6 bg-red-50 border-red-200">
-            <p className="text-red-800">❌ {error}</p>
+            <p className="text-red-800 flex items-center gap-2"><IconXCircle className="w-5 h-5" /> {error}</p>
           </Card>
         )}
 

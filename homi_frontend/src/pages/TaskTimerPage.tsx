@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, LoadingSpinner } from '../components/common';
+import { Card, Button, LoadingSpinner, IconActivity, IconCheckCircle, IconAlertTriangle, IconPause, IconPlay, IconHourglass, IconXCircle } from '../components/common';
 import { useTaskStore } from '../stores/taskStore';
 import { useAuthStore } from '../stores/authStore';
 import { submitTimeLog } from '../services/timeTracking.service';
@@ -334,7 +334,7 @@ export const TaskTimerPage: React.FC = () => {
           <Card className="p-4 mb-6 bg-indigo-50 border border-indigo-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-indigo-800 font-medium">🧠 Estimation intelligente</p>
+                <p className="text-indigo-800 font-medium flex items-center gap-1"><IconActivity className="w-5 h-5" /> Estimation intelligente</p>
                 <p className="text-indigo-600 text-sm">
                   ~{estimate.estimatedHours !== null ? Math.round(estimate.estimatedHours * 60) : '?'} min en moyenne
                   {estimate.medianHours !== undefined && ` (médiane ${Math.round(estimate.medianHours * 60)} min)`} — basé sur {estimate.basedOn} tâch{estimate.basedOn > 1 ? 'es' : 'e'}
@@ -345,8 +345,8 @@ export const TaskTimerPage: React.FC = () => {
                 estimate.confidence === 'medium' ? 'bg-yellow-100 text-yellow-700' :
                 'bg-gray-100 text-gray-600'
               }`}>
-                {estimate.confidence === 'high' ? '✅ Confiance élevée' :
-                 estimate.confidence === 'medium' ? '🟡 Confiance moyenne' : '🔵 Peu de données'}
+                {estimate.confidence === 'high' ? <><IconCheckCircle className="w-4 h-4 inline text-green-600" /> Confiance élevée</> :
+                 estimate.confidence === 'medium' ? <><span className="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span> Confiance moyenne</> : <><span className="w-2 h-2 rounded-full bg-blue-400 inline-block"></span> Peu de données</>}
               </span>
             </div>
           </Card>
@@ -356,7 +356,7 @@ export const TaskTimerPage: React.FC = () => {
         {overrunWarning && (
           <Card className="p-4 mb-6 bg-red-50 border border-red-300 animate-pulse">
             <div className="flex items-center">
-              <span className="text-2xl mr-3">⚠️</span>
+              <span className="mr-3"><IconAlertTriangle className="w-7 h-7 text-red-600" /></span>
               <div>
                 <p className="text-red-800 font-bold">Dépassement détecté !</p>
                 <p className="text-red-600 text-sm">
@@ -373,14 +373,14 @@ export const TaskTimerPage: React.FC = () => {
           <Card className="p-4 mb-6 bg-blue-50 border border-blue-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-800 font-medium">⏸️ {t('timer.frozenTitle')}</p>
+                <p className="text-blue-800 font-medium flex items-center gap-1"><IconPause className="w-5 h-5" /> {t('timer.frozenTitle')}</p>
                 <p className="text-blue-600 text-sm">{t('timer.frozenDesc')}</p>
               </div>
               <Button
                 onClick={handleResumeAfterFreeze}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
-                ▶️ {t('timer.resume')}
+                <span className="inline-flex items-center gap-1"><IconPlay className="w-4 h-4" /> {t('timer.resume')}</span>
               </Button>
             </div>
           </Card>
@@ -414,10 +414,10 @@ export const TaskTimerPage: React.FC = () => {
                   : 'bg-yellow-100 text-yellow-800'
             }`}>
               {wasFrozen
-                ? `❄️ ${t('timer.frozen')}`
+                ? <><IconPause className="w-4 h-4 inline" /> {t('timer.frozen')}</>
                 : isTimerRunning
-                  ? `⏱️ ${t('timer.running')}`
-                  : `⏸️ ${t('timer.paused')}`}
+                  ? <><IconHourglass className="w-4 h-4 inline" /> {t('timer.running')}</>
+                  : <><IconPause className="w-4 h-4 inline" /> {t('timer.paused')}</>}
             </span>
           </div>
 
@@ -432,7 +432,7 @@ export const TaskTimerPage: React.FC = () => {
                     : 'bg-green-500 hover:bg-green-600'
                 } text-white`}
               >
-                {isTimerRunning ? `⏸️ ${t('timer.pause')}` : `▶️ ${t('timer.resume')}`}
+                {isTimerRunning ? <><IconPause className="w-4 h-4 inline" /> {t('timer.pause')}</> : <><IconPlay className="w-4 h-4 inline" /> {t('timer.resume')}</>}
               </Button>
             )}
 
@@ -441,14 +441,14 @@ export const TaskTimerPage: React.FC = () => {
               disabled={timerSeconds === 0 || isSubmitting}
               className="bg-success-600 hover:bg-success-700 text-white"
             >
-              {isSubmitting ? `⏳ ${t('timer.saving')}` : `✅ ${t('timer.save')}`}
+              {isSubmitting ? <><IconHourglass className="w-4 h-4 inline" /> {t('timer.saving')}</> : <><IconCheckCircle className="w-4 h-4 inline" /> {t('timer.save')}</>}
             </Button>
 
             <Button
               onClick={handleCancelTask}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
-              ❌ {t('timer.discard')}
+              <span className="inline-flex items-center gap-1"><IconXCircle className="w-4 h-4" /> {t('timer.discard')}</span>
             </Button>
           </div>
         </Card>
@@ -490,7 +490,7 @@ export const TaskTimerPage: React.FC = () => {
         {(isTimerRunning || taskStarted) && (
           <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-800">
-              ⚠️ {t('timer.warningLeave')}
+              <IconAlertTriangle className="w-4 h-4 inline text-amber-600" /> {t('timer.warningLeave')}
             </p>
           </div>
         )}

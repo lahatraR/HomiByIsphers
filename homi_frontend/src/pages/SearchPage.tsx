@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner, Button } from '../components/common';
+import { Card, LoadingSpinner, Button, IconClipboard, IconUser, IconHome, IconDollar, IconSearch } from '../components/common';
 import { api } from '../services/api';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -54,11 +54,11 @@ export const SearchPage: React.FC = () => {
 
   const getTypeIcon = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'task': return { icon: '📋', color: 'bg-blue-100 text-blue-700' };
-      case 'user': return { icon: '👤', color: 'bg-purple-100 text-purple-700' };
-      case 'domicile': return { icon: '🏠', color: 'bg-orange-100 text-orange-700' };
-      case 'invoice': return { icon: '💰', color: 'bg-green-100 text-green-700' };
-      default: return { icon: '🔍', color: 'bg-gray-100 text-gray-700' };
+      case 'task': return { icon: <IconClipboard className="w-5 h-5 text-blue-700" />, color: 'bg-blue-100 text-blue-700' };
+      case 'user': return { icon: <IconUser className="w-5 h-5 text-purple-700" />, color: 'bg-purple-100 text-purple-700' };
+      case 'domicile': return { icon: <IconHome className="w-5 h-5 text-orange-700" />, color: 'bg-orange-100 text-orange-700' };
+      case 'invoice': return { icon: <IconDollar className="w-5 h-5 text-green-700" />, color: 'bg-green-100 text-green-700' };
+      default: return { icon: <IconSearch className="w-5 h-5 text-gray-700" />, color: 'bg-gray-100 text-gray-700' };
     }
   };
 
@@ -82,9 +82,7 @@ export const SearchPage: React.FC = () => {
         <Card className="p-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
+              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input type="text" value={query} onChange={e => setQuery(e.target.value)} onKeyDown={handleKeyDown}
                 placeholder={t('search.placeholder')}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" />
@@ -109,7 +107,7 @@ export const SearchPage: React.FC = () => {
           <div className="flex justify-center py-12"><LoadingSpinner size="lg" /></div>
         ) : hasSearched && results.length === 0 ? (
           <Card className="p-12 text-center">
-            <div className="text-4xl mb-3">🔍</div>
+            <div className="text-4xl mb-3"><IconSearch className="w-10 h-10 mx-auto text-gray-400" /></div>
             <p className="text-gray-500 font-medium">{t('search.noResults', { query })}</p>
             <p className="text-sm text-gray-400 mt-1">{t('search.noResultsHint')}</p>
           </Card>
@@ -148,7 +146,7 @@ export const SearchPage: React.FC = () => {
           </>
         ) : (
           <Card className="p-12 text-center">
-            <div className="text-4xl mb-3">🔍</div>
+            <div className="text-4xl mb-3"><IconSearch className="w-10 h-10 mx-auto text-gray-400" /></div>
             <p className="text-gray-500 font-medium">{t('search.startSearch')}</p>
             <p className="text-sm text-gray-400 mt-1">{t('search.startSearchHint')}</p>
           </Card>

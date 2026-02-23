@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner, Button, SpellCheckInput, SpellCheckTextarea } from '../components/common';
+import { Card, LoadingSpinner, Button, SpellCheckInput, SpellCheckTextarea, IconMessage } from '../components/common';
 import { api } from '../services/api';
 import { useTranslation } from 'react-i18next';
 
@@ -108,7 +108,7 @@ export const SupportPage: React.FC = () => {
           <div className="flex justify-center py-12"><LoadingSpinner size="lg" /></div>
         ) : tickets.length === 0 ? (
           <Card className="p-12 text-center">
-            <div className="text-4xl mb-3">💬</div>
+            <div className="text-4xl mb-3"><IconMessage className="w-10 h-10 mx-auto text-gray-400" /></div>
             <p className="text-gray-500 font-medium">{t('support.noTickets')}</p>
             <p className="text-sm text-gray-400 mt-1">{t('support.noTicketsDesc')}</p>
           </Card>

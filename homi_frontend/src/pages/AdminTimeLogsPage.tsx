@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button, LoadingSpinner } from '../components/common';
+import { Card, Button, LoadingSpinner, IconXCircle, IconCheckCircle, IconHourglass } from '../components/common';
 import { 
   getPendingTimeLogs, 
   approveTimeLog, 
@@ -109,7 +109,7 @@ export const AdminTimeLogsPage: React.FC = () => {
         {/* Error Message */}
         {error && (
           <Card className="p-4 mb-6 bg-red-50 border-red-200">
-            <p className="text-red-800">❌ {error}</p>
+            <p className="text-red-800 flex items-center gap-2"><IconXCircle className="w-5 h-5" /> {error}</p>
           </Card>
         )}
 
@@ -144,8 +144,8 @@ export const AdminTimeLogsPage: React.FC = () => {
         {/* Pending Logs List */}
         {pendingLogs.length === 0 ? (
           <Card className="p-8 text-center">
-            <p className="text-gray-600 text-lg">
-              ✅ {t('timeLogs.noLogs')}
+            <p className="text-gray-600 text-lg flex items-center justify-center gap-2">
+              <IconCheckCircle className="w-5 h-5 text-green-600" /> {t('timeLogs.noLogs')}
             </p>
           </Card>
         ) : (
@@ -210,14 +210,14 @@ export const AdminTimeLogsPage: React.FC = () => {
                       disabled={processingId === log.id}
                       className="bg-green-600 hover:bg-green-700 text-white"
                     >
-                      {processingId === log.id ? '⏳' : '✅'} {t('timeLogs.approve')}
+                      {processingId === log.id ? <IconHourglass className="w-4 h-4 inline" /> : <IconCheckCircle className="w-4 h-4 inline" />} {t('timeLogs.approve')}
                     </Button>
                     <Button
                       onClick={() => handleReject(log.id)}
                       disabled={processingId === log.id}
                       className="bg-red-600 hover:bg-red-700 text-white"
                     >
-                      {processingId === log.id ? '⏳' : '❌'} {t('timeLogs.reject')}
+                      {processingId === log.id ? <IconHourglass className="w-4 h-4 inline" /> : <IconXCircle className="w-4 h-4 inline" />} {t('timeLogs.reject')}
                     </Button>
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import React, { type TextareaHTMLAttributes, useCallback, useEffect, useId, useS
 import { useTranslation } from 'react-i18next';
 import { useSpellCheck } from '../../hooks/useSpellCheck';
 import type { SpellCorrection } from '../../utils/spellcheck';
+import { IconZap, IconInfo, IconX } from './Icons';
 
 interface SpellCheckTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -132,9 +133,7 @@ export const SpellCheckTextarea: React.FC<SpellCheckTextareaProps> = ({
         <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-medium text-amber-800 flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <IconInfo className="w-3.5 h-3.5" />
               {t('spellcheck.errorsFound', { count: errorCount })}
             </span>
             <button
@@ -142,7 +141,7 @@ export const SpellCheckTextarea: React.FC<SpellCheckTextareaProps> = ({
               onClick={handleCorrectAll}
               className="text-xs font-semibold text-amber-700 hover:text-amber-900 bg-amber-100 hover:bg-amber-200 px-2.5 py-1 rounded-md transition-colors"
             >
-              ✨ {t('spellcheck.correctAll')}
+              <IconZap className="w-3.5 h-3.5 inline" /> {t('spellcheck.correctAll')}
             </button>
           </div>
 
@@ -231,14 +230,14 @@ const CorrectionCard: React.FC<CorrectionCardProps> = ({ correction, onApply, on
           className="text-gray-400 hover:text-gray-600 ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
           title={t('spellcheck.dismiss')}
         >
-          ✕
+          <IconX className="w-3 h-3" />
         </button>
       </div>
 
       {/* Educational message from LanguageTool */}
       {correction.message && (
         <p className="text-[11px] text-gray-600 mt-1 leading-snug italic">
-          💡 {correction.message}
+          <IconInfo className="w-3.5 h-3.5 inline" /> {correction.message}
         </p>
       )}
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, LoadingSpinner } from '../components/common';
+import { Card, LoadingSpinner, IconEdit, IconCheckCircle, IconDollar, IconCoins, IconClock, IconHome, IconKey, IconPin, IconBarChart } from '../components/common';
 import { api } from '../services/api';
 import { useTranslation } from 'react-i18next';
 
@@ -36,14 +36,14 @@ export const ActivityPage: React.FC = () => {
 
   const getActivityIcon = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'task_created': return { icon: '📝', bg: 'bg-blue-100', color: 'text-blue-600' };
-      case 'task_completed': return { icon: '✅', bg: 'bg-green-100', color: 'text-green-600' };
-      case 'invoice_created': return { icon: '💰', bg: 'bg-yellow-100', color: 'text-yellow-600' };
-      case 'invoice_paid': return { icon: '💵', bg: 'bg-green-100', color: 'text-green-600' };
-      case 'time_logged': return { icon: '⏱️', bg: 'bg-purple-100', color: 'text-purple-600' };
-      case 'domicile_created': return { icon: '🏠', bg: 'bg-orange-100', color: 'text-orange-600' };
-      case 'user_login': return { icon: '🔑', bg: 'bg-gray-100', color: 'text-gray-600' };
-      default: return { icon: '📌', bg: 'bg-gray-100', color: 'text-gray-600' };
+      case 'task_created': return { icon: <IconEdit className="w-5 h-5 text-blue-600" />, bg: 'bg-blue-100', color: 'text-blue-600' };
+      case 'task_completed': return { icon: <IconCheckCircle className="w-5 h-5 text-green-600" />, bg: 'bg-green-100', color: 'text-green-600' };
+      case 'invoice_created': return { icon: <IconDollar className="w-5 h-5 text-yellow-600" />, bg: 'bg-yellow-100', color: 'text-yellow-600' };
+      case 'invoice_paid': return { icon: <IconCoins className="w-5 h-5 text-green-600" />, bg: 'bg-green-100', color: 'text-green-600' };
+      case 'time_logged': return { icon: <IconClock className="w-5 h-5 text-purple-600" />, bg: 'bg-purple-100', color: 'text-purple-600' };
+      case 'domicile_created': return { icon: <IconHome className="w-5 h-5 text-orange-600" />, bg: 'bg-orange-100', color: 'text-orange-600' };
+      case 'user_login': return { icon: <IconKey className="w-5 h-5 text-gray-600" />, bg: 'bg-gray-100', color: 'text-gray-600' };
+      default: return { icon: <IconPin className="w-5 h-5 text-gray-600" />, bg: 'bg-gray-100', color: 'text-gray-600' };
     }
   };
 
@@ -105,7 +105,7 @@ export const ActivityPage: React.FC = () => {
           <div className="flex justify-center py-12"><LoadingSpinner size="lg" /></div>
         ) : filtered.length === 0 ? (
           <Card className="p-12 text-center">
-            <div className="text-4xl mb-3">📊</div>
+            <div className="text-4xl mb-3"><IconBarChart className="w-10 h-10 mx-auto text-gray-400" /></div>
             <p className="text-gray-500 font-medium">{t('activity.noActivity')}</p>
             <p className="text-sm text-gray-400 mt-1">{t('activity.noActivityDesc')}</p>
           </Card>

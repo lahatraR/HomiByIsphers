@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
-import { Card, Button } from '../components/common';
+import { Card, Button, IconHome, IconConstruction, IconClipboard, IconClock, IconUser, IconRocket } from '../components/common';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../stores/authStore';
 import { UserRoles } from '../types';
@@ -9,7 +9,7 @@ import { UserRoles } from '../types';
 interface OnboardingStep {
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
   action?: string;
   link?: string;
 }
@@ -25,13 +25,13 @@ export const OnboardingPage: React.FC = () => {
     {
       title: t('onboarding.steps.welcome.title'),
       description: t('onboarding.steps.welcome.description'),
-      icon: '🏠',
+      icon: <IconHome className="w-14 h-14 text-primary-600" />,
     },
     // Admin-only: créer un domicile
     ...( isAdmin ? [{
       title: t('onboarding.steps.domicile.title'),
       description: t('onboarding.steps.domicile.description'),
-      icon: '🏗️',
+      icon: <IconConstruction className="w-14 h-14 text-primary-600" />,
       action: t('onboarding.steps.domicile.action'),
       link: '/create-domicile',
     }] : []),
@@ -39,7 +39,7 @@ export const OnboardingPage: React.FC = () => {
     ...( isAdmin ? [{
       title: t('onboarding.steps.tasks.title'),
       description: t('onboarding.steps.tasks.description'),
-      icon: '📋',
+      icon: <IconClipboard className="w-14 h-14 text-primary-600" />,
       action: t('onboarding.steps.tasks.action'),
       link: '/create-task',
     }] : []),
@@ -47,21 +47,21 @@ export const OnboardingPage: React.FC = () => {
     ...( !isAdmin ? [{
       title: t('onboarding.steps.time.title'),
       description: t('onboarding.steps.time.description'),
-      icon: '⏱️',
+      icon: <IconClock className="w-14 h-14 text-primary-600" />,
       action: t('onboarding.steps.time.action'),
       link: '/my-time-logs',
     }] : []),
     {
       title: t('onboarding.steps.profile.title'),
       description: t('onboarding.steps.profile.description'),
-      icon: '👤',
+      icon: <IconUser className="w-14 h-14 text-primary-600" />,
       action: t('onboarding.steps.profile.action'),
       link: '/profile',
     },
     {
       title: t('onboarding.steps.ready.title'),
       description: t('onboarding.steps.ready.description'),
-      icon: '🚀',
+      icon: <IconRocket className="w-14 h-14 text-primary-600" />,
       action: t('onboarding.steps.ready.action'),
       link: '/dashboard',
     },
@@ -108,7 +108,7 @@ export const OnboardingPage: React.FC = () => {
 
         {/* Step Content */}
         <Card className="p-8 text-center">
-          <div className="text-6xl mb-6">{step.icon}</div>
+          <div className="mb-6 flex justify-center">{step.icon}</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-3">{step.title}</h2>
           <p className="text-gray-600 max-w-md mx-auto leading-relaxed mb-8">{step.description}</p>
 

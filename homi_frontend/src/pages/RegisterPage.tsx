@@ -81,12 +81,17 @@ export const RegisterPage: React.FC = () => {
           {successMessage && (
             <div className="mb-4 p-4 rounded-lg bg-success-50 border border-success-200">
               <div className="flex items-start">
-                <svg className="w-5 h-5 text-success-600 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-success-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
                 <div>
                   <p className="text-success-800 font-medium text-sm">{successMessage}</p>
-                  <p className="text-success-700 text-sm mt-1">Redirection vers la connexion dans 5 secondes...</p>
+                  <p className="text-success-600 text-xs mt-2 flex items-center">
+                    <svg className="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Redirection vers la connexion dans {countdown} secondes...
+                  </p>
                 </div>
               </div>
             </div>
@@ -162,7 +167,7 @@ export const RegisterPage: React.FC = () => {
               isLoading={isLoading}
               disabled={isLoading || !!successMessage}
             >
-              {successMessage ? `${t('auth.registrationSuccess')} ✓` : t('auth.signUp')}
+              {successMessage ? t('auth.registrationSuccess') : t('auth.signUp')}
             </Button>
           </form>
 
