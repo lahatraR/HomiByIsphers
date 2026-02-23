@@ -101,27 +101,60 @@ class AuthController extends AbstractController
             $user->setRole($registerRequest->role);
             
 
-            // Désactivation du mailer : activer directement l'utilisateur
-            $user->setIsEmailVerified(true);
-            $user->setEmailVerifiedAt(new \DateTime());
-            $user->setEmailVerificationToken(null);
-            $user->setEmailVerificationTokenExpiresAt(null);
+            // Générer un token de vérification email
+            $verificationToken = bin2hex(random_bytes(32));
+            $user->setIsEmailVerified(false);
+            $user->setEmailVerificationToken($verificationToken);
+            $user->setEmailVerificationTokenExpiresAt(new \DateTime('+24 hours'));
 
             try {
                 $this->em->persist($user);
                 $this->em->flush();
                 
-                $this->logger->info('✅ [Register] User created and auto-verified', [
+                $this->logger->info('✅ [Register] User created, verification email pending', [
                     'userId' => $user->getId(),
                     'email' => $user->getEmail(),
                 ]);
+
+                // Envoyer l'email de vérification via Mailjet directement
+                $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:5173/HomiByIsphers';
+                $verificationUrl = sprintf('%s/verify-email/%s', $frontendUrl, $verificationToken);
+
+                $htmlContent = sprintf(
+                    '<html><body style="font-family: Arial, sans-serif;">' .
+                    '<div style="max-width: 600px; margin: 0 auto; padding: 20px;">' .
+                    '<h1 style="color: #3b82f6;">Bienvenue sur Homi !</h1>' .
+                    '<p>Bonjour <strong>%s</strong>,</p>' .
+                    '<p>Merci de vous être inscrit(e) sur Homi. Pour activer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>' .
+                    '<p style="margin: 30px 0;"><a href="%s" style="background-color: #3b82f6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">✅ Vérifier mon email</a></p>' .
+                    '<p>Ou copiez ce lien dans votre navigateur :</p>' .
+                    '<p style="word-break: break-all; color: #666; background: #f5f5f5; padding: 10px; border-radius: 6px;"><small>%s</small></p>' .
+                    '<hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">' .
+                    '<p style="color: #999; font-size: 12px;">Ce lien expire dans 24 heures. Si vous n\'avez pas créé de compte sur Homi, ignorez cet email.</p>' .
+                    '</div></body></html>',
+                    htmlspecialchars($user->getFirstName() ?: $user->getEmail()),
+                    htmlspecialchars($verificationUrl),
+                    htmlspecialchars($verificationUrl)
+                );
+
+                $emailSent = $this->mailjetService->sendEmail(
+                    $user->getEmail(),
+                    $user->getFirstName() . ' ' . $user->getLastName(),
+                    'Vérifiez votre email — Homi',
+                    $htmlContent
+                );
+
+                $this->logger->info($emailSent ? '📧 Verification email sent' : '❌ Verification email FAILED', [
+                    'userId' => $user->getId(),
+                    'email' => $user->getEmail(),
+                ]);
+
             } catch (UniqueConstraintViolationException) {
                 $this->logger->warning('Registration conflict: email already exists', [
                     'email' => $registerRequest->email,
                 ]);
                 return $this->json(['error' => 'Cet email est déjà utilisé.'], Response::HTTP_CONFLICT);
             } catch (\Throwable $e) {
-                // Log détaillé pour diagnostiquer en production
                 $this->logger->error('Registration error', [
                     'email' => $registerRequest->email,
                     'message' => $e->getMessage(),
@@ -134,7 +167,7 @@ class AuthController extends AbstractController
             }
 
             return $this->json([
-                'message' => 'Inscription réussie. Votre compte est activé.',
+                'message' => 'Inscription réussie ! Vérifiez votre boîte email pour activer votre compte.',
                 'email' => $user->getEmail()
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
@@ -197,12 +230,12 @@ class AuthController extends AbstractController
             }
 
             // Vérifier si l'email est vérifié
-            // if (!$user->isEmailVerified()) {
-            //     return $this->json(
-            //         ['error' => 'Veuillez vérifier votre email avant de vous connecter. Consultez votre boîte de réception.'],
-            //         Response::HTTP_FORBIDDEN
-            //     );
-            // }
+            if (!$user->isEmailVerified()) {
+                return $this->json(
+                    ['error' => 'Veuillez vérifier votre email avant de vous connecter. Consultez votre boîte de réception.'],
+                    Response::HTTP_FORBIDDEN
+                );
+            }
 
             // Générer le token JWT
             $token = $this->jwtTokenProvider->generateToken($user);
@@ -367,22 +400,40 @@ class AuthController extends AbstractController
             
             $this->em->flush();
             
-            $this->logger->info('📧 [Resend] Enqueueing verification email', [
+            $this->logger->info('📧 [Resend] Sending verification email via Mailjet', [
                 'userId' => $user->getId(),
                 'email' => $user->getEmail(),
             ]);
 
-            // Enqueuer l'email pour envoi APRÈS la réponse HTTP
-            $this->emailQueue->enqueue(
-                new SendVerificationEmailMessage(
-                    userId: $user->getId(),
-                    email: $user->getEmail(),
-                    token: $verificationToken,
-                    firstName: $user->getFirstName() ?? ''
-                )
+            // Envoyer l'email directement via Mailjet
+            $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:5173/HomiByIsphers';
+            $verificationUrl = sprintf('%s/verify-email/%s', $frontendUrl, $verificationToken);
+
+            $htmlContent = sprintf(
+                '<html><body style="font-family: Arial, sans-serif;">' .
+                '<div style="max-width: 600px; margin: 0 auto; padding: 20px;">' .
+                '<h1 style="color: #3b82f6;">Vérification de votre compte Homi</h1>' .
+                '<p>Bonjour <strong>%s</strong>,</p>' .
+                '<p>Cliquez sur le bouton ci-dessous pour vérifier votre email :</p>' .
+                '<p style="margin: 30px 0;"><a href="%s" style="background-color: #3b82f6; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">✅ Vérifier mon email</a></p>' .
+                '<p>Ou copiez ce lien :</p>' .
+                '<p style="word-break: break-all; color: #666; background: #f5f5f5; padding: 10px; border-radius: 6px;"><small>%s</small></p>' .
+                '<hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">' .
+                '<p style="color: #999; font-size: 12px;">Ce lien expire dans 24 heures.</p>' .
+                '</div></body></html>',
+                htmlspecialchars($user->getFirstName() ?: $user->getEmail()),
+                htmlspecialchars($verificationUrl),
+                htmlspecialchars($verificationUrl)
+            );
+
+            $emailSent = $this->mailjetService->sendEmail(
+                $user->getEmail(),
+                $user->getFirstName() . ' ' . $user->getLastName(),
+                'Vérifiez votre email — Homi',
+                $htmlContent
             );
             
-            $this->logger->info('✅ [Resend] Email enqueued successfully', [
+            $this->logger->info($emailSent ? '✅ [Resend] Email sent successfully' : '❌ [Resend] Email sending FAILED', [
                 'userId' => $user->getId(),
             ]);
 

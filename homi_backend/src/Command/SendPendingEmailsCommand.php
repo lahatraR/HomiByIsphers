@@ -3,14 +3,13 @@
 namespace App\Command;
 
 use App\Repository\PendingEmailRepository;
+use App\Service\MailjetService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Psr\Log\LoggerInterface;
 
 #[AsCommand(
@@ -21,7 +20,7 @@ class SendPendingEmailsCommand extends Command
 {
     public function __construct(
         private PendingEmailRepository $pendingEmailRepository,
-        private MailerInterface $mailer,
+        private MailjetService $mailjetService,
         private EntityManagerInterface $em,
         private LoggerInterface $logger,
     ) {
@@ -58,13 +57,16 @@ class SendPendingEmailsCommand extends Command
                         'subject' => $pendingEmail->getSubject(),
                     ]);
 
-                    $email = (new Email())
-                        ->from($_ENV['MAILER_FROM'] ?? 'noreply@homi.com')
-                        ->to($pendingEmail->getEmail())
-                        ->subject($pendingEmail->getSubject())
-                        ->html($pendingEmail->getHtmlContent());
+                    $success = $this->mailjetService->sendEmail(
+                        $pendingEmail->getEmail(),
+                        $pendingEmail->getEmail(),
+                        $pendingEmail->getSubject(),
+                        $pendingEmail->getHtmlContent()
+                    );
 
-                    $this->mailer->send($email);
+                    if (!$success) {
+                        throw new \RuntimeException('Mailjet API returned failure');
+                    }
 
                     $pendingEmail->setSentAt(new \DateTimeImmutable());
                     $this->em->flush();
