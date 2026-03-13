@@ -39,7 +39,7 @@ export const DashboardPage: React.FC = () => {
         <PageWrapper isLoading={tasksLoading} error={error}>
             {/* Welcome Section */}
             <section className="mb-8">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-bold text-surface-900 tracking-tight mb-1">
                             {t('dashboard.welcomeBack', { name: user?.firstName })}
@@ -49,7 +49,7 @@ export const DashboardPage: React.FC = () => {
                         </p>
                     </div>
                     {isAdmin && (
-                        <div className="flex gap-3">
+                        <div className="flex flex-wrap gap-3">
                             <Button onClick={() => navigate('/create-task')} className="bg-primary-600 hover:bg-primary-700 text-white">
                                 + {t('dashboard.createTask')}
                             </Button>
@@ -118,7 +118,7 @@ export const DashboardPage: React.FC = () => {
                                     <StatusDot status={task.status} />
                                     <div>
                                         <h3 className="font-medium text-surface-900 group-hover:text-primary-600 transition-colors">{task.title}</h3>
-                                        <p className="text-sm text-surface-500">{task.description.substring(0, 60)}...</p>
+                                        <p className="text-sm text-surface-500">{task.description ? (task.description.length > 60 ? task.description.substring(0, 60) + '…' : task.description) : ''}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-3 text-sm text-surface-500">

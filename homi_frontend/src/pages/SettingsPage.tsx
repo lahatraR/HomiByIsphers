@@ -13,8 +13,10 @@ interface UserSettings {
 }
 
 export const SettingsPage: React.FC = () => {
+  // Lire le thème depuis localStorage pour éviter le flash light→dark au chargement
+  const savedTheme = localStorage.getItem('theme') || 'light';
   const [settings, setSettings] = useState<UserSettings>({
-    theme: 'light',
+    theme: savedTheme,
     language: 'fr',
     emailNotifications: true,
     pushNotifications: false,

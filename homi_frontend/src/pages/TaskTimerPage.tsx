@@ -200,11 +200,16 @@ export const TaskTimerPage: React.FC = () => {
   }, [task]);
 
   // ─── 10. Overrun check — toutes les 60 s ──────────────────────────────
+  // timerSeconds est intentionnellement exclu des dépendances : l'intervalle
+  // lit la valeur courante via getPersistedTimer() pour éviter de recréer
+  // l'intervalle à chaque seconde.
   useEffect(() => {
     if (!isTimerRunning || !task) return;
+    const taskId = task.id;
     const check = () => {
+      const currentSeconds = computeElapsedSeconds(getPersistedTimer() ?? { accumulatedSeconds: 0, lastResumedAt: null, isPaused: true, isFrozen: false } as any);
       smartEstimateService
-        .checkOverrun(task.id, timerSeconds)
+        .checkOverrun(taskId, currentSeconds)
         .then(res => {
           setOverrunWarning(res.overrun);
           setOverrunPercent(res.percentOver ?? 0);
@@ -214,7 +219,7 @@ export const TaskTimerPage: React.FC = () => {
     check(); // initial
     const iv = setInterval(check, 60_000);
     return () => clearInterval(iv);
-  }, [isTimerRunning, task, timerSeconds]);
+  }, [isTimerRunning, task]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ─── Helpers ──────────────────────────────────────────────────────────
 
@@ -399,10 +404,10 @@ export const TaskTimerPage: React.FC = () => {
         )}
 
         {/* Timer Section */}
-        <Card className="p-12 mb-6 text-center">
+        <Card className="p-6 sm:p-12 mb-6 text-center">
           <p className="text-gray-600 text-lg mb-4">{t('timer.elapsed')}</p>
           <div className="mb-8">
-            <p className={`text-7xl font-bold font-mono ${
+            <p className={`text-5xl sm:text-6xl md:text-7xl font-bold font-mono ${
               wasFrozen ? 'text-blue-500' : isTimerRunning ? 'text-primary-600' : 'text-yellow-600'
             }`}>
               {formatTime(timerSeconds)}

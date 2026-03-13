@@ -37,7 +37,7 @@ export const useTaskStore = create<TaskState>((set) => ({
             const tasks = await taskService.getAllTasks();
             set({ tasks, stats: computeStats(tasks), isLoading: false });
         } catch (error: any) {
-            const errorMsg = error.response?.data?.error || 'Failed to fetch tasks';
+            const errorMsg = error.message || 'Failed to fetch tasks';
             set({ error: errorMsg, isLoading: false });
         }
     },
@@ -52,7 +52,7 @@ export const useTaskStore = create<TaskState>((set) => ({
             });
             return newTask;
         } catch (error: any) {
-            const errorMsg = error.response?.data?.error || 'Failed to create task';
+            const errorMsg = error.message || 'Failed to create task';
             set({ error: errorMsg, isLoading: false });
             throw error;
         }
@@ -67,7 +67,7 @@ export const useTaskStore = create<TaskState>((set) => ({
             });
             return updatedTask;
         } catch (error: any) {
-            const errorMsg = error.response?.data?.error || 'Failed to start task';
+            const errorMsg = error.message || 'Failed to start task';
             set({ error: errorMsg });
             throw error;
         }
@@ -82,7 +82,7 @@ export const useTaskStore = create<TaskState>((set) => ({
             });
             return updatedTask;
         } catch (error: any) {
-            const errorMsg = error.response?.data?.error || 'Failed to complete task';
+            const errorMsg = error.message || 'Failed to complete task';
             set({ error: errorMsg });
             throw error;
         }
@@ -97,7 +97,7 @@ export const useTaskStore = create<TaskState>((set) => ({
             });
             return updatedTask;
         } catch (error: any) {
-            const errorMsg = error.response?.data?.error || 'Failed to cancel task';
+            const errorMsg = error.message || 'Failed to cancel task';
             set({ error: errorMsg });
             throw error;
         }
@@ -112,7 +112,7 @@ export const useTaskStore = create<TaskState>((set) => ({
             });
             return updatedTask;
         } catch (error: any) {
-            const errorMsg = error.response?.data?.error || 'Failed to update task';
+            const errorMsg = error.message || 'Failed to update task';
             set({ error: errorMsg });
             throw error;
         }
@@ -126,7 +126,7 @@ export const useTaskStore = create<TaskState>((set) => ({
                 return { tasks, stats: computeStats(tasks) };
             });
         } catch (error: any) {
-            const errorMsg = error.response?.data?.error || 'Failed to delete task';
+            const errorMsg = error.message || 'Failed to delete task';
             set({ error: errorMsg });
             throw error;
         }

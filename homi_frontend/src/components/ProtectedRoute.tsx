@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useTaskStore } from '../stores/taskStore';
 import { UserRoles } from '../types';
 import { getActiveTimerTaskId, restorePersistedTimerFromServer } from '../services/timerPersistence.service';
+import { LoadingSpinner } from './common';
 
 export const PrivateRoute: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore();
@@ -62,7 +63,13 @@ export const PrivateRoute: React.FC = () => {
   }
 
   // Attendre que la vérification serveur soit terminée avant de décider
-  if (!checkDone) return null;
+  if (!checkDone) {
+    return (
+      <div className="min-h-[100dvh] flex items-center justify-center bg-surface-50">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
 
   // Si un timer est actif (local ou restauré) et pas déjà sur la page timer → rediriger
   const activeTaskId = getActiveTimerTaskId(user?.id) ?? restoredTaskId;

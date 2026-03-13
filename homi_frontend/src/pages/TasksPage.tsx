@@ -221,7 +221,7 @@ export const TasksPage: React.FC = () => {
                       onClick={() => { setReviewingTaskId(task.id); setReviewRating(5); setReviewComment(''); }}
                       className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs"
                     >
-                      <IconStar className="w-4 h-4 inline" /> {t('common.edit')}
+                      <IconStar className="w-4 h-4 inline" /> {t('tasks.review', 'Évaluer')}
                     </Button>
                   )}
                   {/* Show existing rating */}

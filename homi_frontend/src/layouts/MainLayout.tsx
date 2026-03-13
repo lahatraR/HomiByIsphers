@@ -206,13 +206,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </Link>
 
               {/* Notifications bell → links to /notifications */}
-              <Link 
+              <Link
                 to="/notifications"
                 className="hidden md:flex icon-touch icon-interactive text-surface-500 hover:text-surface-900 rounded-lg hover:bg-surface-100 relative"
                 aria-label={t('nav.notifications')}
               >
                 <IconBell className={N} />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full" aria-hidden="true"></span>
               </Link>
 
               {/* User Avatar + Dropdown */}
