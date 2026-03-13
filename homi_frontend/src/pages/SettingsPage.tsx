@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { MainLayout } from '../layouts/MainLayout';
 import { Card, LoadingSpinner, Button, IconSun, IconMoon, IconMonitor, IconBell, IconLock } from '../components/common';
 import { api } from '../services/api';
@@ -9,7 +10,6 @@ interface UserSettings {
   language: string;
   emailNotifications: boolean;
   pushNotifications: boolean;
-  twoFactorEnabled: boolean;
 }
 
 export const SettingsPage: React.FC = () => {
@@ -20,7 +20,6 @@ export const SettingsPage: React.FC = () => {
     language: 'fr',
     emailNotifications: true,
     pushNotifications: false,
-    twoFactorEnabled: false,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -165,22 +164,23 @@ export const SettingsPage: React.FC = () => {
 
         {/* Security */}
         <Card className="p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
             <IconLock className="w-5 h-5" />
             {t('settings.security')}
           </h2>
-          <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer">
+          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#262628] rounded-lg">
             <div>
-              <div className="font-medium text-gray-900">{t('settings.twoFactorAuth')}</div>
-              <div className="text-sm text-gray-500">{t('settings.twoFactorAuthDesc')}</div>
+              <div className="font-medium text-gray-900 dark:text-white">{t('settings.twoFactorAuth')}</div>
+              <div className="text-sm text-gray-500 dark:text-[#a1a1aa]">{t('settings.twoFactorAuthDesc')}</div>
             </div>
-            <div className="relative">
-              <input type="checkbox" className="sr-only peer" checked={settings.twoFactorEnabled}
-                onChange={e => setSettings(s => ({ ...s, twoFactorEnabled: e.target.checked }))} />
-              <div className="w-11 h-6 bg-gray-300 peer-checked:bg-blue-600 dark:bg-[#48484a] rounded-full transition-colors"></div>
-              <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[#ffffff] rounded-full shadow transition-transform ${settings.twoFactorEnabled ? 'translate-x-5' : ''}`}></div>
-            </div>
-          </label>
+            <Link
+              to="/twofa"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 rounded-lg transition-colors"
+            >
+              <IconLock className="w-4 h-4" />
+              {t('settings.configureTwoFA', 'Configurer')}
+            </Link>
+          </div>
         </Card>
 
         <div className="flex justify-end pt-2">

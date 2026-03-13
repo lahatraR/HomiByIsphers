@@ -118,7 +118,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-5">
+            <nav className="hidden lg:flex items-center space-x-5">
               <Link to="/dashboard" className={navLinkClass('/dashboard')}>
                 <IconHome className={N} />
                 {t('nav.dashboard')}
@@ -181,7 +181,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div className="flex items-center space-x-3">
               {/* Mobile Menu Button */}
               <button
-                className="md:hidden icon-touch text-surface-500 hover:text-surface-900 transition-colors duration-150 rounded-lg hover:bg-surface-100"
+                className="lg:hidden icon-touch text-surface-500 hover:text-surface-900 transition-colors duration-150 rounded-lg hover:bg-surface-100"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? t('nav.closeMenu', 'Fermer le menu') : t('nav.openMenu', 'Ouvrir le menu')}
                 aria-expanded={mobileMenuOpen}
@@ -192,14 +192,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 }
               </button>
 
-              <div className="hidden md:block">
+              <div className="hidden lg:block">
                 <LanguageSwitcher />
               </div>
 
               {/* Search icon */}
               <Link
                 to="/search"
-                className="hidden md:flex icon-touch icon-interactive text-surface-500 hover:text-surface-900 rounded-lg hover:bg-surface-100"
+                className="hidden lg:flex icon-touch icon-interactive text-surface-500 hover:text-surface-900 rounded-lg hover:bg-surface-100"
                 aria-label={t('nav.search')}
               >
                 <IconSearch className={N} />
@@ -208,14 +208,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               {/* Notifications bell → links to /notifications */}
               <Link
                 to="/notifications"
-                className="hidden md:flex icon-touch icon-interactive text-surface-500 hover:text-surface-900 rounded-lg hover:bg-surface-100 relative"
+                className="hidden lg:flex icon-touch icon-interactive text-surface-500 hover:text-surface-900 rounded-lg hover:bg-surface-100 relative"
                 aria-label={t('nav.notifications')}
               >
                 <IconBell className={N} />
               </Link>
 
               {/* User Avatar + Dropdown */}
-              <div className="hidden md:block relative" ref={userMenuRef}>
+              <div className="hidden lg:block relative" ref={userMenuRef}>
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="flex items-center space-x-2 p-1.5 rounded-lg hover:bg-surface-100 transition-all duration-150"
@@ -321,7 +321,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </div>
 
               {/* Mobile User Avatar */}
-              <div className="md:hidden w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-success-500 flex items-center justify-center text-white font-semibold">
+              <div className="lg:hidden w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-success-500 flex items-center justify-center text-white font-semibold">
                 {getInitials()}
               </div>
             </div>
@@ -330,7 +330,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-surface-200/60 dark:border-[#3a3a3c]/60 bg-white dark:bg-[#1a1a1c] animate-fade-in-down max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
+          <div className="lg:hidden border-t border-surface-200/60 dark:border-[#3a3a3c]/60 bg-white dark:bg-[#1a1a1c] animate-fade-in-down max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
             <div className="px-4 py-3 pb-6 space-y-0.5">
               {/* User info */}
               <div className="pb-3 mb-3 border-b border-surface-100 dark:border-[#2c2c2e]">
