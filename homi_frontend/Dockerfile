@@ -17,7 +17,7 @@ ENV VITE_API_BASE_URL=${VITE_API_BASE_URL} \
 RUN npm run build
 
 # ---- Runtime : nginx non-root ----
-FROM nginxinc/nginx-unprivileged:1.29-alpine
+FROM nginxinc/nginx-unprivileged:1.30-alpine
 
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 # vite.config.ts fixe base: '/HomiByIsphers/'
