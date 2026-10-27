@@ -1,0 +1,40 @@
+# Vulnérabilités acceptées temporairement (risque connu, suivi, avec échéance).
+# Passé expired_at, l'exception tombe et le scan Trivy de la CI redevient bloquant.
+#
+# Contexte : l'API tourne sur Symfony 8.0, dont la maintenance est terminée.
+# symfony/yaml et symfony/expression-language n'ont plus de version 8.0.x saine :
+# la correction passe par une montée de version vers Symfony 8.1 (à planifier
+# hors de ce chantier d'infrastructure), qui embarquera aussi Twig >= 3.27.
+vulnerabilities:
+  - id: CVE-2026-45063
+    paths: ["app/vendor/composer/installed.json"]
+    statement: symfony/security-http 8.0.3 - corrigé par la montée Symfony 8.0 -> 8.1
+    expired_at: 2026-12-31
+  - id: CVE-2026-45069
+    paths: ["app/vendor/composer/installed.json"]
+    statement: symfony/security-http 8.0.3 - corrigé par la montée Symfony 8.0 -> 8.1
+    expired_at: 2026-12-31
+  - id: CVE-2026-24425
+    paths: ["app/vendor/composer/installed.json"]
+    statement: twig/twig 3.22.2 - Twig n'est utilisé que pour le template de base, pas de sandbox
+    expired_at: 2026-12-31
+  - id: CVE-2026-46633
+    paths: ["app/vendor/composer/installed.json"]
+    statement: twig/twig 3.22.2 - Twig n'est utilisé que pour le template de base, pas de sandbox
+    expired_at: 2026-12-31
+  - id: CVE-2026-46634
+    paths: ["app/vendor/composer/installed.json"]
+    statement: twig/twig 3.22.2 - Twig n'est utilisé que pour le template de base, pas de sandbox
+    expired_at: 2026-12-31
+  - id: CVE-2026-48805
+    paths: ["app/vendor/composer/installed.json"]
+    statement: twig/twig 3.22.2 - Twig n'est utilisé que pour le template de base, pas de sandbox
+    expired_at: 2026-12-31
+  - id: CVE-2026-48806
+    paths: ["app/vendor/composer/installed.json"]
+    statement: twig/twig 3.22.2 - Twig n'est utilisé que pour le template de base, pas de sandbox
+    expired_at: 2026-12-31
+  - id: CVE-2026-48807
+    paths: ["app/vendor/composer/installed.json"]
+    statement: twig/twig 3.22.2 - Twig n'est utilisé que pour le template de base, pas de sandbox
+    expired_at: 2026-12-31

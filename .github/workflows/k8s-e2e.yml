@@ -1,0 +1,166 @@
+name: K8s E2E
+
+# Valide l'infrastructure Kubernetes de bout en bout à chaque PR :
+# lint IaC -> build des images -> scan de sécurité -> cluster kind éphémère
+# -> terraform apply -> smoke test -> destruction.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: k8s-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TERRAFORM_VERSION: 1.16.6
+  HELM_VERSION: v4.3.1
+  KIND_VERSION: v0.33.0
+  KUBECONFORM_VERSION: v0.7.0
+  TRIVY_VERSION: 0.76.1
+  CHECKOV_VERSION: 3.3.30
+
+jobs:
+  lint:
+    name: Lint IaC (Helm, kubeconform, Terraform, checkov)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Install kubeconform and checkov
+        run: |
+          cd "$RUNNER_TEMP"
+          base="https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}"
+          curl -sSLO "$base/kubeconform-linux-amd64.tar.gz"
+          curl -sSL "$base/CHECKSUMS" | grep ' kubeconform-linux-amd64.tar.gz$' | sha256sum -c -
+          tar -xzf kubeconform-linux-amd64.tar.gz kubeconform
+          sudo install kubeconform /usr/local/bin/
+          pip install --quiet "checkov==${CHECKOV_VERSION}"
+
+      - name: make lint
+        run: make lint
+
+  e2e:
+    name: Build, scan & deploy on kind
+    needs: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      security-events: write # publication des résultats Trivy (onglet Security)
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # ---------- Build ----------
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Build frontend image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: homi_frontend
+          tags: homi-frontend:local
+          load: true
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,scope=frontend,mode=max
+
+      - name: Build API image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: homi_backend
+          tags: homi-api:local
+          load: true
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,scope=api,mode=max
+
+      # ---------- Scan de sécurité ----------
+      # Binaire officiel vérifié par checksum (pas d'action tierce pour Trivy).
+      - name: Install Trivy
+        run: |
+          cd "$RUNNER_TEMP"
+          base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
+          archive="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          curl -sSLO "$base/$archive"
+          curl -sSL "$base/trivy_${TRIVY_VERSION}_checksums.txt" | grep " ${archive}$" | sha256sum -c -
+          tar -xzf "$archive" trivy
+          sudo install trivy /usr/local/bin/
+
+      - name: Trivy gate (CRITICAL fixable vulnerabilities + secrets)
+        run: |
+          for image in homi-frontend:local homi-api:local; do
+            echo "::group::Trivy $image"
+            trivy image --scanners vuln,secret --severity CRITICAL --ignore-unfixed \
+              --ignorefile .trivyignore.yaml --exit-code 1 "$image"
+            echo "::endgroup::"
+          done
+
+      - name: Trivy report (HIGH + CRITICAL, SARIF)
+        if: always()
+        run: |
+          for image in homi-frontend homi-api; do
+            trivy image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed \
+              --format sarif --output "trivy-${image}.sarif" "${image}:local"
+          done
+
+      - name: Upload SARIF to GitHub code scanning
+        # Les PR venant de forks n'ont pas le droit d'écrire les résultats de sécurité
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        continue-on-error: true # nécessite le code scanning (dépôt public ou GHAS)
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          sarif_file: .
+          category: trivy
+
+      # ---------- Déploiement sur kind ----------
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Install kind
+        run: |
+          cd "$RUNNER_TEMP"
+          base="https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}"
+          curl -sSLO "$base/kind-linux-amd64"
+          curl -sSL "$base/kind-linux-amd64.sha256sum" | sha256sum -c -
+          sudo install kind-linux-amd64 /usr/local/bin/kind
+
+      - name: terraform apply (kind + Traefik + metrics-server + Homi)
+        run: make deploy
+
+      - name: Smoke test
+        run: make smoke
+
+      - name: Diagnostics
+        if: failure()
+        run: |
+          export KUBECONFIG="$PWD/infra/terraform/homi-config"
+          kubectl get pods,svc,ingress,hpa,pvc,jobs -A || true
+          kubectl -n homi describe pods || true
+          kubectl -n homi get events --sort-by=.lastTimestamp || true
+          kubectl -n homi logs -l app.kubernetes.io/part-of=homi --all-containers --prefix --tail=200 || true
+
+      - name: Destroy cluster
+        if: always()
+        run: make down
