@@ -1,0 +1,12 @@
+vendor
+var
+.env.local
+.env.*.local
+.env.test
+tests
+phpunit.dist.xml
+compose*.yaml
+render.yaml
+Dockerfile
+.dockerignore
+*.log
