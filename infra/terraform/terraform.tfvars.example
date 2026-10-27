@@ -1,0 +1,14 @@
+# Copier en terraform.tfvars (ignoré par git) pour surcharger les valeurs par défaut.
+
+# cluster_name = "homi"
+# node_image   = "kindest/node:v1.34.11"
+
+# Si le port 80 est déjà utilisé sur la machine :
+# http_port  = 8080
+# https_port = 8443
+
+# ingress_host = "homi.localhost"
+
+# Normalement fournis par le Makefile (tag dérivé du contenu de l'image) :
+# frontend_image_tag = "local"
+# api_image_tag      = "local"
