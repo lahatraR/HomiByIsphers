@@ -1,0 +1,16 @@
+# Service headless : nom DNS stable pour le StatefulSet
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "homi.postgresHost" . }}
+  labels:
+    {{- include "homi.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgresql
+spec:
+  clusterIP: None
+  selector:
+    {{- include "homi.selectorLabels" (dict "ctx" . "component" "postgresql") | nindent 4 }}
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: postgresql

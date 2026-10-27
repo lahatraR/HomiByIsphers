@@ -1,0 +1,12 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+# Kubeconfig généré par kind
+*-config
+kubeconfig
+# Valeurs Helm locales (secrets)
+helm/**/values.local.yaml

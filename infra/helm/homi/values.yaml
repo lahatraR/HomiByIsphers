@@ -1,0 +1,92 @@
+# Valeurs par défaut du chart Homi.
+# AUCUN secret ici : les valeurs sensibles (api.secrets.*, postgresql.auth.password)
+# doivent être fournies au déploiement (Terraform, --set, fichier non versionné)
+# ou via des Secrets existants (*.existingSecret). Voir values.example.yaml.
+
+nameOverride: ""
+fullnameOverride: ""
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: homi-frontend
+    tag: local
+    pullPolicy: IfNotPresent
+  containerPort: 8080
+  resources:
+    requests: { cpu: 25m, memory: 32Mi }
+    limits: { cpu: 200m, memory: 128Mi }
+
+api:
+  replicaCount: 1
+  image:
+    repository: homi-api
+    tag: local
+    pullPolicy: IfNotPresent
+  containerPort: 8000
+  # Variables non sensibles -> ConfigMap
+  config:
+    APP_ENV: prod
+    APP_DEBUG: "0"
+    JWT_EXPIRATION: "3600"
+    EMAIL_VERIFICATION_TOKEN_EXPIRATION: "86400"
+    FRONTEND_URL: http://homi.localhost/HomiByIsphers
+    DEFAULT_URI: http://homi.localhost
+    CORS_ALLOW_ORIGIN: '^https?://homi\.localhost(:[0-9]+)?$'
+    MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+    MAILER_FROM: no-reply@homi.localhost
+    TRUSTED_PROXIES: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+    TRUSTED_HEADERS: X_FORWARDED_FOR,X_FORWARDED_PROTO,X_FORWARDED_HOST,X_FORWARDED_PORT
+  # Variables sensibles -> Secret (ignorées si existingSecret est défini)
+  existingSecret: ""
+  secrets:
+    appSecret: ""          # obligatoire : APP_SECRET (sert aussi de clé de signature JWT)
+    mailerDsn: "null://null"
+    mailjetApiKey: ""
+    mailjetApiSecret: ""
+    emailCronToken: ""
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { cpu: "1", memory: 512Mi }
+  probes:
+    liveness: /api/health
+    readiness: /api/health/ready
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+
+migrations:
+  enabled: true
+  backoffLimit: 3
+  activeDeadlineSeconds: 600
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits: { cpu: 500m, memory: 384Mi }
+
+postgresql:
+  image:
+    repository: postgres
+    tag: 16-alpine
+    pullPolicy: IfNotPresent
+  auth:
+    database: homi
+    username: homi
+    password: ""           # obligatoire si existingSecret est vide
+    existingSecret: ""     # Secret contenant la clé POSTGRES_PASSWORD
+  persistence:
+    size: 1Gi
+    storageClass: ""       # vide = StorageClass par défaut du cluster
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits: { cpu: 500m, memory: 512Mi }
+  networkPolicy:
+    enabled: true          # seuls l'API et le Job de migration accèdent à PostgreSQL
+
+ingress:
+  enabled: true
+  className: traefik
+  host: homi.localhost
+  annotations: {}
+  tls: []

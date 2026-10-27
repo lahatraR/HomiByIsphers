@@ -1,0 +1,9 @@
+Homi est déployé dans le namespace {{ .Release.Namespace }}.
+{{- if .Values.ingress.enabled }}
+
+  Front : http://{{ .Values.ingress.host }}/HomiByIsphers/
+  API   : http://{{ .Values.ingress.host }}/api/health
+{{- end }}
+
+Suivre le déploiement :
+  kubectl -n {{ .Release.Namespace }} get pods -l app.kubernetes.io/instance={{ .Release.Name }}

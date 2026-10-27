@@ -1,0 +1,16 @@
+# Exemple de valeurs sensibles. NE PAS committer de vraies valeurs :
+# copier en values.local.yaml (ignoré par git) puis
+#   helm upgrade --install homi infra/helm/homi -f infra/helm/homi/values.local.yaml
+# Avec Terraform (make up), ces valeurs sont générées automatiquement.
+
+api:
+  secrets:
+    appSecret: "change-me-32-characters-minimum-xxxxxxxx"
+    mailerDsn: "null://null"
+    mailjetApiKey: ""
+    mailjetApiSecret: ""
+    emailCronToken: "change-me"
+
+postgresql:
+  auth:
+    password: "change-me"

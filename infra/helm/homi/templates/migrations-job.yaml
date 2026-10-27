@@ -1,0 +1,57 @@
+{{- if .Values.migrations.enabled }}
+# Hook Helm : exécuté après chaque install/upgrade, une fois PostgreSQL prêt.
+# Contrairement au script de démarrage de l'image, un échec de migration
+# fait échouer le Job, donc le déploiement.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "homi.fullname" . }}-migrations
+  labels:
+    {{- include "homi.labels" . | nindent 4 }}
+    app.kubernetes.io/component: migrations
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  backoffLimit: {{ .Values.migrations.backoffLimit }}
+  activeDeadlineSeconds: {{ .Values.migrations.activeDeadlineSeconds }}
+  template:
+    metadata:
+      labels:
+        {{- include "homi.labels" . | nindent 8 }}
+        app.kubernetes.io/component: migrations
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      initContainers:
+        - name: wait-for-postgresql
+          image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
+          command: ["sh", "-c", "until pg_isready -h {{ include "homi.postgresHost" . }} -p 5432; do echo waiting for postgresql; sleep 2; done"]
+          resources:
+            requests: { cpu: 10m, memory: 16Mi }
+            limits: { cpu: 100m, memory: 64Mi }
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 70
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+            seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: migrate
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          command: ["php", "bin/console", "doctrine:migrations:migrate", "--no-interaction", "--allow-no-migration"]
+          envFrom:
+            - configMapRef:
+                name: {{ include "homi.fullname" . }}-api
+            - secretRef:
+                name: {{ include "homi.apiSecretName" . }}
+          env:
+            {{- include "homi.apiEnv" . | nindent 12 }}
+          resources:
+            {{- toYaml .Values.migrations.resources | nindent 12 }}
+          securityContext:
+            {{- include "homi.apiSecurityContext" . | nindent 12 }}
+{{- end }}
