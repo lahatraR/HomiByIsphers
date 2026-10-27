@@ -65,3 +65,12 @@ capabilities:
 seccompProfile:
   type: RuntimeDefault
 {{- end }}
+
+{{/* Exceptions checkov assumées pour l'image API (root, système de fichiers modifié
+     au démarrage). À lever quand l'image passera en non-root (voir README). */}}
+{{- define "homi.apiCheckovSkips" -}}
+checkov.io/skip1: CKV_K8S_23=Image API officielle en root (supervisord + nginx + php-fpm)
+checkov.io/skip2: CKV_K8S_25=CHOWN/SETUID/SETGID/FOWNER/DAC_OVERRIDE requis pour basculer sur www-data
+checkov.io/skip3: CKV_K8S_22=Symfony écrit var/cache et nginx ses fichiers temporaires dans l'image
+checkov.io/skip4: CKV_K8S_29=securityContext défini au niveau pod et conteneur, runAsNonRoot impossible avec cette image
+{{- end }}

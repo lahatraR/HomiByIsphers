@@ -1,0 +1,16 @@
+# Configuration checkov (Terraform + chart Helm).
+# Chaque exception globale est justifiée ; les exceptions propres à l'image API
+# sont posées au plus près, en annotations checkov.io/skip* dans le chart.
+compact: true
+quiet: true
+skip-check:
+  # Le chart est rendu sans namespace : il est fixé au déploiement (Terraform : var.namespace).
+  - CKV_K8S_21
+  # Images construites localement et chargées par "kind load" : pas de registre, donc
+  # ni digest ni pullPolicy Always (le tag est dérivé du contenu de l'image par le Makefile).
+  - CKV_K8S_43
+  - CKV_K8S_15
+  # UID imposés par les images officielles (nginx-unprivileged : 101, postgres alpine : 70).
+  - CKV_K8S_40
+  # Symfony lit sa configuration dans les variables d'environnement (12-factor).
+  - CKV_K8S_35

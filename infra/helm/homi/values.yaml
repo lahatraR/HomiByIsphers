@@ -81,8 +81,12 @@ postgresql:
   resources:
     requests: { cpu: 100m, memory: 128Mi }
     limits: { cpu: 500m, memory: 512Mi }
-  networkPolicy:
-    enabled: true          # seuls l'API et le Job de migration accèdent à PostgreSQL
+
+# NetworkPolicies : front et API joignables uniquement depuis le contrôleur d'ingress,
+# PostgreSQL uniquement depuis l'API et le Job de migration.
+networkPolicy:
+  enabled: true
+  ingressControllerNamespace: traefik
 
 ingress:
   enabled: true

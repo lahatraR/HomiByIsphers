@@ -5,6 +5,8 @@ metadata:
   labels:
     {{- include "homi.labels" . | nindent 4 }}
     app.kubernetes.io/component: api
+  annotations:
+    {{- include "homi.apiCheckovSkips" . | nindent 4 }}
 spec:
   {{- if not .Values.api.autoscaling.enabled }}
   replicas: {{ .Values.api.replicaCount }}
@@ -22,6 +24,8 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        seccompProfile: { type: RuntimeDefault }
       containers:
         - name: api
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
