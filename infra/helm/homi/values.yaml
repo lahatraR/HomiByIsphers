@@ -5,6 +5,9 @@
 
 nameOverride: ""
 fullnameOverride: ""
+# Empreinte des fichiers du chart, renseignée par Terraform pour forcer un upgrade
+# quand un template change (sans effet sur le rendu).
+chartChecksum: ""
 
 frontend:
   replicaCount: 1

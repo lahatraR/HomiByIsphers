@@ -26,10 +26,4 @@ provider "helm" {
     client_key             = kind_cluster.this.client_key
     cluster_ca_certificate = kind_cluster.this.cluster_ca_certificate
   }
-
-  # Compare le rendu complet du chart : sans cela, une modification du chart
-  # local (infra/helm/homi) n'est pas détectée tant que sa version ne change pas.
-  experiments = {
-    manifest = true
-  }
 }

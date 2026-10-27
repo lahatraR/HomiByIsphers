@@ -1,6 +1,12 @@
 locals {
   frontend_image_ref = "${var.frontend_image}:${var.frontend_image_tag}"
   api_image_ref      = "${var.api_image}:${var.api_image_tag}"
+
+  # Empreinte des fichiers du chart local : le provider Helm ne détecte pas une
+  # modification du chart tant que sa version ne change pas. Passée en valeur,
+  # elle déclenche un helm upgrade dès qu'un template change.
+  chart_dir      = "${path.module}/../helm/homi"
+  chart_checksum = sha1(join("", [for f in sort(fileset(local.chart_dir, "**")) : filesha1("${local.chart_dir}/${f}")]))
 }
 
 # Les images sont construites localement (make build) : on les charge dans les
@@ -34,7 +40,7 @@ resource "random_password" "email_cron_token" {
 
 resource "helm_release" "homi" {
   name             = "homi"
-  chart            = "${path.module}/../helm/homi"
+  chart            = local.chart_dir
   namespace        = var.namespace
   create_namespace = true
   wait             = true
@@ -42,6 +48,7 @@ resource "helm_release" "homi" {
   timeout          = var.release_timeout
 
   values = [yamlencode({
+    chartChecksum = local.chart_checksum
     frontend = {
       image = { repository = var.frontend_image, tag = var.frontend_image_tag }
     }
